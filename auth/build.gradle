@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'de.mobilej.unmock'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "29.0.0"
+
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    unMock {
+        keep "android.widget.BaseAdapter"
+        keep "android.widget.ArrayAdapter"
+        keep "android.os.Bundle"
+        keepStartingWith "android.database.MatrixCursor"
+        keep "android.database.AbstractCursor"
+        keep "android.database.CrossProcessCursor"
+        keepStartingWith "android.text.TextUtils"
+        keepStartingWith "android.util."
+        keepStartingWith "android.text."
+        keepStartingWith "android.content.ContentValues"
+        keepStartingWith "android.content.ComponentName"
+        keepStartingWith "android.content.ContentUris"
+        keepStartingWith "android.content.ContentProviderOperation"
+        keepStartingWith "android.content.ContentProviderResult"
+        keepStartingWith "android.content.UriMatcher"
+        keepStartingWith "android.content.Intent"
+        keep "android.location.Location"
+        keepStartingWith "android.content.res.Configuration"
+        keepStartingWith "org."
+        keepStartingWith "libcore."
+        keepStartingWith "com.android.internal.R"
+        keepStartingWith "com.android.internal.util."
+        keep "android.net.Uri"
+
+        keepAndRename "java.nio.charset.Charsets" to "xjava.nio.charset.Charsets"
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def lifecycle_version = "2.2.0-alpha03"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+
+    def navigation_version = "1.0.0"
+    implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
+
+    unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
+
+    api project(':core')
+
+    implementation 'com.google.android.material:material:1.0.0'
+
+//    testImplementation project(':core')
+    testImplementation project(path: ':core', configuration: 'testImplementationDependencies')
+}
+
+repositories {
+    mavenCentral()
+}
