@@ -1,10 +1,10 @@
 package com.alfresco.core.network.contract.implementation
 
-import com.alfresco.core.data.AlfrescoResponse
+import com.alfresco.core.data.Result
+import com.alfresco.core.data.remote.AlfrescoResponse
 import com.alfresco.core.data.toAlfrescoResponse
 import com.alfresco.core.network.contract.AlfrescoNetwork
 import com.alfresco.core.network.contract.Response
-import com.alfresco.core.network.contract.Result
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,11 +16,25 @@ import java.util.concurrent.TimeUnit
  */
 class OkHttpNetwork : AlfrescoNetwork {
 
+    override suspend fun head(url: String, headers: Map<String, String>, params: Map<String, String>, data: Any?, timeout: Long): Result<AlfrescoResponse, Exception> {
+        val client = getHttpClient(timeout)
+
+        //TODO add data
+
+        val request = Request.Builder().url(url).head()
+
+        headers.forEach {
+            request.addHeader(it.key, it.value)
+        }
+
+        return response(client, request)
+    }
+
     override suspend fun get(url: String,
                              headers: Map<String, String>,
                              params: Map<String, String>,
                              data: Any?,
-                             timeout: Long): Result<AlfrescoResponse, Throwable> {
+                             timeout: Long): Result<AlfrescoResponse, Exception> {
 
         val client = getHttpClient(timeout)
 
@@ -39,7 +53,7 @@ class OkHttpNetwork : AlfrescoNetwork {
                               headers: Map<String, String>,
                               params: Map<String, String>,
                               data: Any?,
-                              timeout: Long): Result<AlfrescoResponse, Throwable> {
+                              timeout: Long): Result<AlfrescoResponse, Exception> {
 
         val client = getHttpClient(timeout)
 
@@ -68,16 +82,21 @@ class OkHttpNetwork : AlfrescoNetwork {
                     .connectTimeout(timeout, TimeUnit.SECONDS)
                     .build()
 
-    private suspend fun response(client: OkHttpClient, request: Request.Builder) =
-            try {
-                val response = client.newCall(request.build()).await()
-                val alfrescoResponse = response.toAlfrescoResponse()
+    private fun response(client: OkHttpClient, request: Request.Builder) =
 
-                when (alfrescoResponse.statusCode) {
-                    Response.OK -> Result.of { alfrescoResponse }
-                    else -> Result.Failure(Error(alfrescoResponse.responseMessage))
+//            try (client.newCall(request.build()).execute()) {
+//                return response.body().string();
+//            }
+            try {
+                val response = client.newCall(request.build()).execute()
+//                val response = client.newCall(request.build()).await()
+                when (response.code) {
+                    Response.OK -> {
+                        Result.of { response.toAlfrescoResponse() }
+                    }
+                    else -> Result.Error(Exception(response.body?.string()))
                 }
             } catch (exception: Exception) {
-                Result.Failure(Error(exception.message))
+                Result.Error(Exception(exception.message))
             }
 }

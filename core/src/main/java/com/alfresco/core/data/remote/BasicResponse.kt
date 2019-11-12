@@ -1,4 +1,4 @@
-package com.alfresco.core.data
+package com.alfresco.core.data.remote
 
 /**
  * Basic class for a response.

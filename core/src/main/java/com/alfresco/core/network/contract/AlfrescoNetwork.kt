@@ -1,6 +1,7 @@
 package com.alfresco.core.network.contract
 
-import com.alfresco.core.data.AlfrescoResponse
+import com.alfresco.core.data.Result
+import com.alfresco.core.data.remote.AlfrescoResponse
 
 /**
  * An abstraction for every networking implementation
@@ -14,11 +15,17 @@ interface AlfrescoNetwork {
                     headers: Map<String, String> = mapOf(),
                     params: Map<String, String> = mapOf(),
                     data: Any? = null,
-                    timeout: Long): Result<AlfrescoResponse, Throwable>
+                    timeout: Long): Result<AlfrescoResponse, Exception>
+
+    suspend fun head(url: String,
+                    headers: Map<String, String> = mapOf(),
+                    params: Map<String, String> = mapOf(),
+                    data: Any? = null,
+                    timeout: Long): Result<AlfrescoResponse, Exception>
 
     suspend fun post(url: String,
                      headers: Map<String, String> = mapOf(),
                      params: Map<String, String> = mapOf(),
                      data: Any? = null,
-                     timeout: Long): Result<AlfrescoResponse, Throwable>
+                     timeout: Long): Result<AlfrescoResponse, Exception>
 }

@@ -9,6 +9,7 @@ package com.alfresco.core.network.request
  */
 enum class Method(val value: String) {
     GET("GET"),
+    HEAD("HEAD"),
     POST("POST"),
     PUT("PUT"),
     DELETE("DELETE")

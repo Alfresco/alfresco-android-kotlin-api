@@ -1,11 +1,10 @@
 package com.alfresco.core.serialization
 
 /**
- * An interface for deserializers
  *
- * Created by Bogdan Roatis on 4/2/2019.
+ * Created by Bogdan Roatis on 27 September 2019.
  */
-interface Deserializer {
+abstract class JsonParser {
 
     /**
      * Deserialize a json string into [T]
@@ -15,7 +14,7 @@ interface Deserializer {
      *
      * @return [T] the instance of [T]
      */
-    fun <T : Any> deserialize(response: String, clazz: Class<T>): T?
+    protected abstract fun <T> fromJson(response: String, clazz: Class<T>): T?
 
     /**
      * Serialize the [T] into a string
@@ -25,5 +24,11 @@ interface Deserializer {
      *
      * @return a string that represents the serialized [entity]
      */
-    fun <T : Any> serialize(entity: T, clazz: Class<T>): String?
+    protected abstract fun <T> toJson(entity: T?, clazz: Class<T>): String
+
+    inline fun <reified T> fromJson(json: String): T? =
+            fromJson(json, T::class.java)
+
+    inline fun <reified T> toJson(entity: T): String =
+            toJson(entity, T::class.java)
 }

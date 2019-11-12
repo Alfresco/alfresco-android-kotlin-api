@@ -1,5 +1,6 @@
 package com.alfresco.core.data
 
+import com.alfresco.core.data.remote.AlfrescoResponse
 import okhttp3.Response
 
 /**

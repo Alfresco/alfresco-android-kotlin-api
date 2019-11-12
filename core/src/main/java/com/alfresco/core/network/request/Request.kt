@@ -9,7 +9,7 @@ import java.net.URL
  */
 class Request(path: String) {
 
-    val url: URL
+    val url: URL?
 
     init {
         url = createUrl(path)
@@ -52,11 +52,16 @@ class Request(path: String) {
         return this
     }
 
+    fun head(): Request {
+        method = Method.HEAD
+        return this
+    }
+
     private fun createUrl(path: String) =
             try {
                 URL(path)
             } catch (e: MalformedURLException) {
-                Log.e("Alfresco", "Couldn't create the url $e")
-                URL("")
+                Log.e("Alfresco", "Couldn't create the url->$path $e")
+                null
             }
 }

@@ -13,9 +13,6 @@ private const val ACCESS_TOKEN: String = "access_token"
 private const val TOKEN_TYPE: String = "token_type"
 private const val EXPIRES_IN: String = "expires_in"
 
-const val SAML_LOGIN_GATEWAY_URL = "https://gateway.aps2dev.envalfresco.com/admin/"
-const val BASIC_LOGIN_URL = "http://alfresco-identity-service.mobile.dev.alfresco.me/auth/realms/alfresco/protocol/openid-connect/token"
-
 fun getSamlResponse(url: String?): SamlCredentials? {
     if (url == null) {
         return null
@@ -30,10 +27,8 @@ fun getSamlResponse(uri: Uri?): SamlCredentials? {
     if (uri == null) {
         return null
     }
-
-    val builtUrl = "${uri.scheme}://${uri.authority}${uri.path}"
-    if (SAML_LOGIN_GATEWAY_URL != builtUrl ||
-            !uri.queryParameterNames.contains(ACCESS_TOKEN)) {
+    
+    if (!uri.queryParameterNames.contains(ACCESS_TOKEN)) {
         return null
     }
 

@@ -12,25 +12,26 @@ import kotlinx.android.synthetic.main.activity_login_saml.*
 /**
  * Created by Bogdan Roatis on 7/24/2019.
  */
-class SamlLoginActivity : FragmentActivity() {
+class SamlLoginActivity : FragmentActivity(R.layout.activity_login_saml) {
 
     private lateinit var loginWebView: WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login_saml)
 
         val url = intent.getStringExtra(URL)
 
         loginWebView = findViewById(R.id.webview)
-        loginWebView.applyDefaultSettings()
-        loginWebView.listenForCredentials(::stopLoading) {
-            val data = Intent().apply { putExtra(SAML, it) }
-            setResult(RESULT_OK, data)
-            finish()
-        }
+        loginWebView.run {
+            applyDefaultSettings()
+            listenForCredentials(this@SamlLoginActivity::stopLoading) {
+                val data = Intent().apply { putExtra(SAML, it) }
+                setResult(RESULT_OK, data)
+                finish()
+            }
 
-        loginWebView.loadUrl(url)
+            loadUrl(url)
+        }
     }
 
     private fun stopLoading() {
@@ -42,7 +43,7 @@ class SamlLoginActivity : FragmentActivity() {
          * Private constant used as a key for the url
          */
         private const val URL = "url"
-        public const val SAML = "saml_credentials"
+        const val SAML = "saml_credentials"
 
         fun show(activity: Activity, url: String, requestCode: Int) {
             val intent = Intent(activity, SamlLoginActivity::class.java).apply {
