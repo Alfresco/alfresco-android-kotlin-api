@@ -4,7 +4,7 @@ You have arrived at the source repository for the Alfresco Mobile SDK for Androi
 
 - If you'd like to work with the source code of the SDK itself, you've come to the right place! You can browse sample app source code and debug down through the layers to get a feel for how everything works under the covers. Read on for instructions on how to get started with the SDK in your development environment.
 
-- If you just want to start using the SDK in your own project, the quickest way is to import the SDK into your project by pasting the below sample into your build.gradle file.
+- If you just want to start using the SDK, the quickest way is to import the SDK into your project by pasting the below sample into your build.gradle file.
 
 ```groovy
 compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5'
