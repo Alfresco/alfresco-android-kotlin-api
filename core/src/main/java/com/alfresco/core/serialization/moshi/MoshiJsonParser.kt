@@ -14,8 +14,8 @@ object MoshiJsonParser : JsonParser() {
     private val moshi = Moshi.Builder().build()
 
     override fun <T> fromJson(response: String, clazz: Class<T>): T? =
-            moshi.adapter(clazz).fromJson(response)
+        moshi.adapter(clazz).fromJson(response)
 
     override fun <T> toJson(entity: T?, clazz: Class<T>): String =
-            moshi.adapter(clazz).toJson(entity)
+        moshi.adapter(clazz).toJson(entity)
 }

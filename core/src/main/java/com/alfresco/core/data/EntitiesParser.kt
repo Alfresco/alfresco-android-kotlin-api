@@ -17,8 +17,9 @@ import okhttp3.Response
  * to a business logic [AlfrescoResponse] object
  */
 fun Response.toAlfrescoResponse() =
-        AlfrescoResponse(
-                body = body?.string(),
-                url = request.url.encodedPath,
-                statusCode = code,
-                responseMessage = message)
+    AlfrescoResponse(
+        body = body?.string(),
+        url = request.url.encodedPath,
+        statusCode = code,
+        responseMessage = message
+    )

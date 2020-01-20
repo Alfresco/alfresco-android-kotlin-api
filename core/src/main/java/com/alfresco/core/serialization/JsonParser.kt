@@ -27,8 +27,8 @@ abstract class JsonParser {
     protected abstract fun <T> toJson(entity: T?, clazz: Class<T>): String
 
     inline fun <reified T> fromJson(json: String): T? =
-            fromJson(json, T::class.java)
+        fromJson(json, T::class.java)
 
     inline fun <reified T> toJson(entity: T): String =
-            toJson(entity, T::class.java)
+        toJson(entity, T::class.java)
 }

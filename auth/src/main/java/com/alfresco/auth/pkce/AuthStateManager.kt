@@ -52,8 +52,9 @@ class AuthStateManager private constructor(context: Context) {
 
     @AnyThread
     fun updateAfterAuthorization(
-            response: AuthorizationResponse?,
-            ex: AuthorizationException?): AuthState {
+        response: AuthorizationResponse?,
+        ex: AuthorizationException?
+    ): AuthState {
         val current = current
         current.update(response, ex)
         return replace(current)
@@ -61,8 +62,9 @@ class AuthStateManager private constructor(context: Context) {
 
     @AnyThread
     fun updateAfterTokenResponse(
-            response: TokenResponse?,
-            ex: AuthorizationException?): AuthState {
+        response: TokenResponse?,
+        ex: AuthorizationException?
+    ): AuthState {
         val current = current
         current.update(response, ex)
         return replace(current)
@@ -70,8 +72,9 @@ class AuthStateManager private constructor(context: Context) {
 
     @AnyThread
     fun updateAfterRegistration(
-            response: RegistrationResponse,
-            ex: AuthorizationException?): AuthState {
+        response: RegistrationResponse,
+        ex: AuthorizationException?
+    ): AuthState {
         val current = current
         if (ex != null) {
             return current

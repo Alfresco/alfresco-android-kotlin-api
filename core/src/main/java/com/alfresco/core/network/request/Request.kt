@@ -58,10 +58,10 @@ class Request(path: String) {
     }
 
     private fun createUrl(path: String) =
-            try {
-                URL(path)
-            } catch (e: MalformedURLException) {
-                Log.e("Alfresco", "Couldn't create the url->$path $e")
-                null
-            }
+        try {
+            URL(path)
+        } catch (e: MalformedURLException) {
+            Log.e("Alfresco", "Couldn't create the url->$path $e")
+            null
+        }
 }

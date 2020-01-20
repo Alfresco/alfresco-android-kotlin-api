@@ -11,8 +11,8 @@ interface EntityMapper<DataSourceEntity : Any, Entity : Any> {
     fun mapToEntity(dataSourceEntity: DataSourceEntity): Entity
 
     fun mapFromEntities(entities: Iterable<Entity>) =
-            entities.map { mapFromEntity(it) }
+        entities.map { mapFromEntity(it) }
 
     fun mapToEntities(dataSourceEntities: Iterable<DataSourceEntity>) =
-            dataSourceEntities.map { mapToEntity(it) }
+        dataSourceEntities.map { mapToEntity(it) }
 }

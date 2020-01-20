@@ -5,14 +5,14 @@ package com.alfresco.auth.pkce
  */
 data class IdentityServiceConfig(
 
-        /**
-         * The realm. Used to generate the final url.
-         * The place of realm should be here https://identity-service/auth/realms/REALM/
-         */
-        var realm: String,
+    /**
+     * The realm. Used to generate the final url.
+     * The place of realm should be here https://identity-service/auth/realms/REALM/
+     */
+    var realm: String,
 
-        /**
-         * The issuer url, e.g. "https://accounts.google.com"
-         */
-        var issuerUrl: String
+    /**
+     * The issuer url, e.g. "https://accounts.google.com"
+     */
+    var issuerUrl: String
 )

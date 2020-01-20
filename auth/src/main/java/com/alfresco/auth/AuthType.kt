@@ -11,11 +11,6 @@ enum class AuthType {
     BASIC,
 
     /**
-     * Used to specify the need of SAML auth
-     */
-    SAML,
-
-    /**
      * Used to specify the need of SSO auth
      */
     SSO,

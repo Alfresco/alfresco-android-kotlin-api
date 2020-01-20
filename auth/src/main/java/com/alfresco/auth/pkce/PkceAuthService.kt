@@ -13,8 +13,8 @@ import net.openid.appauth.*
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
+import java.util.*
 import kotlin.coroutines.resumeWithException
-
 
 /**
  * Created by Bogdan Roatis on 10/3/2019.
@@ -56,11 +56,39 @@ class PkceAuthService {
 
     fun setGlobalAuthConfig(globalAuthConfig: GlobalAuthConfig) {
         checkConfig(globalAuthConfig)
+
         this.globalAuthConfig = globalAuthConfig
 
         // init the connection builder
         connectionBuilder = getConnectionBuilder(globalAuthConfig.https)
     }
+
+    /**
+     * Fetch an AuthorizationServiceConfiguration from an OpenID Connect issuer url.
+     * This method automatically appends the OpenID connect well-known configuration path to the
+     * url.
+     *
+     * @param openIdConnectIssuerUrl The issuer url, e.g. "https://accounts.google.com"
+     * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
+     */
+    suspend fun fetchDiscoveryFromUrl(openIdConnectIssuerUri: Uri) =
+        suspendCancellableCoroutine<Result<AuthorizationServiceConfiguration, AuthorizationException>> {
+            AuthorizationServiceConfiguration.fetchFromUrl(
+                openIdConnectIssuerUri,
+                AuthorizationServiceConfiguration.RetrieveConfigurationCallback { serviceConfiguration, ex ->
+                    when {
+                        ex != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
+                        }
+                        serviceConfiguration != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.success(serviceConfiguration)))
+                        }
+                        else -> it.resumeWithException(Exception())
+                    }
+                },
+                connectionBuilder
+            )
+        }
 
     /**
      * Initiates the login
@@ -78,16 +106,18 @@ class PkceAuthService {
         authStateManager = AuthStateManager.getInstance(activity)
 
         // generate the url from the auth configuration
-        val generatedUri = generateUri(endpoint, globalAuthConfig.realm)
+        val generatedUri = generateUri(endpoint)
 
         withContext(Dispatchers.IO) {
             with(fetchDiscoveryFromUrl(generatedUri)) {
+
+
                 onSuccess {
 
                     // save the authorization configuration
                     authStateManager.replace(AuthState(it))
 
-                    val authRequest = generateAuthorizationRequest(it, globalAuthConfig)
+                    val authRequest = generateAuthorizationRequest(it)
                     val authIntent = generateAuthIntent(activity, authRequest)
 
                     withContext(Dispatchers.Main) {
@@ -99,14 +129,24 @@ class PkceAuthService {
         }
     }
 
-    fun generateUri(issuerUrl: String, realm: String) =
-            Uri.parse(issuerUrl).buildUpon()
-                    .appendPath(AUTH)
-                    .appendPath(REALMS)
-                    .appendPath(realm)
-                    .appendPath(WELL_KNOWN_PATH)
-                    .appendPath(OPENID_CONFIGURATION_RESOURCE)
-                    .build()
+    fun generateUri(issuerUrl: String) : Uri {
+        val builder = StringBuilder()
+        val value = issuerUrl.trim().toLowerCase(Locale.ROOT) + ":${globalAuthConfig.port}"
+
+        if (!value.toLowerCase(Locale.ROOT).startsWith("http") && !value.startsWith("https")) {
+            builder.append(if (globalAuthConfig.https) "https://" else "http://")
+        }
+
+        builder.append(value)
+
+        return Uri.parse(builder.toString()).buildUpon()
+            .appendPath(AUTH)
+            .appendPath(REALMS)
+            .appendPath(globalAuthConfig.realm)
+            .appendPath(WELL_KNOWN_PATH)
+            .appendPath(OPENID_CONFIGURATION_RESOURCE)
+            .build()
+    }
 
     /**
      * Generate an intent to start the authentication flow
@@ -116,11 +156,13 @@ class PkceAuthService {
      * @return the [Intent] used to start the authentication flow
      */
     private fun generateAuthIntent(activity: Activity, authRequest: AuthorizationRequest): Intent {
-        authService = AuthorizationService(activity,
-                AppAuthConfiguration.Builder()
-                        .setBrowserMatcher(AnyBrowserMatcher.INSTANCE)
-                        .setConnectionBuilder(connectionBuilder)
-                        .build())
+        authService = AuthorizationService(
+            activity,
+            AppAuthConfiguration.Builder()
+                .setBrowserMatcher(AnyBrowserMatcher.INSTANCE)
+                .setConnectionBuilder(connectionBuilder)
+                .build()
+        )
 
         return authService.getAuthorizationRequestIntent(authRequest)
     }
@@ -151,46 +193,49 @@ class PkceAuthService {
      * @param authorizationResponse
      */
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
-            withContext(Dispatchers.IO) {
-                suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
-                    authService.performTokenRequest(authorizationResponse.createTokenExchangeRequest(),
-                            authStateManager.current.clientAuthentication) { response: TokenResponse?, ex: AuthorizationException? ->
+        withContext(Dispatchers.IO) {
+            suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
+                authService.performTokenRequest(
+                    authorizationResponse.createTokenExchangeRequest(),
+                    authStateManager.current.clientAuthentication
+                ) { response: TokenResponse?, ex: AuthorizationException? ->
+                    authStateManager.updateAfterTokenResponse(response, ex)
 
-                        authStateManager.updateAfterTokenResponse(response, ex)
-
-                        when {
-                            response != null -> {
-                                it.resumeWith(kotlin.Result.success(Result.success(response)))
-                            }
-                            ex != null -> {
-                                it.resumeWith(kotlin.Result.success(Result.error(ex)))
-                            }
-                            else -> it.resumeWithException(Exception())
+                    when {
+                        response != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.success(response)))
                         }
+                        ex != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
+                        }
+                        else -> it.resumeWithException(Exception())
                     }
                 }
             }
+        }
 
     suspend fun refreshToken() =
-            withContext(Dispatchers.IO) {
-                suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
-                    authService.performTokenRequest(authStateManager.current.createTokenRefreshRequest(),
-                            authStateManager.current.clientAuthentication) { response: TokenResponse?, ex: AuthorizationException? ->
+        withContext(Dispatchers.IO) {
+            suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
+                authService.performTokenRequest(
+                    authStateManager.current.createTokenRefreshRequest(),
+                    authStateManager.current.clientAuthentication
+                ) { response: TokenResponse?, ex: AuthorizationException? ->
 
-                        authStateManager.updateAfterTokenResponse(response, ex)
+                    authStateManager.updateAfterTokenResponse(response, ex)
 
-                        when {
-                            response != null -> {
-                                it.resumeWith(kotlin.Result.success(Result.success(response)))
-                            }
-                            ex != null -> {
-                                it.resumeWith(kotlin.Result.success(Result.error(ex)))
-                            }
-                            else -> it.resumeWithException(Exception())
+                    when {
+                        response != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.success(response)))
                         }
+                        ex != null -> {
+                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
+                        }
+                        else -> it.resumeWithException(Exception())
                     }
                 }
             }
+        }
 
     fun signOut() {
         // discard the authorization and token state, but retain the configuration and
@@ -206,41 +251,22 @@ class PkceAuthService {
     /**
      * Generates [AuthorizationRequest] used for creating the auth flow intent
      */
-    private fun generateAuthorizationRequest(
-            serviceConfiguration: AuthorizationServiceConfiguration,
-            globalAuthConfig: GlobalAuthConfig) =
-            AuthorizationRequest.Builder(
-                    serviceConfiguration, // the authorization service configuration
-                    globalAuthConfig.clientId, // the client ID, typically pre-registered and static
-                    ResponseTypeValues.CODE, // the response_type value: we want a code
-                    Uri.parse(globalAuthConfig.redirectUrl) // the redirect URI to which the auth response is sent
-            ).build()
+    private fun generateAuthorizationRequest(serviceAuthorization: AuthorizationServiceConfiguration):
+            AuthorizationRequest {
 
-    /**
-     * Fetch an AuthorizationServiceConfiguration from an OpenID Connect issuer url.
-     * This method automatically appends the OpenID connect well-known configuration path to the
-     * url.
-     *
-     * @param openIdConnectIssuerUrl The issuer url, e.g. "https://accounts.google.com"
-     * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
-     */
-    suspend fun fetchDiscoveryFromUrl(openIdConnectIssuerUri: Uri) =
-            suspendCancellableCoroutine<Result<AuthorizationServiceConfiguration, AuthorizationException>> {
-                AuthorizationServiceConfiguration.fetchFromUrl(
-                        openIdConnectIssuerUri,
-                        AuthorizationServiceConfiguration.RetrieveConfigurationCallback { serviceConfiguration, ex ->
-                            when {
-                                ex != null -> {
-                                    it.resumeWith(kotlin.Result.success(Result.error(ex)))
-                                }
-                                serviceConfiguration != null -> {
-                                    it.resumeWith(kotlin.Result.success(Result.success(serviceConfiguration)))
-                                }
-                                else -> it.resumeWithException(Exception())
-                            }
-                        },
-                        connectionBuilder)
-            }
+        var builder = AuthorizationRequest.Builder(
+            serviceAuthorization,
+            globalAuthConfig.clientId,
+            ResponseTypeValues.CODE,
+            Uri.parse(globalAuthConfig.redirectUrl)
+        )
+
+        builder.setScope("openid")
+
+        val authRequest = builder.build()
+
+        return authRequest
+    }
 
     /**
      * @return a [ConnectionBuilder] based on the https flag. If https is required

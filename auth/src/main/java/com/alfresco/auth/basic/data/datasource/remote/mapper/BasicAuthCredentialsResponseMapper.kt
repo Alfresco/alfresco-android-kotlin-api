@@ -14,15 +14,16 @@ class BasicAuthCredentialsResponseMapper : EntityMapper<RemoteBasicAuthCredentia
     }
 
     override fun mapToEntity(dataSourceEntity: RemoteBasicAuthCredentials) =
-            dataSourceEntity.run {
-                BasicAuthCredentials(
-                        scope,
-                        token_type,
-                        `not-before-policy`,
-                        session_state,
-                        refresh_token,
-                        refresh_expires_in,
-                        expires_in,
-                        access_token)
-            }
+        dataSourceEntity.run {
+            BasicAuthCredentials(
+                scope,
+                token_type,
+                `not-before-policy`,
+                session_state,
+                refresh_token,
+                refresh_expires_in,
+                expires_in,
+                access_token
+            )
+        }
 }
