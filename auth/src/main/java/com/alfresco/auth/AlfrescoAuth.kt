@@ -32,7 +32,7 @@ object AlfrescoAuth {
         ) ?: return false
 
         val result = withContext(Dispatchers.IO) {
-            Alfresco.with(formattedEndpoint).head().response()
+            Alfresco.with(formattedEndpoint).get().response()
         }
 
         return result.isSuccess
