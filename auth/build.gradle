@@ -59,6 +59,14 @@ android {
         keepAndRename "java.nio.charset.Charsets" to "xjava.nio.charset.Charsets"
     }
 
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -70,6 +78,9 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
+    implementation "androidx.activity:activity-ktx:1.1.0-rc03"
 
     api "net.openid:appauth:0.7.1"
 
