@@ -6,6 +6,7 @@ import android.net.Uri
 import com.alfresco.auth.GlobalAuthConfig
 import com.alfresco.core.data.Result
 import com.alfresco.core.extension.isNotBlankNorEmpty
+import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -246,6 +247,25 @@ class PkceAuthService {
             clearedState.update(currentState.lastRegistrationResponse)
         }
         authStateManager.replace(clearedState)
+    }
+
+    fun getUserEmail() : String? {
+        val authState = authStateManager.current
+
+        try {
+
+            val idToken = authState.idToken
+            if(idToken != null) {
+                val decodedToken = JWT(idToken)
+
+                return decodedToken.getClaim("email").asString()
+            }
+
+            return null
+
+        } catch (ex: java.lang.Exception) {
+            return null
+        }
     }
 
     /**

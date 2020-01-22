@@ -65,7 +65,9 @@ abstract class BaseAuthViewModel : ViewModel() {
             _isLoading.value = false
 
             tokenResult.onSuccess {
-                handleSSOTokenResponse(PkceAuthUiModel(true, it.accessToken))
+
+                val userEmail = pkceAuthService.getUserEmail()
+                handleSSOTokenResponse(PkceAuthUiModel(true, accessToken = it.accessToken, userEmail = userEmail))
             }
 
             tokenResult.onError {
@@ -81,6 +83,9 @@ abstract class BaseAuthViewModel : ViewModel() {
 
 data class PkceAuthUiModel(
     val success: Boolean,
+
     val accessToken: String? = null,
+    val userEmail: String? = null,
+
     val error: String? = null
 )
