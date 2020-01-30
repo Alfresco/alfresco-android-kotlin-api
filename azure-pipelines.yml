@@ -12,10 +12,10 @@ steps:
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m --info'
+      gradleOptions: '-Xmx3072m'
       publishJUnitResults: false
       testResultsFiles: '**/TEST-*.xml'
-      tasks: 'publishLibraryPublicationToMavenRepository'
+      tasks: '--info publishLibraryPublicationToMavenRepository'
     env:
       NEXUS_USERNAME: $(nexus_username)
       NEXUS_PASSWORD: $(nexus_password)
