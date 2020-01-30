@@ -22,6 +22,6 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      contents: '**/*.apk'
+      contents: '**/*.aar'
       targetFolder: '$(build.artifactStagingDirectory)'
   - task: PublishBuildArtifacts@1
