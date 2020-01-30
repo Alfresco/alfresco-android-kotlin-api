@@ -1,10 +1,13 @@
+def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
+def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
+
 project.afterEvaluate {
     publishing {
         publications {
             library(MavenPublication) {
-                setGroupId groupId
+                setGroupId "com.alfresco.dbp.android"
                 setArtifactId artifactId
-                version android.defaultConfig.versionName
+                version android.defaultConfig.versionName+"-SNAPSHOT"
 
                 artifact bundleReleaseAar
 
@@ -42,6 +45,15 @@ project.afterEvaluate {
                             }
                         }
                     }
+                }
+            }
+        }
+        repositories {
+            maven {
+                url "https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots/"
+                credentials {
+                    username nexus_username
+                    password nexus_password
                 }
             }
         }

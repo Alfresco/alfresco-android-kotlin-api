@@ -1,0 +1,24 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'macos-latest'
+
+steps:
+  - task: Gradle@2
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      tasks: 'publishLibraryPublicationToMavenRepository'
+    env:
+      NEXUS_USERNAME: $(nexus_username)
+      NEXUS_PASSWORD: $(nexus_password)
+
+  - task: CopyFiles@2
+    inputs:
+      contents: '**/*.apk'
+      targetFolder: '$(build.artifactStagingDirectory)'
+  - task: PublishBuildArtifacts@1
