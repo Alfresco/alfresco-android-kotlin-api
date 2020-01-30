@@ -1,47 +1,36 @@
 def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
 def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
+def maven_group    = 'com.alfresco.dbp.android'
 
 project.afterEvaluate {
     publishing {
         publications {
             library(MavenPublication) {
-                setGroupId "com.alfresco.dbp.android"
+                def defaultGroupId = groupId
+                setGroupId maven_group
                 setArtifactId artifactId
-                version android.defaultConfig.versionName+"-SNAPSHOT"
+                version android.defaultConfig.versionName + "-SNAPSHOT"
 
                 artifact bundleReleaseAar
 
                 pom.withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')
-                    configurations.implementation.getDependencies().withType(ModuleDependency) { ModuleDependency dp ->
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', dp.group)
-                        dependencyNode.appendNode('artifactId', dp.name)
-                        dependencyNode.appendNode('version', dp.version)
+                    ['implementation', 'compile'].each {
+                        getConfigurations().getByName(it).allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            def dependencyGroup = dp.group == defaultGroupId ? maven_group : dp.group
+                            dependencyNode.appendNode('groupId', dependencyGroup)
+                            dependencyNode.appendNode('artifactId', dp.name)
+                            dependencyNode.appendNode('version', dp.version)
 
-                        // for exclusions
-                        if (dp.excludeRules.size() > 0) {
-                            def exclusions = dependencyNode.appendNode('exclusions')
-                            dp.excludeRules.each { ExcludeRule ex ->
-                                def exclusion = exclusions.appendNode('exclusion')
-                                exclusion.appendNode('groupId', ex.group)
-                                exclusion.appendNode('artifactId', ex.module)
-                            }
-                        }
-                    }
-                    configurations.api.getDependencies().withType(ModuleDependency) { ModuleDependency dp ->
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', dp.group)
-                        dependencyNode.appendNode('artifactId', dp.name)
-                        dependencyNode.appendNode('version', dp.version)
-
-                        // for exclusions
-                        if (dp.excludeRules.size() > 0) {
-                            def exclusions = dependencyNode.appendNode('exclusions')
-                            dp.excludeRules.each { ExcludeRule ex ->
-                                def exclusion = exclusions.appendNode('exclusion')
-                                exclusion.appendNode('groupId', ex.group)
-                                exclusion.appendNode('artifactId', ex.module)
+                            // for exclusions
+                            if (dp.excludeRules.size() > 0) {
+                                def exclusions = dependencyNode.appendNode('exclusions')
+                                dp.excludeRules.each { ExcludeRule ex ->
+                                    def exclusion = exclusions.appendNode('exclusion')
+                                    exclusion.appendNode('groupId', ex.group)
+                                    exclusion.appendNode('artifactId', ex.module)
+                                }
                             }
                         }
                     }
