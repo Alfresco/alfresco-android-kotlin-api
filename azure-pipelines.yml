@@ -4,12 +4,15 @@ trigger:
 pool:
   vmImage: 'macos-latest'
 
+variables:
+  - group: nexus-credentials
+
 steps:
   - task: Gradle@2
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
+      gradleOptions: '-Xmx3072m --info'
       publishJUnitResults: false
       testResultsFiles: '**/TEST-*.xml'
       tasks: 'publishLibraryPublicationToMavenRepository'
