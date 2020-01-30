@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.alfresco.auth">
+
+    <application>
+        <activity android:name=".saml.ui.SamlLoginActivity" />
+    </application>
+</manifest>
