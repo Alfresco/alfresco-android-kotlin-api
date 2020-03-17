@@ -3,7 +3,7 @@ package com.alfresco.auth.pkce
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import com.alfresco.auth.GlobalAuthConfig
+import com.alfresco.auth.AuthConfig
 import com.alfresco.core.data.Result
 import com.alfresco.core.extension.isNotBlankNorEmpty
 import com.auth0.android.jwt.JWT
@@ -25,7 +25,7 @@ class PkceAuthService {
     private lateinit var authService: AuthorizationService
     private lateinit var authStateManager: AuthStateManager
     private lateinit var connectionBuilder: ConnectionBuilder
-    private lateinit var globalAuthConfig: GlobalAuthConfig
+    private lateinit var authConfig: AuthConfig
 
     companion object {
 
@@ -55,13 +55,13 @@ class PkceAuthService {
         private const val OPENID_CONFIGURATION_RESOURCE = "openid-configuration"
     }
 
-    fun setGlobalAuthConfig(globalAuthConfig: GlobalAuthConfig) {
-        checkConfig(globalAuthConfig)
+    fun setGlobalAuthConfig(authConfig: AuthConfig) {
+        checkConfig(authConfig)
 
-        this.globalAuthConfig = globalAuthConfig
+        this.authConfig = authConfig
 
         // init the connection builder
-        connectionBuilder = getConnectionBuilder(globalAuthConfig.https)
+        connectionBuilder = getConnectionBuilder(authConfig.https)
     }
 
     /**
@@ -100,7 +100,7 @@ class PkceAuthService {
      */
     suspend fun initiateLogin(endpoint: String, activity: Activity, requestCode: Int) {
         // check if the config has all the necessary info
-        checkConfig(globalAuthConfig)
+        checkConfig(authConfig)
 
         require(endpoint.isNotBlankNorEmpty()) { "Discovery url is blank or empty" }
 
@@ -132,10 +132,10 @@ class PkceAuthService {
 
     fun generateUri(issuerUrl: String) : Uri {
         val builder = StringBuilder()
-        val value = issuerUrl.trim().toLowerCase(Locale.ROOT) + ":${globalAuthConfig.port}"
+        val value = issuerUrl.trim().toLowerCase(Locale.ROOT) + ":${authConfig.port}"
 
         if (!value.toLowerCase(Locale.ROOT).startsWith("http") && !value.startsWith("https")) {
-            builder.append(if (globalAuthConfig.https) "https://" else "http://")
+            builder.append(if (authConfig.https) "https://" else "http://")
         }
 
         builder.append(value)
@@ -143,7 +143,7 @@ class PkceAuthService {
         return Uri.parse(builder.toString()).buildUpon()
             .appendPath(AUTH)
             .appendPath(REALMS)
-            .appendPath(globalAuthConfig.realm)
+            .appendPath(authConfig.realm)
             .appendPath(WELL_KNOWN_PATH)
             .appendPath(OPENID_CONFIGURATION_RESOURCE)
             .build()
@@ -276,9 +276,9 @@ class PkceAuthService {
 
         var builder = AuthorizationRequest.Builder(
             serviceAuthorization,
-            globalAuthConfig.clientId,
+            authConfig.clientId,
             ResponseTypeValues.CODE,
-            Uri.parse(globalAuthConfig.redirectUrl)
+            Uri.parse(authConfig.redirectUrl)
         )
 
         builder.setScope("openid")
@@ -299,10 +299,10 @@ class PkceAuthService {
     }
 
     /**
-     * Checks if [GlobalAuthConfig] has all the necessary information
+     * Checks if [AuthConfig] has all the necessary information
      */
-    private fun checkConfig(globalAuthConfig: GlobalAuthConfig) {
-        require(globalAuthConfig.clientId.isNotBlankNorEmpty()) { "Client id is blank or empty" }
-        require(globalAuthConfig.redirectUrl.isNotBlankNorEmpty()) { "Redirect url is blank or empty" }
+    private fun checkConfig(authConfig: AuthConfig) {
+        require(authConfig.clientId.isNotBlankNorEmpty()) { "Client id is blank or empty" }
+        require(authConfig.redirectUrl.isNotBlankNorEmpty()) { "Redirect url is blank or empty" }
     }
 }

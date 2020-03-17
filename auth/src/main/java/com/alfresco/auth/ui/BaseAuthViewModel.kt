@@ -8,19 +8,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AlfrescoAuth
 import com.alfresco.auth.AuthType
-import com.alfresco.auth.GlobalAuthConfig
+import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class BaseAuthViewModel : ViewModel() {
 
-    protected abstract var globalAuthConfig: GlobalAuthConfig
+    protected abstract var authConfig: AuthConfig
 
     protected val pkceAuthService: PkceAuthService by lazy {
 
         val authService = PkceAuthService()
-        authService.setGlobalAuthConfig(globalAuthConfig)
+        authService.setGlobalAuthConfig(authConfig)
 
         authService
     }
@@ -29,15 +29,15 @@ abstract class BaseAuthViewModel : ViewModel() {
 
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun updateAuthConfig(globalAuthConfig: GlobalAuthConfig) {
-        pkceAuthService.setGlobalAuthConfig(globalAuthConfig)
+    fun updateAuthConfig(authConfig: AuthConfig) {
+        pkceAuthService.setGlobalAuthConfig(authConfig)
     }
 
     fun checkAuthType(endpoint: String) {
         _isLoading.value = true
 
         viewModelScope.launch {
-            val authType = AlfrescoAuth.getAuthType(endpoint, globalAuthConfig)
+            val authType = AlfrescoAuth.getAuthType(endpoint, authConfig)
 
             _isLoading.value = false
 

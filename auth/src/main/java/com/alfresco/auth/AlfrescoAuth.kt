@@ -13,22 +13,22 @@ import java.util.*
  */
 object AlfrescoAuth {
 
-    suspend fun getAuthType(endpoint: String, globalAuthConfig: GlobalAuthConfig): AuthType {
+    suspend fun getAuthType(endpoint: String, authConfig: AuthConfig): AuthType {
 
         return when {
 
-            isIdentityServiceType(endpoint, globalAuthConfig) -> AuthType.SSO
+            isIdentityServiceType(endpoint, authConfig) -> AuthType.SSO
 
-            isBasicType(endpoint, globalAuthConfig) -> AuthType.BASIC
+            isBasicType(endpoint, authConfig) -> AuthType.BASIC
 
             else -> AuthType.UNKNOWN
         }
     }
 
-    private suspend fun isBasicType(endpoint: String, globalAuthConfig: GlobalAuthConfig): Boolean {
+    private suspend fun isBasicType(endpoint: String, authConfig: AuthConfig): Boolean {
         val formattedEndpoint = formatEndpoint(
-            endpoint, globalAuthConfig.https, globalAuthConfig.port,
-            globalAuthConfig.serviceDocuments
+            endpoint, authConfig.https, authConfig.port,
+            authConfig.serviceDocuments
         ) ?: return false
 
         val result = withContext(Dispatchers.IO) {
@@ -38,11 +38,11 @@ object AlfrescoAuth {
         return result.isSuccess
     }
 
-    private suspend fun isIdentityServiceType(endpoint: String, globalAuthConfig: GlobalAuthConfig): Boolean {
+    private suspend fun isIdentityServiceType(endpoint: String, authConfig: AuthConfig): Boolean {
         return try {
             val pkceService = PkceAuthService()
 
-            pkceService.setGlobalAuthConfig(globalAuthConfig)
+            pkceService.setGlobalAuthConfig(authConfig)
             val generatedEndpoint = pkceService.generateUri(endpoint)
             val discoveryResult = pkceService.fetchDiscoveryFromUrl(generatedEndpoint)
 
