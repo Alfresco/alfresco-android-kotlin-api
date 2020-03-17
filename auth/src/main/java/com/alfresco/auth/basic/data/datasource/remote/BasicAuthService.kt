@@ -1,6 +1,5 @@
 package com.alfresco.auth.basic.data.datasource.remote
 
-import com.alfresco.auth.Config.GRANT_TYPE
 import com.alfresco.auth.basic.config.BasicAuthConfig
 import com.alfresco.auth.basic.data.datasource.remote.entities.RemoteBasicAuthCredentials
 import com.alfresco.auth.basic.data.entities.BasicAuthCredentials
@@ -66,5 +65,9 @@ class BasicAuthService(
                 return "http://$baseUrl/auth/realms/$realm/protocol/openid-connect/token"
             }
         }
+    }
+
+    companion object {
+        const val GRANT_TYPE = "password"
     }
 }
