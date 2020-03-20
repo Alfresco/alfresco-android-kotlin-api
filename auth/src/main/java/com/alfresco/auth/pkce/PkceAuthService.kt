@@ -1,6 +1,7 @@
 package com.alfresco.auth.pkce
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.alfresco.auth.AuthConfig
@@ -15,17 +16,33 @@ import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.util.*
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resumeWithException
 
-/**
- * Created by Bogdan Roatis on 10/3/2019.
- */
-class PkceAuthService {
+open class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
-    private lateinit var authService: AuthorizationService
-    private lateinit var authStateManager: AuthStateManager
-    private lateinit var connectionBuilder: ConnectionBuilder
-    private lateinit var authConfig: AuthConfig
+    private val context: Context
+    private val authConfig: AuthConfig
+    private val connectionBuilder: ConnectionBuilder
+    private val authService: AuthorizationService
+    private var authState: AtomicReference<AuthState>
+
+    init {
+        checkConfig(authConfig)
+        this.authState = AtomicReference()
+        this.authState.set(authState)
+        this.authConfig = authConfig
+        this.context = context
+
+        this.connectionBuilder = getConnectionBuilder(authConfig.https)
+        authService = AuthorizationService(
+            context,
+            AppAuthConfiguration.Builder()
+                .setBrowserMatcher(AnyBrowserMatcher.INSTANCE)
+                .setConnectionBuilder(connectionBuilder)
+                .build()
+        )
+    }
 
     companion object {
 
@@ -53,15 +70,6 @@ class PkceAuthService {
          * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
          */
         private const val OPENID_CONFIGURATION_RESOURCE = "openid-configuration"
-    }
-
-    fun setGlobalAuthConfig(authConfig: AuthConfig) {
-        checkConfig(authConfig)
-
-        this.authConfig = authConfig
-
-        // init the connection builder
-        connectionBuilder = getConnectionBuilder(authConfig.https)
     }
 
     /**
@@ -104,8 +112,6 @@ class PkceAuthService {
 
         require(endpoint.isNotBlankNorEmpty()) { "Discovery url is blank or empty" }
 
-        authStateManager = AuthStateManager.getInstance(activity)
-
         // generate the url from the auth configuration
         val generatedUri = generateUri(endpoint)
 
@@ -114,12 +120,11 @@ class PkceAuthService {
 
 
                 onSuccess {
-
                     // save the authorization configuration
-                    authStateManager.replace(AuthState(it))
+                    authState.set(AuthState(it))
 
                     val authRequest = generateAuthorizationRequest(it)
-                    val authIntent = generateAuthIntent(activity, authRequest)
+                    val authIntent = generateAuthIntent(authRequest)
 
                     withContext(Dispatchers.Main) {
                         activity.startActivityForResult(authIntent, requestCode)
@@ -152,19 +157,10 @@ class PkceAuthService {
     /**
      * Generate an intent to start the authentication flow
      *
-     * @param activity
      * @param authRequest
      * @return the [Intent] used to start the authentication flow
      */
-    private fun generateAuthIntent(activity: Activity, authRequest: AuthorizationRequest): Intent {
-        authService = AuthorizationService(
-            activity,
-            AppAuthConfiguration.Builder()
-                .setBrowserMatcher(AnyBrowserMatcher.INSTANCE)
-                .setConnectionBuilder(connectionBuilder)
-                .build()
-        )
-
+    private fun generateAuthIntent(authRequest: AuthorizationRequest): Intent {
         return authService.getAuthorizationRequestIntent(authRequest)
     }
 
@@ -172,11 +168,11 @@ class PkceAuthService {
      *
      * @param intent the intent received as a result from the initiation of the pkce login action
      */
-    suspend fun getAuthResponse(intent: Intent): Result<TokenResponse, AuthorizationException> {
+    suspend fun getAuthResponse(intent: Intent): Result<String, AuthorizationException> {
         val authResponse = AuthorizationResponse.fromIntent(intent)
         val exception = AuthorizationException.fromIntent(intent)
 
-        authStateManager.updateAfterAuthorization(authResponse, exception)
+        authState.get()?.update(authResponse, exception)
 
         if (authResponse != null) {
             return getToken(authResponse)
@@ -195,16 +191,16 @@ class PkceAuthService {
      */
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
         withContext(Dispatchers.IO) {
-            suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
+            suspendCancellableCoroutine<Result<String, AuthorizationException>> {
                 authService.performTokenRequest(
                     authorizationResponse.createTokenExchangeRequest(),
-                    authStateManager.current.clientAuthentication
+                    authState.get().clientAuthentication
                 ) { response: TokenResponse?, ex: AuthorizationException? ->
-                    authStateManager.updateAfterTokenResponse(response, ex)
+                    authState.get().update(response, ex)
 
                     when {
                         response != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.success(response)))
+                            it.resumeWith(kotlin.Result.success(Result.success(authState.get().jsonSerializeString())))
                         }
                         ex != null -> {
                             it.resumeWith(kotlin.Result.success(Result.error(ex)))
@@ -219,11 +215,11 @@ class PkceAuthService {
         withContext(Dispatchers.IO) {
             suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
                 authService.performTokenRequest(
-                    authStateManager.current.createTokenRefreshRequest(),
-                    authStateManager.current.clientAuthentication
+                    authState.get().createTokenRefreshRequest(),
+                    authState.get().clientAuthentication
                 ) { response: TokenResponse?, ex: AuthorizationException? ->
 
-                    authStateManager.updateAfterTokenResponse(response, ex)
+                    authState.get().update(response, ex)
 
                     when {
                         response != null -> {
@@ -241,21 +237,19 @@ class PkceAuthService {
     fun signOut() {
         // discard the authorization and token state, but retain the configuration and
         // dynamic client registration (if applicable), to save from retrieving them again.
-        val currentState = authStateManager.current
+        val currentState = authState.get()
         val clearedState = AuthState(currentState.authorizationServiceConfiguration!!)
         if (currentState.lastRegistrationResponse != null) {
             clearedState.update(currentState.lastRegistrationResponse)
         }
-        authStateManager.replace(clearedState)
+        authState.set(clearedState)
     }
 
     fun getUserEmail() : String? {
-        val authState = authStateManager.current
-
         try {
 
-            val idToken = authState.idToken
-            if(idToken != null) {
+            val idToken = authState.get().idToken
+            if (idToken != null) {
                 val decodedToken = JWT(idToken)
 
                 return decodedToken.getClaim("email").asString()
@@ -266,6 +260,10 @@ class PkceAuthService {
         } catch (ex: java.lang.Exception) {
             return null
         }
+    }
+
+    fun getAuthState() : AuthState? {
+        return authState.get()
     }
 
     /**

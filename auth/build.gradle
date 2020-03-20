@@ -76,6 +76,8 @@ dependencies {
 
     api project(':core')
 
+    implementation 'com.squareup.okhttp3:okhttp:4.1.0'
+
     implementation 'com.auth0.android:jwtdecode:1.4.0'
 
     implementation 'com.google.android.material:material:1.0.0'

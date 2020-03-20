@@ -1,12 +1,13 @@
 package com.alfresco.auth.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alfresco.auth.AlfrescoAuth
+import com.alfresco.auth.AuthService
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.pkce.PkceAuthService
@@ -15,29 +16,19 @@ import kotlinx.coroutines.launch
 
 abstract class BaseAuthViewModel : ViewModel() {
 
-    protected abstract var authConfig: AuthConfig
-
-    protected val pkceAuthService: PkceAuthService by lazy {
-
-        val authService = PkceAuthService()
-        authService.setGlobalAuthConfig(authConfig)
-
-        authService
-    }
+    protected abstract var context: Context
+    abstract var authConfig: AuthConfig
+    protected val authService by lazy { AuthService(context!!, null, authConfig) }
 
     protected val _isLoading = MutableLiveData<Boolean>()
 
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun updateAuthConfig(authConfig: AuthConfig) {
-        pkceAuthService.setGlobalAuthConfig(authConfig)
-    }
-
     fun checkAuthType(endpoint: String) {
         _isLoading.value = true
 
         viewModelScope.launch {
-            val authType = AlfrescoAuth.getAuthType(endpoint, authConfig)
+            val authType = authService.getAuthType(endpoint, authConfig)
 
             _isLoading.value = false
 
@@ -50,8 +41,7 @@ abstract class BaseAuthViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.Main) {
             try {
-                pkceAuthService.initiateLogin(endpoint, activity, requestCode)
-
+                authService.initiateLogin(endpoint, activity, requestCode)
             } catch (ex: Exception) {
             }
         }
@@ -60,14 +50,14 @@ abstract class BaseAuthViewModel : ViewModel() {
     fun handleSSOResult(intent: Intent) {
         viewModelScope.launch {
 
-            val tokenResult = pkceAuthService.getAuthResponse(intent)
+            val tokenResult = authService.getAuthResponse(intent)
 
             _isLoading.value = false
 
             tokenResult.onSuccess {
 
-                val userEmail = pkceAuthService.getUserEmail()
-                handleSSOTokenResponse(PkceAuthUiModel(true, accessToken = it.accessToken, userEmail = userEmail))
+                val userEmail = authService.getUserEmail()
+                handleSSOTokenResponse(PkceAuthUiModel(true, authState = it, userEmail = userEmail))
             }
 
             tokenResult.onError {
@@ -84,7 +74,7 @@ abstract class BaseAuthViewModel : ViewModel() {
 data class PkceAuthUiModel(
     val success: Boolean,
 
-    val accessToken: String? = null,
+    val authState: String? = null,
     val userEmail: String? = null,
 
     val error: String? = null

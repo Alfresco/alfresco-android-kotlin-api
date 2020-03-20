@@ -1,23 +1,25 @@
 package com.alfresco.auth
 
+import android.content.Context
 import com.alfresco.auth.pkce.PkceAuthService
 import com.alfresco.core.extension.isBlankOrEmpty
 import com.alfresco.core.network.Alfresco
 import com.alfresco.core.network.request.response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.openid.appauth.AuthState
 import java.util.*
 
-/**
- * Created by Bogdan Roatis on 7/23/2019.
- */
-object AlfrescoAuth {
+
+class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfig)
+    : PkceAuthService(context, authState, authConfig)
+{
 
     suspend fun getAuthType(endpoint: String, authConfig: AuthConfig): AuthType {
 
         return when {
 
-            isIdentityServiceType(endpoint, authConfig) -> AuthType.SSO
+            isIdentityServiceType(endpoint) -> AuthType.SSO
 
             isBasicType(endpoint, authConfig) -> AuthType.BASIC
 
@@ -38,13 +40,10 @@ object AlfrescoAuth {
         return result.isSuccess
     }
 
-    private suspend fun isIdentityServiceType(endpoint: String, authConfig: AuthConfig): Boolean {
+    private suspend fun isIdentityServiceType(endpoint: String): Boolean {
         return try {
-            val pkceService = PkceAuthService()
-
-            pkceService.setGlobalAuthConfig(authConfig)
-            val generatedEndpoint = pkceService.generateUri(endpoint)
-            val discoveryResult = pkceService.fetchDiscoveryFromUrl(generatedEndpoint)
+            val generatedEndpoint = generateUri(endpoint)
+            val discoveryResult = fetchDiscoveryFromUrl(generatedEndpoint)
 
             discoveryResult.isSuccess
 
