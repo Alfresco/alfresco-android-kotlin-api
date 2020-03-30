@@ -87,6 +87,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.1.0-rc03"
 
     api "net.openid:appauth:0.7.1-11-g5b56cff"
+    implementation 'androidx.browser:browser:1.2.0'
 
     testImplementation project(path: ':core', configuration: 'testImplementationDependencies')
 }
