@@ -8,11 +8,10 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONException
-import java.util.concurrent.atomic.AtomicReference
 
 class AuthInterceptor(private val context: Context, private val stateString: String, private val config: AuthConfig) : Interceptor {
 
-    private var changeListener: ChangeListener? = null
+    private var listener: Listener? = null
     private var pkceAuthService: PkceAuthService
     private var lastRefresh = 0L
 
@@ -21,15 +20,15 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
         pkceAuthService = PkceAuthService(context, state, config)
     }
 
-    fun setChangeListener(listener: ChangeListener) {
-        this.changeListener = listener
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 
     // TODO: Thread Safe
     override fun intercept(chain: Interceptor.Chain): Response {
         val state = pkceAuthService.getAuthState() ?: return chain.proceed(chain.request())
 
-        val response = chain.proceed(state.accessToken)
+        var response = chain.proceed(state.accessToken)
 
         // TODO: how about basic auth?
         if (response.code == 401) {
@@ -37,8 +36,12 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
 
             if (newState != null) {
                 response.close()
-                return chain.proceed(newState.accessToken)
+                response = chain.proceed(newState.accessToken)
             }
+        }
+
+        if (response.code in 400..403) {
+            listener?.onAuthFailure()
         }
 
         return response
@@ -58,7 +61,7 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
                 onSuccess {
                     newState = pkceAuthService.getAuthState()
                     newState?.jsonSerializeString()?.let { state ->
-                        changeListener?.onChange(state)
+                        listener?.onAuthStateChange(state)
                     }
                 }
                 onError {
@@ -83,7 +86,8 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
         private const val REFRESH_TOKEN_DELAY = 5000L
     }
 
-    interface ChangeListener {
-        fun onChange(authState: String)
+    interface Listener {
+        fun onAuthStateChange(authState: String)
+        fun onAuthFailure()
     }
 }

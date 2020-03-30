@@ -135,6 +135,18 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         }
     }
 
+    suspend fun initiateReLogin(activity: Activity, requestCode: Int) {
+        requireNotNull(authState.get())
+
+        withContext(Dispatchers.IO) {
+            val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+            val authIntent = generateAuthIntent(authRequest)
+            withContext(Dispatchers.Main) {
+                activity.startActivityForResult(authIntent, requestCode)
+            }
+        }
+    }
+
     fun generateUri(issuerUrl: String) : Uri {
         val builder = StringBuilder()
         val value = issuerUrl.trim().toLowerCase(Locale.ROOT) + ":${authConfig.port}"
