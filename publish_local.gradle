@@ -3,6 +3,11 @@ def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
 def maven_group    = 'com.alfresco.dbp.android'
 
 project.afterEvaluate {
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier "sources"
+    }
+
     publishing {
         publications {
             library(MavenPublication) {
@@ -12,6 +17,7 @@ project.afterEvaluate {
                 version android.defaultConfig.versionName + "-SNAPSHOT"
 
                 artifact bundleReleaseAar
+                artifact sourcesJar
 
                 pom.withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')
