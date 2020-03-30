@@ -18,6 +18,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         mavenLocal()
         google()
         jcenter()

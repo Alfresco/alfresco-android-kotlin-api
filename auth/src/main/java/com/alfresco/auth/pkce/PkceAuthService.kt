@@ -234,15 +234,14 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
             }
         }
 
-    fun signOut() {
-        // discard the authorization and token state, but retain the configuration and
-        // dynamic client registration (if applicable), to save from retrieving them again.
-        val currentState = authState.get()
-        val clearedState = AuthState(currentState.authorizationServiceConfiguration!!)
-        if (currentState.lastRegistrationResponse != null) {
-            clearedState.update(currentState.lastRegistrationResponse)
+    suspend fun endSession(activity: Activity, requestCode: Int) {
+        withContext(Dispatchers.IO) {
+            val request = makeEndSessionRequest(authState.get().authorizationServiceConfiguration!!)
+            val intent = authService.getEndSessionRequestIntent(request)
+            withContext(Dispatchers.Main) {
+                activity.startActivityForResult(intent, requestCode)
+            }
         }
-        authState.set(clearedState)
     }
 
     fun getUserEmail() : String? {
@@ -284,6 +283,14 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         val authRequest = builder.build()
 
         return authRequest
+    }
+
+    private fun makeEndSessionRequest(serviceAuthorization: AuthorizationServiceConfiguration): EndSessionRequest {
+        return EndSessionRequest.Builder(
+            serviceAuthorization,
+            authState.get().idToken!!,
+            Uri.parse(authConfig.redirectUrl))
+            .build()
     }
 
     /**
