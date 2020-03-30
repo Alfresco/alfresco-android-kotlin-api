@@ -1,5 +1,8 @@
 package com.alfresco.auth
 
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+
 data class AuthConfig(
     /**
      * Defines if the connection should be https or not
@@ -31,4 +34,18 @@ data class AuthConfig(
      * Url path for service documents
      */
     var serviceDocuments: String
-)
+) {
+    fun jsonSerialize(): String {
+        return Gson().toJson(this)
+    }
+
+    companion object {
+        fun jsonDeserialize(str: String): AuthConfig? {
+            return try {
+                Gson().fromJson(str, AuthConfig::class.java)
+            } catch (ex: JsonParseException) {
+                null
+            }
+        }
+    }
+}
