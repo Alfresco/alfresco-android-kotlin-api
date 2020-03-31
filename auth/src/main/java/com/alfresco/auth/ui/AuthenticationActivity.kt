@@ -25,10 +25,12 @@ abstract class AuthenticationViewModel : ViewModel() {
 
     protected val authService by lazy { AuthService(context!!, null, authConfig) }
     protected val _isLoading = MutableLiveData<Boolean>()
+    protected val _onAuthType = MutableLiveEvent<AuthType>()
     protected val _onCredentials = MutableLiveEvent<Credentials>()
     protected val _onError = MutableLiveEvent<String>()
 
     val isLoading: LiveData<Boolean> get() = _isLoading
+    val onAuthType: LiveEvent<AuthType> get() = _onAuthType
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
 
@@ -40,8 +42,7 @@ abstract class AuthenticationViewModel : ViewModel() {
             val authType = authService.getAuthType(endpoint, authConfig)
 
             _isLoading.value = false
-
-            handleAuthType(endpoint, authType)
+            _onAuthType.value = authType
         }
     }
 
@@ -85,6 +86,7 @@ abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppComp
         super.onCreate(savedInstanceState)
 
         observe(viewModel.isLoading, ::onLoading)
+        observe(viewModel.onAuthType, ::onAuthType)
         observe(viewModel.onCredentials, ::onCredentials)
         observe(viewModel.onError, ::onError)
     }
@@ -104,6 +106,9 @@ abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppComp
     }
 
     protected open fun onLoading(isLoading: Boolean) {
+    }
+
+    protected open fun onAuthType(type: AuthType) {
     }
 
     abstract fun onCredentials(credentials: Credentials)
