@@ -37,12 +37,12 @@ class MutableLiveEvent<T> : LiveEvent<T>() {
     }
 
     @MainThread
-    public override fun setValue(value: T) {
+    public override fun setValue(value: T?) {
         mPending.set(true)
         super.setValue(value)
     }
 
-    public override fun postValue(value: T) {
+    public override fun postValue(value: T?) {
         super.postValue(value)
     }
 
@@ -51,7 +51,7 @@ class MutableLiveEvent<T> : LiveEvent<T>() {
      */
     @MainThread
     fun call() {
-        super.setValue(null)
+        value = null
     }
 
     companion object {

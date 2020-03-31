@@ -55,11 +55,11 @@ open class ReAuthenticateViewModel(context: Context, authState: String, authConf
 
             tokenResult.onSuccess {
                 val userEmail = authService.getUserEmail() ?: ""
-                _onCredentials.setValue(Credentials.Sso(userEmail, it))
+                _onCredentials.value = Credentials.Sso(userEmail, it)
             }
 
             tokenResult.onError {
-                _onError.setValue(it.message ?: "")
+                _onError.value = it.message ?: ""
             }
         }
     }
