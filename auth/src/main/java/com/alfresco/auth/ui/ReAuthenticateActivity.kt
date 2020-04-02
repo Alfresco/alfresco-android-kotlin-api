@@ -3,6 +3,7 @@ package com.alfresco.auth.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -68,14 +69,20 @@ open class ReAuthenticateViewModel(context: Context, authState: String, authConf
 abstract class ReAuthenticateActivity<out T : ReAuthenticateViewModel> : AppCompatActivity() {
     protected abstract val viewModel: T
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         observe(viewModel.isLoading, ::onLoading)
         observe(viewModel.onCredentials, ::onCredentials)
         observe(viewModel.onError, ::onError)
+    }
 
-        viewModel.begin(this, REQUEST_CODE_RE_AUTHENTICATE)
+    override fun onStart() {
+        super.onStart()
+
+        if (viewModel.isLoading.value != true) {
+            viewModel.begin(this, REQUEST_CODE_RE_AUTHENTICATE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,6 +92,7 @@ abstract class ReAuthenticateActivity<out T : ReAuthenticateViewModel> : AppComp
             resultCode == Activity.RESULT_OK) {
             data?.let { viewModel.handleActivityResult(data) }
         } else {
+            setResult(Activity.RESULT_CANCELED)
             finish()
         }
     }
