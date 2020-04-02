@@ -30,26 +30,18 @@ abstract class AuthenticationViewModel : ViewModel() {
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
 
-    val isLoading = MutableLiveData<Boolean>()
-
     protected fun initServiceWith(authConfig: AuthConfig) {
         authService = AuthService(context, null, authConfig)
     }
 
     fun checkAuthType(endpoint: String) {
-        isLoading.value = true
-
         viewModelScope.launch {
             val authType = authService.getAuthType(endpoint)
-
-            isLoading.value = false
             _onAuthType.value = authType
         }
     }
 
     fun login(endpoint: String, activity: Activity, requestCode: Int) {
-        isLoading.value = true
-
         viewModelScope.launch(Dispatchers.Main) {
             try {
                 authService.initiateLogin(endpoint, activity, requestCode)
@@ -62,8 +54,6 @@ abstract class AuthenticationViewModel : ViewModel() {
         viewModelScope.launch {
 
             val tokenResult = authService.getAuthResponse(intent)
-
-            isLoading.value = false
 
             tokenResult.onSuccess {
                 val userEmail = authService.getUserEmail() ?: ""
@@ -86,7 +76,6 @@ abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppComp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        observe(viewModel.isLoading, ::onLoading)
         observe(viewModel.onAuthType, ::onAuthType)
         observe(viewModel.onCredentials, ::onCredentials)
         observe(viewModel.onError, ::onError)
@@ -104,9 +93,6 @@ abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppComp
 
     fun login(endpoint: String) {
         viewModel.login(endpoint, this, REQUEST_CODE_AUTHENTICATE)
-    }
-
-    protected open fun onLoading(isLoading: Boolean) {
     }
 
     protected open fun onAuthType(type: AuthType) {
