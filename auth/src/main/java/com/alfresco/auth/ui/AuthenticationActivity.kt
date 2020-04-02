@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,34 +22,33 @@ abstract class AuthenticationViewModel : ViewModel() {
     protected abstract var context: Context
     protected lateinit var authService: AuthService
 
-    protected val _isLoading = MutableLiveData<Boolean>()
     protected val _onAuthType = MutableLiveEvent<AuthType>()
     protected val _onCredentials = MutableLiveEvent<Credentials>()
     protected val _onError = MutableLiveEvent<String>()
 
-    val isLoading: LiveData<Boolean> get() = _isLoading
     val onAuthType: LiveEvent<AuthType> get() = _onAuthType
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
+
+    val isLoading = MutableLiveData<Boolean>()
 
     protected fun initServiceWith(authConfig: AuthConfig) {
         authService = AuthService(context, null, authConfig)
     }
 
     fun checkAuthType(endpoint: String) {
-        _isLoading.value = true
+        isLoading.value = true
 
         viewModelScope.launch {
-            // TODO: AuthConfig ? saving?
             val authType = authService.getAuthType(endpoint)
 
-            _isLoading.value = false
+            isLoading.value = false
             _onAuthType.value = authType
         }
     }
 
     fun login(endpoint: String, activity: Activity, requestCode: Int) {
-        _isLoading.value = true
+        isLoading.value = true
 
         viewModelScope.launch(Dispatchers.Main) {
             try {
@@ -65,7 +63,7 @@ abstract class AuthenticationViewModel : ViewModel() {
 
             val tokenResult = authService.getAuthResponse(intent)
 
-            _isLoading.value = false
+            isLoading.value = false
 
             tokenResult.onSuccess {
                 val userEmail = authService.getUserEmail() ?: ""
