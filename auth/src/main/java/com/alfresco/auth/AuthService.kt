@@ -2,12 +2,14 @@ package com.alfresco.auth
 
 import android.content.Context
 import com.alfresco.auth.pkce.PkceAuthService
+import com.alfresco.core.data.Result
 import com.alfresco.core.extension.isBlankOrEmpty
 import com.alfresco.core.network.Alfresco
 import com.alfresco.core.network.request.response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.openid.appauth.AuthState
+import java.lang.IllegalArgumentException
 import java.util.*
 
 
@@ -34,7 +36,11 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
         ) ?: return false
 
         val result = withContext(Dispatchers.IO) {
-            Alfresco.with(formattedEndpoint).get().response()
+            try {
+                Alfresco.with(formattedEndpoint).get().response()
+            } catch (e: Exception) {
+                Result.Error(IllegalArgumentException())
+            }
         }
 
         return result.isSuccess
