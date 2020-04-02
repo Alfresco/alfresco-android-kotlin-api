@@ -21,9 +21,8 @@ import kotlinx.coroutines.launch
 abstract class AuthenticationViewModel : ViewModel() {
 
     protected abstract var context: Context
-    abstract var authConfig: AuthConfig
+    protected lateinit var authService: AuthService
 
-    protected val authService by lazy { AuthService(context!!, null, authConfig) }
     protected val _isLoading = MutableLiveData<Boolean>()
     protected val _onAuthType = MutableLiveEvent<AuthType>()
     protected val _onCredentials = MutableLiveEvent<Credentials>()
@@ -34,12 +33,16 @@ abstract class AuthenticationViewModel : ViewModel() {
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
 
+    protected fun initServiceWith(authConfig: AuthConfig) {
+        authService = AuthService(context, null, authConfig)
+    }
+
     fun checkAuthType(endpoint: String) {
         _isLoading.value = true
 
         viewModelScope.launch {
             // TODO: AuthConfig ? saving?
-            val authType = authService.getAuthType(endpoint, authConfig)
+            val authType = authService.getAuthType(endpoint)
 
             _isLoading.value = false
             _onAuthType.value = authType

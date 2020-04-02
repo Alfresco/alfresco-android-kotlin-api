@@ -15,19 +15,19 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
     : PkceAuthService(context, authState, authConfig)
 {
 
-    suspend fun getAuthType(endpoint: String, authConfig: AuthConfig): AuthType {
+    suspend fun getAuthType(endpoint: String): AuthType {
 
         return when {
 
             isIdentityServiceType(endpoint) -> AuthType.SSO
 
-            isBasicType(endpoint, authConfig) -> AuthType.BASIC
+            isBasicType(endpoint) -> AuthType.BASIC
 
             else -> AuthType.UNKNOWN
         }
     }
 
-    private suspend fun isBasicType(endpoint: String, authConfig: AuthConfig): Boolean {
+    private suspend fun isBasicType(endpoint: String): Boolean {
         val formattedEndpoint = formatEndpoint(
             endpoint, authConfig.https, authConfig.port,
             authConfig.serviceDocuments

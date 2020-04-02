@@ -21,8 +21,9 @@ import kotlin.coroutines.resumeWithException
 
 open class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
-    private val context: Context
-    private val authConfig: AuthConfig
+    protected val context: Context
+    protected val authConfig: AuthConfig
+
     private val connectionBuilder: ConnectionBuilder
     private val authService: AuthorizationService
     private var authState: AtomicReference<AuthState>
