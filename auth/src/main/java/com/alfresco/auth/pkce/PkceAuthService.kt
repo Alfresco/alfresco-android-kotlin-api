@@ -26,7 +26,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
 
     private val connectionBuilder: ConnectionBuilder
     private val authService: AuthorizationService
-    private var authState: AtomicReference<AuthState>
+    protected var authState: AtomicReference<AuthState>
 
     init {
         checkConfig(authConfig)
@@ -43,34 +43,6 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
                 .setConnectionBuilder(connectionBuilder)
                 .build()
         )
-    }
-
-    companion object {
-
-        /**
-         * The standard base path for auth
-         */
-        private const val AUTH = "auth"
-
-        /**
-         * The standard base path for realms
-         */
-        private const val REALMS = "realms"
-
-        /**
-         * The standard base path for well-known resources on domains.
-         *
-         * @see "Defining Well-Known Uniform Resource Identifiers
-         */
-        private const val WELL_KNOWN_PATH = ".well-known"
-
-        /**
-         * The standard resource under [.well-known][.WELL_KNOWN_PATH] at which an OpenID Connect
-         * discovery document can be found under an issuer's base URI.
-         *
-         * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
-         */
-        private const val OPENID_CONFIGURATION_RESOURCE = "openid-configuration"
     }
 
     /**
@@ -101,23 +73,16 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         }
 
     /**
-     * Initiates the login
-     *
-     * @param activity
-     * @param requestCode
-     * @param pkceAuthConfig
+     * Initiates the login in [activity] with activity result [requestCode]
      */
     suspend fun initiateLogin(endpoint: String, activity: Activity, requestCode: Int) {
-        // check if the config has all the necessary info
-        checkConfig(authConfig)
+        require(endpoint.isNotBlankNorEmpty()) { "Identity url is blank or empty" }
 
-        require(endpoint.isNotBlankNorEmpty()) { "Discovery url is blank or empty" }
-
-        // generate the url from the auth configuration
-        val generatedUri = generateUri(endpoint)
+        // build discovery url using auth configuration
+        val discoveryUri = discoveryUriWith(endpoint, authConfig)
 
         withContext(Dispatchers.IO) {
-            with(fetchDiscoveryFromUrl(generatedUri)) {
+            with(fetchDiscoveryFromUrl(discoveryUri)) {
 
 
                 onSuccess {
@@ -146,25 +111,6 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
                 activity.startActivityForResult(authIntent, requestCode)
             }
         }
-    }
-
-    fun generateUri(issuerUrl: String) : Uri {
-        val builder = StringBuilder()
-        val value = issuerUrl.trim().toLowerCase(Locale.ROOT) + ":${authConfig.port}"
-
-        if (!value.toLowerCase(Locale.ROOT).startsWith("http") && !value.startsWith("https")) {
-            builder.append(if (authConfig.https) "https://" else "http://")
-        }
-
-        builder.append(value)
-
-        return Uri.parse(builder.toString()).buildUpon()
-            .appendPath(AUTH)
-            .appendPath(REALMS)
-            .appendPath(authConfig.realm)
-            .appendPath(WELL_KNOWN_PATH)
-            .appendPath(OPENID_CONFIGURATION_RESOURCE)
-            .build()
     }
 
     /**
@@ -326,5 +272,59 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         require(authConfig.realm.isNotBlankNorEmpty()) { "Realm is blank or empty" }
         require(authConfig.clientId.isNotBlankNorEmpty()) { "Client id is blank or empty" }
         require(authConfig.redirectUrl.isNotBlankNorEmpty()) { "Redirect url is blank or empty" }
+    }
+
+    companion object {
+
+        /**
+         * The standard base path for auth
+         */
+        private const val AUTH = "auth"
+
+        /**
+         * The standard base path for realms
+         */
+        private const val REALMS = "realms"
+
+        /**
+         * The standard base path for well-known resources on domains.
+         *
+         * @see "Defining Well-Known Uniform Resource Identifiers
+         */
+        private const val WELL_KNOWN_PATH = ".well-known"
+
+        /**
+         * The standard resource under [.well-known][.WELL_KNOWN_PATH] at which an OpenID Connect
+         * discovery document can be found under an issuer's base URI.
+         *
+         * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
+         */
+        private const val OPENID_CONFIGURATION_RESOURCE = "openid-configuration"
+
+        fun endpointWith(endpoint: String, config: AuthConfig): Uri {
+            val uri = Uri.parse(endpoint.trim().toLowerCase(Locale.ROOT))
+            var uriBuilder = uri.buildUpon()
+
+            if (uri.scheme == null) {
+                uriBuilder = uriBuilder.scheme(if (config.https) "https" else "http")
+            }
+
+            if (uri.port == -1 && ((config.https && config.port != "443") || (!config.https && config.port != "80"))) {
+                uriBuilder = uriBuilder.authority(uri.authority + ":${config.port}")
+            }
+
+            return uriBuilder.build()
+        }
+
+        fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
+            return endpointWith(endpoint, config)
+                .buildUpon()
+                .appendPath(AUTH)
+                .appendPath(REALMS)
+                .appendPath(config.realm)
+                .appendPath(WELL_KNOWN_PATH)
+                .appendPath(OPENID_CONFIGURATION_RESOURCE)
+                .build()
+        }
     }
 }

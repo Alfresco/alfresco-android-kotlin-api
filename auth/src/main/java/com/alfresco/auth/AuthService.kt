@@ -1,6 +1,7 @@
 package com.alfresco.auth
 
 import android.content.Context
+import android.net.Uri
 import com.alfresco.auth.pkce.PkceAuthService
 import com.alfresco.core.data.Result
 import com.alfresco.core.extension.isBlankOrEmpty
@@ -30,14 +31,11 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
     }
 
     private suspend fun isBasicType(endpoint: String): Boolean {
-        val formattedEndpoint = formatEndpoint(
-            endpoint, authConfig.https, authConfig.port,
-            authConfig.serviceDocuments
-        ) ?: return false
+        val uri = serviceDocumentsEndpoint(endpoint).toString()
 
         val result = withContext(Dispatchers.IO) {
             try {
-                Alfresco.with(formattedEndpoint).get().response()
+                Alfresco.with(uri).head().response()
             } catch (e: Exception) {
                 Result.Error(IllegalArgumentException())
             }
@@ -48,9 +46,8 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
 
     private suspend fun isIdentityServiceType(endpoint: String): Boolean {
         return try {
-            val generatedEndpoint = generateUri(endpoint)
-            val discoveryResult = fetchDiscoveryFromUrl(generatedEndpoint)
-
+            val discoveryUri = discoveryUriWith(endpoint, authConfig)
+            val discoveryResult = fetchDiscoveryFromUrl(discoveryUri)
             discoveryResult.isSuccess
 
         } catch (exception: Exception) {
@@ -58,28 +55,10 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
         }
     }
 
-    fun formatEndpoint(endpoint: String?, https: Boolean, port: String?, serviceDocument: String?): String? {
-        if (endpoint == null || endpoint.isBlankOrEmpty()) {
-            return null
-        }
-
-        val value = endpoint.trim().toLowerCase(Locale.ROOT) +
-                (if (port != null && !port.isBlankOrEmpty()) ":$port" else "")
-
-        val builder = StringBuilder()
-
-        // Check if starts with http ?
-        if (!value.toLowerCase(Locale.ROOT).startsWith("http") && !value.startsWith("https")) {
-            builder.append(if (https) "https://" else "http://")
-        }
-
-        builder.append(value)
-        builder.append(if (value.endsWith("/")) "" else "/")
-
-        if (serviceDocument != null && !serviceDocument.isBlankOrEmpty()) {
-            builder.append("$serviceDocument/")
-        }
-
-        return builder.toString()
+    fun serviceDocumentsEndpoint(endpoint: String): Uri {
+        return endpointWith(endpoint, authConfig)
+            .buildUpon()
+            .appendPath(authConfig.serviceDocuments)
+            .build()
     }
 }

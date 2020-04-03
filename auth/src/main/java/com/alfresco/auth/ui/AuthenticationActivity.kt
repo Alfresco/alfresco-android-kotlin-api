@@ -50,6 +50,7 @@ abstract class AuthenticationViewModel : ViewModel() {
             try {
                 authService.initiateLogin(endpoint, activity, requestCode)
             } catch (ex: Exception) {
+                _onError.value = ex.message
             }
         }
     }
