@@ -318,8 +318,12 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
 
     /**
      * Checks if [AuthConfig] has all the necessary information
+     * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
+        requireNotNull(authConfig.port.toIntOrNull()) { "Invalid port or empty" }
+        require(authConfig.serviceDocuments.isNotBlankNorEmpty()) { "Service documents is blank or empty" }
+        require(authConfig.realm.isNotBlankNorEmpty()) { "Realm is blank or empty" }
         require(authConfig.clientId.isNotBlankNorEmpty()) { "Client id is blank or empty" }
         require(authConfig.redirectUrl.isNotBlankNorEmpty()) { "Redirect url is blank or empty" }
     }

@@ -30,6 +30,10 @@ abstract class AuthenticationViewModel : ViewModel() {
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
 
+    /**
+     * Recreates [authService] with provided [AuthConfig]
+     * @throws [IllegalArgumentException]
+     */
     protected fun initServiceWith(authConfig: AuthConfig) {
         authService = AuthService(context, null, authConfig)
     }
