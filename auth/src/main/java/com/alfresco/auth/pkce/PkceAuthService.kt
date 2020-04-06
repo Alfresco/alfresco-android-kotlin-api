@@ -299,10 +299,18 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
          * If the [endpoint] contains either schema or port that will override [config] information.
          */
         fun endpointWith(endpoint: String, config: AuthConfig): Uri {
-            val uri = Uri.parse(endpoint.trim().toLowerCase(Locale.ROOT))
+            val src = endpoint.trim().toLowerCase(Locale.ROOT)
+
+            var uri = Uri.parse(src)
             var uriBuilder = uri.buildUpon()
 
-            if (uri.scheme == null) {
+            // e.g. hostname:port is not hierarchical
+            if (!uri.isHierarchical) {
+                uriBuilder = Uri.Builder().encodedAuthority(src)
+                uri = uriBuilder.build()
+            }
+
+            if (uri.scheme == null || (uri.scheme != "http" && uri.scheme != "https")) {
                 uriBuilder = uriBuilder.scheme(if (config.https) "https" else "http")
             }
 
