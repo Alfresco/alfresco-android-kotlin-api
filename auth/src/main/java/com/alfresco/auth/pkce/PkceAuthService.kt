@@ -305,7 +305,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
             var uriBuilder = uri.buildUpon()
 
             // e.g. hostname:port is not hierarchical
-            if (!uri.isHierarchical) {
+            if (!uri.isHierarchical || uri.isRelative || uri.authority == null) {
                 uriBuilder = Uri.Builder().encodedAuthority(src)
                 uri = uriBuilder.build()
             }
@@ -315,7 +315,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
             }
 
             if (uri.port == -1 && ((config.https && config.port != "443") || (!config.https && config.port != "80"))) {
-                uriBuilder = uriBuilder.authority(uri.authority + ":${config.port}")
+                uriBuilder = uriBuilder.encodedAuthority(uri.authority + ":${config.port}")
             }
 
             return uriBuilder.build()
