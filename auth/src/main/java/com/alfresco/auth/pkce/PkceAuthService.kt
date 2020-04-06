@@ -14,7 +14,6 @@ import kotlinx.coroutines.withContext
 import net.openid.appauth.*
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
-import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resumeWithException
@@ -35,7 +34,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         this.authConfig = authConfig
         this.context = context
 
-        this.connectionBuilder = getConnectionBuilder(authConfig.https)
+        this.connectionBuilder = getConnectionBuilder()
         authService = AuthorizationService(
             context,
             AppAuthConfiguration.Builder()
@@ -252,14 +251,8 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
             .build()
     }
 
-    /**
-     * @return a [ConnectionBuilder] based on the https flag. If https is required
-     * [DefaultConnectionBuilder] will be returned
-     * otherwise a [ConnectionBuilderForTesting] will be returned
-     */
-    private fun getConnectionBuilder(https: Boolean): ConnectionBuilder {
-        return if (https) DefaultConnectionBuilder.INSTANCE
-        else ConnectionBuilderForTesting.INSTANCE
+    private fun getConnectionBuilder(): PkceConnectionBuilder {
+        return PkceConnectionBuilder.INSTANCE
     }
 
     /**
@@ -301,6 +294,10 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
          */
         private const val OPENID_CONFIGURATION_RESOURCE = "openid-configuration"
 
+        /**
+         * Creates an [endpoint] uri using [config].
+         * If the [endpoint] contains either schema or port that will override [config] information.
+         */
         fun endpointWith(endpoint: String, config: AuthConfig): Uri {
             val uri = Uri.parse(endpoint.trim().toLowerCase(Locale.ROOT))
             var uriBuilder = uri.buildUpon()
