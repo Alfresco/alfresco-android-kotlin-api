@@ -47,10 +47,8 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
         }
 
         // If still error notify listener of failure
-        when(response.code) {
-            HTTP_RESPONSE_400_BAD_REQUEST,
-            HTTP_RESPONSE_401_UNAUTHORIZED,
-            HTTP_RESPONSE_403_FORBIDDEN -> listener?.onAuthFailure()
+        if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
+            listener?.onAuthFailure()
         }
 
         return response
@@ -132,10 +130,7 @@ class AuthInterceptor(private val context: Context, private val stateString: Str
             .apply { header("Authorization", "Bearer $token") }
 
     companion object {
-        private const val HTTP_RESPONSE_400_BAD_REQUEST = 400
         private const val HTTP_RESPONSE_401_UNAUTHORIZED = 401
-        private const val HTTP_RESPONSE_403_FORBIDDEN = 403
-
         private const val REFRESH_THROTTLE_DELAY = 15000L
         private const val REFRESH_DELTA_BEFORE_EXPIRY = 20000L
     }
