@@ -35,7 +35,7 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
 
         val result = withContext(Dispatchers.IO) {
             try {
-                Alfresco.with(uri).head().response()
+                Alfresco.with(uri).get().response()
             } catch (e: Exception) {
                 Result.Error(IllegalArgumentException())
             }
