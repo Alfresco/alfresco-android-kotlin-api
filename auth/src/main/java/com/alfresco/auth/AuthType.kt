@@ -1,22 +1,24 @@
 package com.alfresco.auth
 
-/**
- * Created by Bogdan Roatis on 7/31/2019.
- */
-enum class AuthType {
+enum class AuthType(val value: String) {
 
     /**
      * Used to specify the need of basic auth with username and password
      */
-    BASIC,
+    BASIC("basic"),
 
     /**
      * Used to specify the need of SSO auth
      */
-    SSO,
+    PKCE("pkce"),
 
     /**
      * Used to specify that the auth type is unknown
      */
-    UNKNOWN
+    UNKNOWN("");
+
+    companion object {
+        private val map = values().associateBy(AuthType::value)
+        fun fromValue(value: String) = map[value]
+    }
 }

@@ -4,25 +4,20 @@ import android.content.Context
 import android.net.Uri
 import com.alfresco.auth.pkce.PkceAuthService
 import com.alfresco.core.data.Result
-import com.alfresco.core.extension.isBlankOrEmpty
 import com.alfresco.core.network.Alfresco
 import com.alfresco.core.network.request.response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.openid.appauth.AuthState
 import java.lang.IllegalArgumentException
-import java.util.*
 
-
-class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfig)
-    : PkceAuthService(context, authState, authConfig)
+class DiscoveryService(val context: Context, val authConfig: AuthConfig)
 {
 
     suspend fun getAuthType(endpoint: String): AuthType {
 
         return when {
 
-            isIdentityServiceType(endpoint) -> AuthType.SSO
+            isPkceType(endpoint) -> AuthType.PKCE
 
             isBasicType(endpoint) -> AuthType.BASIC
 
@@ -44,19 +39,19 @@ class AuthService(context: Context, authState: AuthState?, authConfig: AuthConfi
         return result.isSuccess
     }
 
-    private suspend fun isIdentityServiceType(endpoint: String): Boolean {
+    private suspend fun isPkceType(endpoint: String): Boolean {
+        val uri = PkceAuthService.discoveryUriWith(endpoint, authConfig)
+        val authService = PkceAuthService(context, null, authConfig)
         return try {
-            val discoveryUri = discoveryUriWith(endpoint, authConfig)
-            val discoveryResult = fetchDiscoveryFromUrl(discoveryUri)
+            val discoveryResult = authService.fetchDiscoveryFromUrl(uri)
             discoveryResult.isSuccess
-
         } catch (exception: Exception) {
             false
         }
     }
 
     fun serviceDocumentsEndpoint(endpoint: String): Uri {
-        return endpointWith(endpoint, authConfig)
+        return PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
             .appendPath(authConfig.serviceDocuments)
             .build()

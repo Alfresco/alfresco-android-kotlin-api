@@ -20,9 +20,7 @@ import kotlin.coroutines.resumeWithException
 
 open class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
-    protected val context: Context
     protected val authConfig: AuthConfig
-
     private val connectionBuilder: ConnectionBuilder
     private val authService: AuthorizationService
     protected var authState: AtomicReference<AuthState>
@@ -32,7 +30,6 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         this.authState = AtomicReference()
         this.authState.set(authState)
         this.authConfig = authConfig
-        this.context = context
 
         this.connectionBuilder = getConnectionBuilder()
         authService = AuthorizationService(
@@ -76,6 +73,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
      */
     suspend fun initiateLogin(endpoint: String, activity: Activity, requestCode: Int) {
         require(endpoint.isNotBlankNorEmpty()) { "Identity url is blank or empty" }
+        checkConfig(authConfig)
 
         // build discovery url using auth configuration
         val discoveryUri = discoveryUriWith(endpoint, authConfig)

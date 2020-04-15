@@ -7,18 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.AuthService
+import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthState
 import org.json.JSONException
 
 open class EndSessionViewModel(context: Context, authState: String, authConfig: AuthConfig) : ViewModel() {
-    private val authService: AuthService
+    private val authService: PkceAuthService
 
     init {
         val state = try { AuthState.jsonDeserialize(authState) } catch (ex: JSONException) { null }
-        authService = AuthService(context, state, authConfig)
+        authService = PkceAuthService(context, state, authConfig)
     }
 
     fun logout(activity: Activity, requestCode: Int) {
@@ -44,7 +44,7 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
                 finish()
             } else {
                 // TODO: Test result
-                setResult(RESULT_OK)
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         } else {

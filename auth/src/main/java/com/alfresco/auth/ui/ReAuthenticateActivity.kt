@@ -10,8 +10,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.AuthService
+import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
+import com.alfresco.auth.pkce.PkceAuthService
 import com.alfresco.core.data.LiveEvent
 import com.alfresco.core.data.MutableLiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ import net.openid.appauth.AuthState
 import org.json.JSONException
 
 open class ReAuthenticateViewModel(context: Context, authState: String, authConfig: AuthConfig) : ViewModel() {
-    private val authService: AuthService
+    private val authService: PkceAuthService
     protected val _isLoading = MutableLiveData<Boolean>()
     protected val _onCredentials = MutableLiveEvent<Credentials>()
     protected val _onError = MutableLiveEvent<String>()
@@ -35,7 +36,7 @@ open class ReAuthenticateViewModel(context: Context, authState: String, authConf
         } catch (ex: JSONException) {
             null
         }
-        authService = AuthService(context, state, authConfig)
+        authService = PkceAuthService(context, state, authConfig)
     }
 
     fun begin(activity: Activity, requestCode: Int) {
@@ -56,7 +57,7 @@ open class ReAuthenticateViewModel(context: Context, authState: String, authConf
 
             tokenResult.onSuccess {
                 val userEmail = authService.getUserEmail() ?: ""
-                _onCredentials.value = Credentials.Sso(userEmail, it)
+                _onCredentials.value = Credentials(userEmail, it, AuthType.PKCE.value)
             }
 
             tokenResult.onError {
