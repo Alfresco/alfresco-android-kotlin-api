@@ -53,7 +53,7 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
             val response = chain.proceed(AuthType.BASIC, credentials)
 
             // When unauthorized notify of failure
-            if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) { //|| response.code == 400) {
+            if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
                 listener?.onAuthFailure(accountId)
             }
 
@@ -66,6 +66,7 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
         private val pkceAuthService: PkceAuthService
         private var lastRefresh = 0L
         private var scheduledRefreshJob: Job? = null
+        private var expirationTime: Long = 0L
 
         init {
             val state = try { AuthState.jsonDeserialize(stateString) } catch (ex: JSONException) { null }
@@ -142,12 +143,17 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
 
             val delta = expiration - System.currentTimeMillis() - REFRESH_DELTA_BEFORE_EXPIRY
             if (delta < 0) return
+            if (expirationTime != expiration) {
+                expirationTime = expiration
 
-            cancelScheduledTokenRefresh()
-            val weakThis = WeakReference(this)
-            scheduledRefreshJob = localScope.launch {
-                delay(delta)
-                weakThis.get()?.refreshTokenNow()
+                cancelScheduledTokenRefresh()
+                val weakThis = WeakReference(this)
+                scheduledRefreshJob = localScope.launch {
+                    delay(delta)
+                    if (isActive) {
+                        weakThis.get()?.refreshTokenNow()
+                    }
+                }
             }
         }
 
