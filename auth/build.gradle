@@ -14,7 +14,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 2
-        versionName "0.3"
+        versionName "0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -96,4 +96,4 @@ repositories {
     mavenCentral()
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../config/publish.gradle'

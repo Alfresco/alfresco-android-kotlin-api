@@ -72,4 +72,4 @@ dependencies {
 
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../config/publish.gradle'
