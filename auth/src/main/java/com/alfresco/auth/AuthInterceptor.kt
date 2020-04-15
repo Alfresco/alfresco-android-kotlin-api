@@ -33,17 +33,27 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
         this.listener = listener
     }
 
+    fun finish() {
+        this.provider.finish()
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response = provider.intercept(chain)
 
     private interface Provider {
 
         fun intercept(chain: Interceptor.Chain): Response
+
+        fun finish()
     }
 
     private inner class PlainProvider() : Provider {
 
         override fun intercept(chain: Interceptor.Chain): Response {
             return chain.proceed(chain.request())
+        }
+
+        override fun finish() {
+            // no-op
         }
     }
 
@@ -58,6 +68,10 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
             }
 
             return response
+        }
+
+        override fun finish() {
+            // no-op
         }
     }
 
@@ -76,6 +90,11 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
             requireNotNull(config)
 
             pkceAuthService = PkceAuthService(context, state, config)
+        }
+
+        @Synchronized override fun finish() {
+            cancelScheduledTokenRefresh()
+            localScope.coroutineContext.cancelChildren()
         }
 
         override fun intercept(chain: Interceptor.Chain): Response {
