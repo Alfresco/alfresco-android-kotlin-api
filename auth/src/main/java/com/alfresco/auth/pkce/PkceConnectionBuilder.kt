@@ -30,8 +30,8 @@ class PkceConnectionBuilder private constructor()// no need to construct new ins
     companion object {
         val INSTANCE = PkceConnectionBuilder()
 
-        private val CONNECTION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(15).toInt()
-        private val READ_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(10).toInt()
+        private val CONNECTION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(30).toInt()
+        private val READ_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(15).toInt()
 
         private const val HTTP_SCHEME = "http"
         private const val HTTPS_SCHEME = "https"
