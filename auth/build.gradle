@@ -7,7 +7,7 @@ apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
 
     defaultConfig {
@@ -17,7 +17,6 @@ android {
         versionName "0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -80,11 +79,10 @@ dependencies {
 
     implementation 'com.auth0.android:jwtdecode:1.4.0'
 
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
-    implementation "androidx.activity:activity-ktx:1.1.0-rc03"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.activity:activity-ktx:1.1.0'
 
     api "net.openid:appauth:0.7.1-11-g5b56cff"
     implementation 'androidx.browser:browser:1.2.0'
