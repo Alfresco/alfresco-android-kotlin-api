@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath "com.yelp.codegen:plugin:1.4.1"
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
+apply plugin: "com.yelp.codegen.plugin"
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "0.1"
+    }
+
+    sourceSets['main'].java.srcDir('src/main/kotlin')
+}
+
+generateSwagger {
+    platform = "kotlin-coroutines"
+    packageName = "com.alfresco.content"
+    inputFile = file("./definitions/merged.yaml")
+    outputDir = file("./src/main/kotlin/")
+    features {
+        headersToRemove = ["X-Operation-ID"]
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Moshi + OkHttp + Retrofit
+    implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
+    implementation "com.squareup.moshi:moshi-adapters:1.9.2"
+    implementation "com.squareup.retrofit2:retrofit:2.7.2"
+    implementation "com.squareup.retrofit2:converter-moshi:2.7.1"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
+
+    // Date Support
+    implementation "com.jakewharton.threetenabp:threetenabp:1.2.2"
+
+    // Testing Dependencies
+    testImplementation 'junit:junit:4.12'
+}
+
+apply from: '../config/publish.gradle'
