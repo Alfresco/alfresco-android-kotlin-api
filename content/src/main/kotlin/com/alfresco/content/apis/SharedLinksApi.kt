@@ -35,7 +35,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("shared-links")
+    @POST("alfresco/versions/1/shared-links")
     suspend fun createSharedLink(
         @retrofit2.http.Body sharedLinkBodyCreate: SharedLinkBodyCreate,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -50,7 +50,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("shared-links/{sharedId}")
+    @DELETE("alfresco/versions/1/shared-links/{sharedId}")
     suspend fun deleteSharedLink(
         @retrofit2.http.Path("sharedId") sharedId: String
     ): Unit
@@ -64,7 +64,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("shared-links/{sharedId}/email")
+    @POST("alfresco/versions/1/shared-links/{sharedId}/email")
     suspend fun emailSharedLink(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Body sharedLinkBodyEmail: SharedLinkBodyEmail
@@ -79,7 +79,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links/{sharedId}")
+    @GET("alfresco/versions/1/shared-links/{sharedId}")
     suspend fun getSharedLink(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -96,7 +96,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links/{sharedId}/content")
+    @GET("alfresco/versions/1/shared-links/{sharedId}/content")
     suspend fun getSharedLinkContent(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Query("attachment") attachment: Boolean?,
@@ -113,7 +113,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links/{sharedId}/renditions/{renditionId}")
+    @GET("alfresco/versions/1/shared-links/{sharedId}/renditions/{renditionId}")
     suspend fun getSharedLinkRendition(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Path("renditionId") renditionId: String
@@ -131,7 +131,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links/{sharedId}/renditions/{renditionId}/content")
+    @GET("alfresco/versions/1/shared-links/{sharedId}/renditions/{renditionId}/content")
     suspend fun getSharedLinkRenditionContent(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
@@ -148,7 +148,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links/{sharedId}/renditions")
+    @GET("alfresco/versions/1/shared-links/{sharedId}/renditions")
     suspend fun listSharedLinkRenditions(
         @retrofit2.http.Path("sharedId") sharedId: String
     ): RenditionPaging
@@ -165,7 +165,7 @@ interface SharedLinksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("shared-links")
+    @GET("alfresco/versions/1/shared-links")
     suspend fun listSharedLinks(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,

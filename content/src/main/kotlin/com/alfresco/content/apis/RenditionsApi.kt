@@ -29,7 +29,7 @@ interface RenditionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/renditions")
+    @POST("alfresco/versions/1/nodes/{nodeId}/renditions")
     suspend fun createRendition(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body renditionBodyCreate: RenditionBodyCreate
@@ -44,7 +44,7 @@ interface RenditionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/renditions/{renditionId}")
+    @GET("alfresco/versions/1/nodes/{nodeId}/renditions/{renditionId}")
     suspend fun getRendition(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String
@@ -63,7 +63,7 @@ interface RenditionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/renditions/{renditionId}/content")
+    @GET("alfresco/versions/1/nodes/{nodeId}/renditions/{renditionId}/content")
     suspend fun getRenditionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
@@ -82,7 +82,7 @@ interface RenditionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/renditions")
+    @GET("alfresco/versions/1/nodes/{nodeId}/renditions")
     suspend fun listRenditions(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?

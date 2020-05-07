@@ -31,7 +31,7 @@ interface VersionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/versions/{versionId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/versions/{versionId}")
     suspend fun deleteVersion(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String
@@ -46,7 +46,7 @@ interface VersionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/versions/{versionId}")
+    @GET("alfresco/versions/1/nodes/{nodeId}/versions/{versionId}")
     suspend fun getVersion(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String
@@ -64,7 +64,7 @@ interface VersionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/versions/{versionId}/content")
+    @GET("alfresco/versions/1/nodes/{nodeId}/versions/{versionId}/content")
     suspend fun getVersionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String,
@@ -85,7 +85,7 @@ interface VersionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/versions")
+    @GET("alfresco/versions/1/nodes/{nodeId}/versions")
     suspend fun listVersionHistory(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -105,7 +105,7 @@ interface VersionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/versions/{versionId}/revert")
+    @POST("alfresco/versions/1/nodes/{nodeId}/versions/{versionId}/revert")
     suspend fun revertVersion(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String,

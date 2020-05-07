@@ -34,7 +34,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people/{personId}/favorites")
+    @POST("alfresco/versions/1/people/{personId}/favorites")
     suspend fun createFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body favoriteBodyCreate: FavoriteBodyCreate,
@@ -52,7 +52,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people/{personId}/favorite-sites")
+    @POST("alfresco/versions/1/people/{personId}/favorite-sites")
     @Deprecated(message = "Deprecated")
     suspend fun createSiteFavorite(
         @retrofit2.http.Path("personId") personId: String,
@@ -69,7 +69,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("people/{personId}/favorites/{favoriteId}")
+    @DELETE("alfresco/versions/1/people/{personId}/favorites/{favoriteId}")
     suspend fun deleteFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("favoriteId") favoriteId: String
@@ -84,7 +84,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("people/{personId}/favorite-sites/{siteId}")
+    @DELETE("alfresco/versions/1/people/{personId}/favorite-sites/{siteId}")
     @Deprecated(message = "Deprecated")
     suspend fun deleteSiteFavorite(
         @retrofit2.http.Path("personId") personId: String,
@@ -102,7 +102,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/favorites/{favoriteId}")
+    @GET("alfresco/versions/1/people/{personId}/favorites/{favoriteId}")
     suspend fun getFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("favoriteId") favoriteId: String,
@@ -120,7 +120,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/favorite-sites/{siteId}")
+    @GET("alfresco/versions/1/people/{personId}/favorite-sites/{siteId}")
     @Deprecated(message = "Deprecated")
     suspend fun getFavoriteSite(
         @retrofit2.http.Path("personId") personId: String,
@@ -139,7 +139,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/favorite-sites")
+    @GET("alfresco/versions/1/people/{personId}/favorite-sites")
     @Deprecated(message = "Deprecated")
     suspend fun listFavoriteSitesForPerson(
         @retrofit2.http.Path("personId") personId: String,
@@ -162,7 +162,7 @@ interface FavoritesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/favorites")
+    @GET("alfresco/versions/1/people/{personId}/favorites")
     suspend fun listFavorites(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,

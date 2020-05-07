@@ -43,7 +43,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/copy")
+    @POST("alfresco/versions/1/nodes/{nodeId}/copy")
     suspend fun copyNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyCopy: NodeBodyCopy,
@@ -61,7 +61,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/targets")
+    @POST("alfresco/versions/1/nodes/{nodeId}/targets")
     suspend fun createAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body associationBodyCreate: AssociationBody,
@@ -80,7 +80,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/children")
+    @POST("alfresco/versions/1/nodes/{nodeId}/children")
     suspend fun createNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyCreate: NodeBodyCreate,
@@ -99,7 +99,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/secondary-children")
+    @POST("alfresco/versions/1/nodes/{nodeId}/secondary-children")
     suspend fun createSecondaryChildAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body secondaryChildAssociationBodyCreate: ChildAssociationBody,
@@ -116,7 +116,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/targets/{targetId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/targets/{targetId}")
     suspend fun deleteAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("targetId") targetId: String,
@@ -132,7 +132,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}")
     suspend fun deleteNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("permanent") permanent: Boolean?
@@ -148,7 +148,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/secondary-children/{childId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/secondary-children/{childId}")
     suspend fun deleteSecondaryChildAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("childId") childId: String,
@@ -166,7 +166,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}")
+    @GET("alfresco/versions/1/nodes/{nodeId}")
     suspend fun getNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -185,7 +185,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/content")
+    @GET("alfresco/versions/1/nodes/{nodeId}/content")
     suspend fun getNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("attachment") attachment: Boolean?,
@@ -209,7 +209,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/children")
+    @GET("alfresco/versions/1/nodes/{nodeId}/children")
     suspend fun listNodeChildren(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -236,7 +236,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/parents")
+    @GET("alfresco/versions/1/nodes/{nodeId}/parents")
     suspend fun listParents(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?,
@@ -261,7 +261,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/secondary-children")
+    @GET("alfresco/versions/1/nodes/{nodeId}/secondary-children")
     suspend fun listSecondaryChildren(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?,
@@ -283,7 +283,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/sources")
+    @GET("alfresco/versions/1/nodes/{nodeId}/sources")
     suspend fun listSourceAssociations(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?,
@@ -302,7 +302,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/targets")
+    @GET("alfresco/versions/1/nodes/{nodeId}/targets")
     suspend fun listTargetAssociations(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?,
@@ -321,7 +321,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/lock")
+    @POST("alfresco/versions/1/nodes/{nodeId}/lock")
     suspend fun lockNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyLock: NodeBodyLock,
@@ -340,7 +340,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/move")
+    @POST("alfresco/versions/1/nodes/{nodeId}/move")
     suspend fun moveNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyMove: NodeBodyMove,
@@ -358,7 +358,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/unlock")
+    @POST("alfresco/versions/1/nodes/{nodeId}/unlock")
     suspend fun unlockNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -376,7 +376,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("nodes/{nodeId}")
+    @PUT("alfresco/versions/1/nodes/{nodeId}")
     suspend fun updateNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyUpdate: NodeBodyUpdate,
@@ -398,7 +398,7 @@ interface NodesApi {
     @Headers(
         "Content-Type: application/octet-stream"
     )
-    @PUT("nodes/{nodeId}/content")
+    @PUT("alfresco/versions/1/nodes/{nodeId}/content")
     suspend fun updateNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body contentBodyUpdate: List<Byte>,

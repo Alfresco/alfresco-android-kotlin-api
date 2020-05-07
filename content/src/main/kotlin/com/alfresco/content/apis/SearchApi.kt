@@ -23,7 +23,7 @@ interface SearchApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("search")
+    @POST("search/versions/1/search")
     suspend fun search(
         @retrofit2.http.Body queryBody: SearchRequest
     ): ResultSetPaging

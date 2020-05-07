@@ -13,10 +13,14 @@ import com.squareup.moshi.JsonClass
  * @property id
  * @property name
  * @property isEnabled
+ * @property maxEntryId
+ * @property minEntryId
  */
 @JsonClass(generateAdapter = true)
 data class AuditApp(
     @Json(name = "id") @field:Json(name = "id") var id: String,
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
-    @Json(name = "isEnabled") @field:Json(name = "isEnabled") var isEnabled: Boolean? = null
+    @Json(name = "isEnabled") @field:Json(name = "isEnabled") var isEnabled: Boolean? = null,
+    @Json(name = "maxEntryId") @field:Json(name = "maxEntryId") var maxEntryId: Int? = null,
+    @Json(name = "minEntryId") @field:Json(name = "minEntryId") var minEntryId: Int? = null
 )

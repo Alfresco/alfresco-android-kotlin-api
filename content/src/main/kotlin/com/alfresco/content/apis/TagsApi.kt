@@ -30,7 +30,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/tags")
+    @POST("alfresco/versions/1/nodes/{nodeId}/tags")
     suspend fun createTagForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body tagBodyCreate: TagBody,
@@ -46,7 +46,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/tags/{tagId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/tags/{tagId}")
     suspend fun deleteTagFromNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("tagId") tagId: String
@@ -61,7 +61,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("tags/{tagId}")
+    @GET("alfresco/versions/1/tags/{tagId}")
     suspend fun getTag(
         @retrofit2.http.Path("tagId") tagId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -78,7 +78,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("tags")
+    @GET("alfresco/versions/1/tags")
     suspend fun listTags(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -97,7 +97,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/tags")
+    @GET("alfresco/versions/1/nodes/{nodeId}/tags")
     suspend fun listTagsForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -115,7 +115,7 @@ interface TagsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("tags/{tagId}")
+    @PUT("alfresco/versions/1/tags/{tagId}")
     suspend fun updateTag(
         @retrofit2.http.Path("tagId") tagId: String,
         @retrofit2.http.Body tagBodyUpdate: TagBody,

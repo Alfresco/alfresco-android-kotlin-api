@@ -26,7 +26,7 @@ interface DownloadsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("downloads/{downloadId}")
+    @DELETE("alfresco/versions/1/downloads/{downloadId}")
     suspend fun cancelDownload(
         @retrofit2.http.Path("downloadId") downloadId: String
     ): Unit
@@ -40,7 +40,7 @@ interface DownloadsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("downloads")
+    @POST("alfresco/versions/1/downloads")
     suspend fun createDownload(
         @retrofit2.http.Body downloadBodyCreate: DownloadBodyCreate,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -55,7 +55,7 @@ interface DownloadsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("downloads/{downloadId}")
+    @GET("alfresco/versions/1/downloads/{downloadId}")
     suspend fun getDownload(
         @retrofit2.http.Path("downloadId") downloadId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?

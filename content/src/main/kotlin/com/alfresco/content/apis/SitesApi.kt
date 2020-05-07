@@ -46,7 +46,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("sites/{siteId}/site-membership-requests/{inviteeId}/approve")
+    @POST("alfresco/versions/1/sites/{siteId}/site-membership-requests/{inviteeId}/approve")
     suspend fun approveSiteMembershipRequest(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("inviteeId") inviteeId: String,
@@ -64,7 +64,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("sites")
+    @POST("alfresco/versions/1/sites")
     suspend fun createSite(
         @retrofit2.http.Body siteBodyCreate: SiteBodyCreate,
         @retrofit2.http.Query("skipConfiguration") skipConfiguration: Boolean?,
@@ -82,7 +82,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("sites/{siteId}/members")
+    @POST("alfresco/versions/1/sites/{siteId}/members")
     suspend fun createSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Body siteMembershipBodyCreate: SiteMembershipBodyCreate,
@@ -99,7 +99,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people/{personId}/site-membership-requests")
+    @POST("alfresco/versions/1/people/{personId}/site-membership-requests")
     suspend fun createSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body siteMembershipRequestBodyCreate: SiteMembershipRequestBodyCreate,
@@ -115,7 +115,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("sites/{siteId}")
+    @DELETE("alfresco/versions/1/sites/{siteId}")
     suspend fun deleteSite(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("permanent") permanent: Boolean?
@@ -130,7 +130,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("sites/{siteId}/members/{personId}")
+    @DELETE("alfresco/versions/1/sites/{siteId}/members/{personId}")
     suspend fun deleteSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("personId") personId: String
@@ -145,7 +145,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("people/{personId}/sites/{siteId}")
+    @DELETE("alfresco/versions/1/people/{personId}/sites/{siteId}")
     suspend fun deleteSiteMembershipForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String
@@ -160,7 +160,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("people/{personId}/site-membership-requests/{siteId}")
+    @DELETE("alfresco/versions/1/people/{personId}/site-membership-requests/{siteId}")
     suspend fun deleteSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String
@@ -176,7 +176,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites/{siteId}")
+    @GET("alfresco/versions/1/sites/{siteId}")
     suspend fun getSite(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("relations") @CSV relations: List<String>?,
@@ -193,7 +193,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites/{siteId}/containers/{containerId}")
+    @GET("alfresco/versions/1/sites/{siteId}/containers/{containerId}")
     suspend fun getSiteContainer(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("containerId") containerId: String,
@@ -210,7 +210,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites/{siteId}/members/{personId}")
+    @GET("alfresco/versions/1/sites/{siteId}/members/{personId}")
     suspend fun getSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("personId") personId: String,
@@ -226,7 +226,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/sites/{siteId}")
+    @GET("alfresco/versions/1/people/{personId}/sites/{siteId}")
     suspend fun getSiteMembershipForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String
@@ -242,7 +242,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/site-membership-requests/{siteId}")
+    @GET("alfresco/versions/1/people/{personId}/site-membership-requests/{siteId}")
     suspend fun getSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String,
@@ -260,7 +260,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("site-membership-requests")
+    @GET("alfresco/versions/1/site-membership-requests")
     suspend fun getSiteMembershipRequests(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -279,7 +279,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites/{siteId}/containers")
+    @GET("alfresco/versions/1/sites/{siteId}/containers")
     suspend fun listSiteContainers(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -298,7 +298,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/site-membership-requests")
+    @GET("alfresco/versions/1/people/{personId}/site-membership-requests")
     suspend fun listSiteMembershipRequestsForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -317,7 +317,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites/{siteId}/members")
+    @GET("alfresco/versions/1/sites/{siteId}/members")
     suspend fun listSiteMemberships(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -339,7 +339,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/sites")
+    @GET("alfresco/versions/1/people/{personId}/sites")
     suspend fun listSiteMembershipsForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -363,7 +363,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("sites")
+    @GET("alfresco/versions/1/sites")
     suspend fun listSites(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -383,7 +383,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("sites/{siteId}/site-membership-requests/{inviteeId}/reject")
+    @POST("alfresco/versions/1/sites/{siteId}/site-membership-requests/{inviteeId}/reject")
     suspend fun rejectSiteMembershipRequest(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("inviteeId") inviteeId: String,
@@ -400,7 +400,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("sites/{siteId}")
+    @PUT("alfresco/versions/1/sites/{siteId}")
     suspend fun updateSite(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Body siteBodyUpdate: SiteBodyUpdate,
@@ -418,7 +418,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("sites/{siteId}/members/{personId}")
+    @PUT("alfresco/versions/1/sites/{siteId}/members/{personId}")
     suspend fun updateSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("personId") personId: String,
@@ -437,7 +437,7 @@ interface SitesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("people/{personId}/site-membership-requests/{siteId}")
+    @PUT("alfresco/versions/1/people/{personId}/site-membership-requests/{siteId}")
     suspend fun updateSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String,

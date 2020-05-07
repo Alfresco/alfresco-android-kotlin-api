@@ -27,7 +27,7 @@ interface ActionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("action-definitions/{actionDefinitionId}")
+    @GET("alfresco/versions/1/action-definitions/{actionDefinitionId}")
     suspend fun actionDetails(
         @retrofit2.http.Path("actionDefinitionId") actionDefinitionId: String
     ): ActionDefinitionEntry
@@ -40,7 +40,7 @@ interface ActionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("action-executions")
+    @POST("alfresco/versions/1/action-executions")
     suspend fun actionExec(
         @retrofit2.http.Body actionBodyExec: ActionBodyExec
     ): ActionExecResultEntry
@@ -56,7 +56,7 @@ interface ActionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("action-definitions")
+    @GET("alfresco/versions/1/action-definitions")
     suspend fun listActions(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -76,7 +76,7 @@ interface ActionsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/action-definitions")
+    @GET("alfresco/versions/1/nodes/{nodeId}/action-definitions")
     suspend fun nodeActions(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,

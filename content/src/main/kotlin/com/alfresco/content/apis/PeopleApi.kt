@@ -35,7 +35,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people")
+    @POST("alfresco/versions/1/people")
     suspend fun createPerson(
         @retrofit2.http.Body personBodyCreate: PersonBodyCreate,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -49,7 +49,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("people/{personId}/avatar")
+    @DELETE("alfresco/versions/1/people/{personId}/avatar")
     suspend fun deleteAvatarImage(
         @retrofit2.http.Path("personId") personId: String
     ): Unit
@@ -65,7 +65,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/avatar")
+    @GET("alfresco/versions/1/people/{personId}/avatar")
     suspend fun getAvatarImage(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("attachment") attachment: Boolean?,
@@ -82,7 +82,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}")
+    @GET("alfresco/versions/1/people/{personId}")
     suspend fun getPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -100,7 +100,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people")
+    @GET("alfresco/versions/1/people")
     suspend fun listPeople(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -118,7 +118,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people/{personId}/request-password-reset")
+    @POST("alfresco/versions/1/people/{personId}/request-password-reset")
     suspend fun requestPasswordReset(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body clientBody: ClientBody
@@ -133,7 +133,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("people/{personId}/reset-password")
+    @POST("alfresco/versions/1/people/{personId}/reset-password")
     suspend fun resetPassword(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body passwordResetBody: PasswordResetBody
@@ -148,7 +148,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/octet-stream"
     )
-    @PUT("people/{personId}/avatar")
+    @PUT("alfresco/versions/1/people/{personId}/avatar")
     suspend fun updateAvatarImage(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body contentBodyUpdate: List<Byte>
@@ -164,7 +164,7 @@ interface PeopleApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("people/{personId}")
+    @PUT("alfresco/versions/1/people/{personId}")
     suspend fun updatePerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body personBodyUpdate: PersonBodyUpdate,

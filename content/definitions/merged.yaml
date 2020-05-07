@@ -6,7 +6,7 @@ info:
     Provides access to the core features of Alfresco Content Services.
   version: '1'
   title: Alfresco Content Services REST API
-basePath: /alfresco/api/-default-/public/alfresco/versions/1
+basePath: /alfresco/api/-default-/public
 securityDefinitions:
   basicAuth:
     type: basic
@@ -448,6 +448,18 @@ parameters:
     description: The identifier of an audit application.
     required: true
     type: string
+  auditApplicationIncludeParam:
+    name: include
+    in: query
+    description: |
+      Also include the current minimum and/or maximum audit entry ids for the application. The following optional fields can be requested:
+      * max
+      * min
+    required: false
+    type: array
+    items:
+      type: string
+    collectionFormat: csv 
   auditEntryIdParam:
     name: auditEntryId
     in: path
@@ -466,7 +478,113 @@ parameters:
       type: string
     collectionFormat: csv    
 paths:
-  '/search':
+  '/authentication/versions/1/tickets':
+    post:
+      x-alfresco-since: "5.2"
+      tags:
+        - authentication
+      summary: Create ticket (login)
+      description: |
+        **Note:** this endpoint is available in Alfresco 5.2 and newer versions.
+
+        Logs in and returns the new authentication ticket.
+
+        The userId and password properties are mandatory in the request body. For example:
+        ```JSON
+        {
+            "userId": "jbloggs",
+            "password": "password"
+        }
+        ```
+        To use the ticket in future requests you should pass it in the request header.
+        For example using Javascript:
+          ```Javascript
+            request.setRequestHeader ("Authorization", "Basic " + btoa(ticket));
+          ```
+      operationId: createTicket
+      parameters:
+        - in: body
+          name: ticketBodyCreate
+          description: The user credential.
+          required: true
+          schema:
+            $ref: '#/definitions/TicketBody'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/TicketEntry'
+        '400':
+          description: |
+            **userId** or **password** is not provided
+        '403':
+          description: Login failed
+        '501':
+          description: SAML is enabled and enforced
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/authentication/versions/1/tickets/-me-':
+    get:
+      x-alfresco-since: "5.2"
+      tags:
+        - authentication
+      summary: Validate ticket
+      description: |
+        **Note:** this endpoint is available in Alfresco 5.2 and newer versions.
+
+        Validates the specified ticket (derived from Authorization header) is still valid.
+
+        For example, you can pass the Authorization request header using Javascript:
+          ```Javascript
+            request.setRequestHeader ("Authorization", "Basic " + btoa(ticket));
+          ```
+      operationId: validateTicket
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ValidTicketEntry'
+        '400':
+          description: URL path does not include **-me-** or the ticket is not provided by the Authorization header
+        '401':
+          description: Authentication failed
+        '404':
+          description: The request is authorized correctly but the status of the user (of the supplied ticket) has
+            changed (for example, the user is locked or the account is disabled) or the ticket has expired
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      x-alfresco-since: "5.2"
+      tags:
+        - authentication
+      summary: Delete ticket (logout)
+      description: |
+        **Note:** this endpoint is available in Alfresco 5.2 and newer versions.
+
+        Deletes logged in ticket (logout).
+      operationId: deleteTicket
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: URL path does not include **-me-** or the ticket is not provided by the Authorization header
+        '404':
+          description: Status of the user has changed (for example, the user is locked or the account is disabled) or the ticket has expired
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/search/versions/1/search':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -804,7 +922,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/comments':
+  '/alfresco/versions/1/nodes/{nodeId}/comments':
     get:
       tags:
         - comments
@@ -927,7 +1045,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/comments/{commentId}':
+  '/alfresco/versions/1/nodes/{nodeId}/comments/{commentId}':
     put:
       tags:
         - comments
@@ -996,7 +1114,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/ratings':
+  '/alfresco/versions/1/nodes/{nodeId}/ratings':
     get:
       tags:
         - ratings
@@ -1073,7 +1191,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/ratings/{ratingId}':
+  '/alfresco/versions/1/nodes/{nodeId}/ratings/{ratingId}':
     get:
       tags:
         - ratings
@@ -1129,7 +1247,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/tags':
+  '/alfresco/versions/1/nodes/{nodeId}/tags':
     get:
       tags:
         - tags
@@ -1248,7 +1366,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/tags/{tagId}':
+  '/alfresco/versions/1/nodes/{nodeId}/tags/{tagId}':
     delete:
       tags:
         - tags
@@ -1274,7 +1392,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}':
+  '/alfresco/versions/1/nodes/{nodeId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -1471,7 +1589,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/children':
+  '/alfresco/versions/1/nodes/{nodeId}/children':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -1824,7 +1942,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/copy':
+  '/alfresco/versions/1/nodes/{nodeId}/copy':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -1878,7 +1996,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/lock':
+  '/alfresco/versions/1/nodes/{nodeId}/lock':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -1951,7 +2069,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/unlock':
+  '/alfresco/versions/1/nodes/{nodeId}/unlock':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -1998,7 +2116,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/move':
+  '/alfresco/versions/1/nodes/{nodeId}/move':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -2055,7 +2173,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/content':
+  '/alfresco/versions/1/nodes/{nodeId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2187,7 +2305,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/renditions':
+  '/alfresco/versions/1/nodes/{nodeId}/renditions':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -2290,7 +2408,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/renditions/{renditionId}':
+  '/alfresco/versions/1/nodes/{nodeId}/renditions/{renditionId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2323,7 +2441,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/renditions/{renditionId}/content':
+  '/alfresco/versions/1/nodes/{nodeId}/renditions/{renditionId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2376,7 +2494,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/secondary-children':
+  '/alfresco/versions/1/nodes/{nodeId}/secondary-children':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -2509,7 +2627,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/secondary-children/{childId}':
+  '/alfresco/versions/1/nodes/{nodeId}/secondary-children/{childId}':
     delete:
       x-alfresco-since: "5.2"
       tags:
@@ -2555,7 +2673,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'              
-  '/nodes/{nodeId}/parents':
+  '/alfresco/versions/1/nodes/{nodeId}/parents':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2607,7 +2725,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'     
-  '/nodes/{nodeId}/targets':
+  '/alfresco/versions/1/nodes/{nodeId}/targets':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -2737,7 +2855,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'            
-  '/nodes/{nodeId}/targets/{targetId}':
+  '/alfresco/versions/1/nodes/{nodeId}/targets/{targetId}':
     delete:
       x-alfresco-since: "5.2"
       tags:
@@ -2784,7 +2902,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/sources':
+  '/alfresco/versions/1/nodes/{nodeId}/sources':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2827,7 +2945,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/versions':
+  '/alfresco/versions/1/nodes/{nodeId}/versions':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2867,7 +2985,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'  
-  '/nodes/{nodeId}/versions/{versionId}':
+  '/alfresco/versions/1/nodes/{nodeId}/versions/{versionId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2944,7 +3062,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'        
-  '/nodes/{nodeId}/versions/{versionId}/content':
+  '/alfresco/versions/1/nodes/{nodeId}/versions/{versionId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -2988,7 +3106,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/versions/{versionId}/revert':
+  '/alfresco/versions/1/nodes/{nodeId}/versions/{versionId}/revert':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -3037,7 +3155,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/action-definitions':
+  '/alfresco/versions/1/nodes/{nodeId}/action-definitions':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -3408,7 +3526,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/downloads':
+  '/alfresco/versions/1/downloads':
     post:
       x-alfresco-since: "5.2.1"
       tags:
@@ -3458,7 +3576,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  '/downloads/{downloadId}':
+  '/alfresco/versions/1/downloads/{downloadId}':
     get:
       x-alfresco-since: "5.2.1"
       tags:
@@ -3526,7 +3644,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people':
+  '/alfresco/versions/1/people':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -3630,7 +3748,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}':
+  '/alfresco/versions/1/people/{personId}':
     get:
       tags:
         - people
@@ -3726,7 +3844,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'            
-  '/people/{personId}/activities':
+  '/alfresco/versions/1/people/{personId}/activities':
     get:
       tags:
         - activities
@@ -3773,7 +3891,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/favorite-sites':
+  '/alfresco/versions/1/people/{personId}/favorite-sites':
     get:
       deprecated: true
       tags:
@@ -3900,7 +4018,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/favorite-sites/{siteId}':
+  '/alfresco/versions/1/people/{personId}/favorite-sites/{siteId}':
     get:
       deprecated: true
       tags:
@@ -3968,7 +4086,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/favorites':
+  '/alfresco/versions/1/people/{personId}/favorites':
     get:
       tags:
         - favorites
@@ -4145,7 +4263,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/favorites/{favoriteId}':
+  '/alfresco/versions/1/people/{personId}/favorites/{favoriteId}':
     get:
       tags:
         - favorites
@@ -4202,7 +4320,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/networks':
+  '/alfresco/versions/1/people/{personId}/networks':
     get:
       tags:
         - networks
@@ -4236,7 +4354,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/networks/{networkId}':
+  '/alfresco/versions/1/people/{personId}/networks/{networkId}':
     get:
       tags:
         - networks
@@ -4266,7 +4384,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/preferences':
+  '/alfresco/versions/1/people/{personId}/preferences':
     get:
       tags:
         - preferences
@@ -4305,7 +4423,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/preferences/{preferenceName}':
+  '/alfresco/versions/1/people/{personId}/preferences/{preferenceName}':
     get:
       tags:
         - preferences
@@ -4341,7 +4459,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/site-membership-requests':
+  '/alfresco/versions/1/people/{personId}/site-membership-requests':
     get:
       tags:
         - sites
@@ -4463,7 +4581,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/site-membership-requests/{siteId}':
+  '/alfresco/versions/1/people/{personId}/site-membership-requests/{siteId}':
     get:
       tags:
         - sites
@@ -4560,7 +4678,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/sites':
+  '/alfresco/versions/1/people/{personId}/sites':
     get:
       tags:
         - sites
@@ -4619,7 +4737,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/sites/{siteId}':
+  '/alfresco/versions/1/people/{personId}/sites/{siteId}':
     get:
       tags:
         - sites
@@ -4674,7 +4792,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/groups':
+  '/alfresco/versions/1/people/{personId}/groups':
     get:
       x-alfresco-since: "5.2.1"
       tags:
@@ -4748,7 +4866,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/people/{personId}/request-password-reset':
+  '/alfresco/versions/1/people/{personId}/request-password-reset':
     post:
       x-alfresco-since: "5.2.1"
       tags:
@@ -4791,7 +4909,7 @@ paths:
         '404':
           description: |
             **client** is not registered
-  '/people/{personId}/reset-password':
+  '/alfresco/versions/1/people/{personId}/reset-password':
     post:
       x-alfresco-since: "5.2.1"
       tags:
@@ -4831,7 +4949,7 @@ paths:
         '400':
           description: |
             Invalid parameter: Value of **password**, **id** or **key** is invalid
-  '/people/{personId}/avatar':
+  '/alfresco/versions/1/people/{personId}/avatar':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -4963,7 +5081,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /sites:
+  '/alfresco/versions/1/sites':
     get:
       tags:
         - sites
@@ -5098,7 +5216,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/sites/{siteId}':
+  '/alfresco/versions/1/sites/{siteId}':
     get:
       tags:
         - sites
@@ -5215,7 +5333,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'            
-  '/sites/{siteId}/containers':
+  '/alfresco/versions/1/sites/{siteId}/containers':
     get:
       tags:
         - sites
@@ -5246,7 +5364,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/sites/{siteId}/containers/{containerId}':
+  '/alfresco/versions/1/sites/{siteId}/containers/{containerId}':
     get:
       tags:
         - sites
@@ -5277,7 +5395,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/site-membership-requests':
+  '/alfresco/versions/1/site-membership-requests':
     get:
       tags:
         - sites
@@ -5324,7 +5442,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/sites/{siteId}/site-membership-requests/{inviteeId}/approve':
+  '/alfresco/versions/1/sites/{siteId}/site-membership-requests/{inviteeId}/approve':
       post:
         tags:
           - sites
@@ -5364,7 +5482,7 @@ paths:
             description: Unexpected error
             schema:
               $ref: '#/definitions/Error'
-  '/sites/{siteId}/site-membership-requests/{inviteeId}/reject':
+  '/alfresco/versions/1/sites/{siteId}/site-membership-requests/{inviteeId}/reject':
     post:
       tags:
         - sites
@@ -5404,7 +5522,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/sites/{siteId}/members':
+  '/alfresco/versions/1/sites/{siteId}/members':
     get:
       tags:
         - sites
@@ -5525,7 +5643,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/sites/{siteId}/members/{personId}':
+  '/alfresco/versions/1/sites/{siteId}/members/{personId}':
     get:
       tags:
         - sites
@@ -5631,7 +5749,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /tags:
+  '/alfresco/versions/1/tags':
     get:
       tags:
         - tags
@@ -5662,7 +5780,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/tags/{tagId}':
+  '/alfresco/versions/1/tags/{tagId}':
     get:
       tags:
         - tags
@@ -5726,7 +5844,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/networks/{networkId}':
+  '/alfresco/versions/1/networks/{networkId}':
     get:
       tags:
         - networks
@@ -5752,7 +5870,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links':
+  '/alfresco/versions/1/shared-links':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -5897,7 +6015,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links/{sharedId}':
+  '/alfresco/versions/1/shared-links/{sharedId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -5965,7 +6083,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links/{sharedId}/content':
+  '/alfresco/versions/1/shared-links/{sharedId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6008,7 +6126,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links/{sharedId}/renditions':
+  '/alfresco/versions/1/shared-links/{sharedId}/renditions':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6043,7 +6161,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links/{sharedId}/renditions/{renditionId}':
+  '/alfresco/versions/1/shared-links/{sharedId}/renditions/{renditionId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6079,7 +6197,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'        
-  '/shared-links/{sharedId}/renditions/{renditionId}/content':
+  '/alfresco/versions/1/shared-links/{sharedId}/renditions/{renditionId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6123,7 +6241,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/shared-links/{sharedId}/email':
+  '/alfresco/versions/1/shared-links/{sharedId}/email':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -6189,7 +6307,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/probes/{probeId}':
+  '/alfresco/versions/1/probes/{probeId}':
     get:
       x-alfresco-since: "6.0"
       tags:
@@ -6231,7 +6349,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/queries/nodes':
+  '/alfresco/versions/1/queries/nodes':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6302,7 +6420,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/queries/sites':
+  '/alfresco/versions/1/queries/sites':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6351,7 +6469,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'            
-  '/queries/people':
+  '/alfresco/versions/1/queries/people':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -6400,7 +6518,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/groups':
+  '/alfresco/versions/1/groups':
     get:
       x-alfresco-since: "5.2.1"
       tags:
@@ -6523,7 +6641,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'            
-  '/groups/{groupId}':
+  '/alfresco/versions/1/groups/{groupId}':
     get:
       x-alfresco-since: "5.2.1"
       tags:
@@ -6652,7 +6770,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'                          
-  '/groups/{groupId}/members':
+  '/alfresco/versions/1/groups/{groupId}/members':
     post:
       x-alfresco-since: "5.2.1"
       tags:
@@ -6755,7 +6873,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/groups/{groupId}/members/{groupMemberId}':            
+  '/alfresco/versions/1/groups/{groupId}/members/{groupMemberId}':            
     delete:
       x-alfresco-since: "5.2.1"
       tags:
@@ -6797,7 +6915,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/audit-applications':
+  '/alfresco/versions/1/audit-applications':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -6841,7 +6959,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/audit-applications/{auditApplicationId}':
+  '/alfresco/versions/1/audit-applications/{auditApplicationId}':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -6853,12 +6971,15 @@ paths:
         Get status of an audit application **auditApplicationId**.
         
         You must have admin rights to retrieve audit information.
+
+        You can use the **include** parameter to return the minimum and/or maximum audit record id for the application. 
       operationId: getAuditApp
       produces:
         - application/json
       parameters:
         - $ref: '#/parameters/auditApplicationIdParam'
         - $ref: '#/parameters/fieldsParam'
+        - $ref: '#/parameters/auditApplicationIncludeParam'
       responses:
         '200':
           description: Successful response
@@ -6930,7 +7051,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/audit-applications/{auditApplicationId}/audit-entries':
+  '/alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -7057,7 +7178,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'         
-  '/audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}':
+  '/alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -7133,7 +7254,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/nodes/{nodeId}/audit-entries':
+  '/alfresco/versions/1/nodes/{nodeId}/audit-entries':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -7195,7 +7316,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'                       
-  '/action-definitions':
+  '/alfresco/versions/1/action-definitions':
       get:
         x-alfresco-since: "5.2.2"
         tags:
@@ -7234,7 +7355,7 @@ paths:
             description: Unexpected error
             schema:
               $ref: '#/definitions/Error'
-  '/action-definitions/{actionDefinitionId}':
+  '/alfresco/versions/1/action-definitions/{actionDefinitionId}':
     get:
       x-alfresco-since: "5.2.2"
       tags:
@@ -7263,7 +7384,7 @@ paths:
         '404':
           description: |
             **actionDefinitionId** does not exist
-  '/action-executions':
+  '/alfresco/versions/1/action-executions':
     post:
       x-alfresco-since: "5.2.2"
       tags:
@@ -7374,6 +7495,39 @@ definitions:
             type: string
           logId:
             type: string
+  TicketBody:
+    type: object
+    properties:
+      userId:
+        type: string
+      password:
+        type: string
+  TicketEntry:
+    type: object
+    required:
+      - entry
+    properties:
+      entry:
+        $ref: '#/definitions/Ticket'
+  Ticket:
+    type: object
+    properties:
+      id:
+        type: string
+      userId:
+        type: string
+  ValidTicketEntry:
+    type: object
+    required:
+      - entry
+    properties:
+      entry:
+        $ref: '#/definitions/ValidTicket'
+  ValidTicket:
+    type: object
+    properties:
+      id:
+        type: string
   SearchRequest:
     type: object
     required:
@@ -9980,6 +10134,10 @@ definitions:
       isEnabled:
         type: boolean
         default: true
+      maxEntryId:
+        type: integer
+      minEntryId:
+        type: integer
   AuditBodyUpdate:
     type: object
     properties:

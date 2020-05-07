@@ -26,7 +26,7 @@ interface PreferencesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/preferences/{preferenceName}")
+    @GET("alfresco/versions/1/people/{personId}/preferences/{preferenceName}")
     suspend fun getPreference(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("preferenceName") preferenceName: String,
@@ -44,7 +44,7 @@ interface PreferencesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/preferences")
+    @GET("alfresco/versions/1/people/{personId}/preferences")
     suspend fun listPreferences(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,

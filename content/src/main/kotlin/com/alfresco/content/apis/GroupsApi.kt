@@ -34,7 +34,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("groups")
+    @POST("alfresco/versions/1/groups")
     suspend fun createGroup(
         @retrofit2.http.Body groupBodyCreate: GroupBodyCreate,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -51,7 +51,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("groups/{groupId}/members")
+    @POST("alfresco/versions/1/groups/{groupId}/members")
     suspend fun createGroupMembership(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Body groupMembershipBodyCreate: GroupMembershipBodyCreate,
@@ -67,7 +67,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("groups/{groupId}")
+    @DELETE("alfresco/versions/1/groups/{groupId}")
     suspend fun deleteGroup(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Query("cascade") cascade: Boolean?
@@ -82,7 +82,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("groups/{groupId}/members/{groupMemberId}")
+    @DELETE("alfresco/versions/1/groups/{groupId}/members/{groupMemberId}")
     suspend fun deleteGroupMembership(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Path("groupMemberId") groupMemberId: String
@@ -98,7 +98,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("groups/{groupId}")
+    @GET("alfresco/versions/1/groups/{groupId}")
     suspend fun getGroup(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Query("include") @CSV include: List<String>?,
@@ -118,7 +118,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("groups/{groupId}/members")
+    @GET("alfresco/versions/1/groups/{groupId}/members")
     suspend fun listGroupMemberships(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -142,7 +142,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/groups")
+    @GET("alfresco/versions/1/people/{personId}/groups")
     suspend fun listGroupMembershipsForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -166,7 +166,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("groups")
+    @GET("alfresco/versions/1/groups")
     suspend fun listGroups(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -187,7 +187,7 @@ interface GroupsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("groups/{groupId}")
+    @PUT("alfresco/versions/1/groups/{groupId}")
     suspend fun updateGroup(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Body groupBodyUpdate: GroupBodyUpdate,

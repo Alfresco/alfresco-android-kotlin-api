@@ -30,7 +30,7 @@ interface CommentsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/comments")
+    @POST("alfresco/versions/1/nodes/{nodeId}/comments")
     suspend fun createComment(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body commentBodyCreate: CommentBody,
@@ -46,7 +46,7 @@ interface CommentsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/comments/{commentId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/comments/{commentId}")
     suspend fun deleteComment(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("commentId") commentId: String
@@ -63,7 +63,7 @@ interface CommentsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/comments")
+    @GET("alfresco/versions/1/nodes/{nodeId}/comments")
     suspend fun listComments(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -82,7 +82,7 @@ interface CommentsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("nodes/{nodeId}/comments/{commentId}")
+    @PUT("alfresco/versions/1/nodes/{nodeId}/comments/{commentId}")
     suspend fun updateComment(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("commentId") commentId: String,

@@ -32,7 +32,7 @@ interface QueriesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("queries/nodes")
+    @GET("alfresco/versions/1/queries/nodes")
     suspend fun findNodes(
         @retrofit2.http.Query("term") term: String,
         @retrofit2.http.Query("rootNodeId") rootNodeId: String?,
@@ -56,7 +56,7 @@ interface QueriesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("queries/people")
+    @GET("alfresco/versions/1/queries/people")
     suspend fun findPeople(
         @retrofit2.http.Query("term") term: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -77,7 +77,7 @@ interface QueriesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("queries/sites")
+    @GET("alfresco/versions/1/queries/sites")
     suspend fun findSites(
         @retrofit2.http.Query("term") term: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,

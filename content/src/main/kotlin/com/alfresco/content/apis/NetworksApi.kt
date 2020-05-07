@@ -25,7 +25,7 @@ interface NetworksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("networks/{networkId}")
+    @GET("alfresco/versions/1/networks/{networkId}")
     suspend fun getNetwork(
         @retrofit2.http.Path("networkId") networkId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?
@@ -41,7 +41,7 @@ interface NetworksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/networks/{networkId}")
+    @GET("alfresco/versions/1/people/{personId}/networks/{networkId}")
     suspend fun getNetworkForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("networkId") networkId: String,
@@ -59,7 +59,7 @@ interface NetworksApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("people/{personId}/networks")
+    @GET("alfresco/versions/1/people/{personId}/networks")
     suspend fun listNetworksForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,

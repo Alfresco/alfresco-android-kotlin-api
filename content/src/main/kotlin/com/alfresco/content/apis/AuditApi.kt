@@ -30,7 +30,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("audit-applications/{auditApplicationId}/audit-entries")
+    @DELETE("alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries")
     suspend fun deleteAuditEntriesForAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Query("where") where: String
@@ -45,25 +45,27 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}")
+    @DELETE("alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}")
     suspend fun deleteAuditEntry(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Path("auditEntryId") auditEntryId: String
     ): Unit
     /**
      * Get audit application info
-     * **Note:** this endpoint is available in Alfresco 5.2.2 and newer versions.  Get status of an audit application **auditApplicationId**.  You must have admin rights to retrieve audit information. 
+     * **Note:** this endpoint is available in Alfresco 5.2.2 and newer versions.  Get status of an audit application **auditApplicationId**.  You must have admin rights to retrieve audit information.  You can use the **include** parameter to return the minimum and/or maximum audit record id for the application.  
      * The endpoint is owned by defaultname service owner
      * @param auditApplicationId The identifier of an audit application. (required)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     * @param include Also include the current minimum and/or maximum audit entry ids for the application. The following optional fields can be requested: * max * min  (optional)
      */
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("audit-applications/{auditApplicationId}")
+    @GET("alfresco/versions/1/audit-applications/{auditApplicationId}")
     suspend fun getAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
+        @retrofit2.http.Query("include") @CSV include: List<String>?
     ): AuditApp
     /**
      * Get audit entry
@@ -76,7 +78,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}")
+    @GET("alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries/{auditEntryId}")
     suspend fun getAuditEntry(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Path("auditEntryId") auditEntryId: String,
@@ -93,7 +95,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("audit-applications")
+    @GET("alfresco/versions/1/audit-applications")
     suspend fun listAuditApps(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -114,7 +116,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("audit-applications/{auditApplicationId}/audit-entries")
+    @GET("alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries")
     suspend fun listAuditEntriesForAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -139,7 +141,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/audit-entries")
+    @GET("alfresco/versions/1/nodes/{nodeId}/audit-entries")
     suspend fun listAuditEntriesForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
@@ -160,7 +162,7 @@ interface AuditApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @PUT("audit-applications/{auditApplicationId}")
+    @PUT("alfresco/versions/1/audit-applications/{auditApplicationId}")
     suspend fun updateAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Body auditAppBodyUpdate: AuditBodyUpdate,

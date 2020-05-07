@@ -22,7 +22,7 @@ interface ProbesApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("probes/{probeId}")
+    @GET("alfresco/versions/1/probes/{probeId}")
     suspend fun getProbe(
         @retrofit2.http.Path("probeId") probeId: String
     ): ProbeEntry

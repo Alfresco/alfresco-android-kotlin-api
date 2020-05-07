@@ -29,7 +29,7 @@ interface RatingsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("nodes/{nodeId}/ratings")
+    @POST("alfresco/versions/1/nodes/{nodeId}/ratings")
     suspend fun createRating(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body ratingBodyCreate: RatingBody,
@@ -45,7 +45,7 @@ interface RatingsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("nodes/{nodeId}/ratings/{ratingId}")
+    @DELETE("alfresco/versions/1/nodes/{nodeId}/ratings/{ratingId}")
     suspend fun deleteRating(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("ratingId") ratingId: String
@@ -61,7 +61,7 @@ interface RatingsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/ratings/{ratingId}")
+    @GET("alfresco/versions/1/nodes/{nodeId}/ratings/{ratingId}")
     suspend fun getRating(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("ratingId") ratingId: String,
@@ -79,7 +79,7 @@ interface RatingsApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("nodes/{nodeId}/ratings")
+    @GET("alfresco/versions/1/nodes/{nodeId}/ratings")
     suspend fun listRatings(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int?,
