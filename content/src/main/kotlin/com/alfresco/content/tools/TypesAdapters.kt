@@ -69,7 +69,9 @@ internal class ZonedDateTimeAdapter : XNullableJsonAdapter<ZonedDateTime>() {
 
     override fun fromNonNullString(nextString: String): ZonedDateTime {
         return try {
-            ZonedDateTime.parse(nextString, formatter)
+            // Temporary patch, should fix by patching support library or by moving to Java 8
+            val patchedString = nextString.replace("+0000", "+00:00")
+            ZonedDateTime.parse(patchedString, formatter)
         } catch (parseException: DateTimeException) {
             val localDateTime = LocalDateTime.parse(nextString, formatter)
             localDateTime.atZone(ZoneId.of("Z"))
