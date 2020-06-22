@@ -33,7 +33,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @DELETE("deleted-nodes/{nodeId}")
+    @DELETE("alfresco/versions/1/deleted-nodes/{nodeId}")
     suspend fun deleteDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String
     ): Unit
@@ -47,7 +47,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes/{nodeId}/renditions/{renditionId}")
+    @GET("alfresco/versions/1/deleted-nodes/{nodeId}/renditions/{renditionId}")
     suspend fun getArchivedNodeRendition(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String
@@ -66,7 +66,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes/{nodeId}/renditions/{renditionId}/content")
+    @GET("alfresco/versions/1/deleted-nodes/{nodeId}/renditions/{renditionId}/content")
     suspend fun getArchivedNodeRenditionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
@@ -85,7 +85,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes/{nodeId}")
+    @GET("alfresco/versions/1/deleted-nodes/{nodeId}")
     suspend fun getDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("include") @CSV include: List<String>?
@@ -102,7 +102,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes/{nodeId}/content")
+    @GET("alfresco/versions/1/deleted-nodes/{nodeId}/content")
     suspend fun getDeletedNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("attachment") attachment: Boolean?,
@@ -119,7 +119,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes/{nodeId}/renditions")
+    @GET("alfresco/versions/1/deleted-nodes/{nodeId}/renditions")
     suspend fun listDeletedNodeRenditions(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("where") where: String?
@@ -135,7 +135,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @GET("deleted-nodes")
+    @GET("alfresco/versions/1/deleted-nodes")
     suspend fun listDeletedNodes(
         @retrofit2.http.Query("skipCount") skipCount: Int?,
         @retrofit2.http.Query("maxItems") maxItems: Int?,
@@ -152,7 +152,7 @@ interface TrashcanApi {
     @Headers(
         "Content-Type: application/json"
     )
-    @POST("deleted-nodes/{nodeId}/restore")
+    @POST("alfresco/versions/1/deleted-nodes/{nodeId}/restore")
     suspend fun restoreDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("fields") @CSV fields: List<String>?,

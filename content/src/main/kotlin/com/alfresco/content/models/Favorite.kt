@@ -20,7 +20,7 @@ import org.threeten.bp.ZonedDateTime
 @JsonClass(generateAdapter = true)
 data class Favorite(
     @Json(name = "targetGuid") @field:Json(name = "targetGuid") var targetGuid: String,
-    @Json(name = "target") @field:Json(name = "target") var target: Map<String, Any?>,
+    @Json(name = "target") @field:Json(name = "target") var target: FavoriteTarget,
     @Json(name = "createdAt") @field:Json(name = "createdAt") var createdAt: ZonedDateTime? = null,
     @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null
 )
