@@ -9069,10 +9069,80 @@ definitions:
         format: date-time
         description: The time the object was made a favorite.
       target:
-        type: object
+        $ref: '#/definitions/FavoriteTarget'
       properties:
         type: object
         description: A subset of the target favorite properties, system properties and properties already available in the target are excluded.
+  FavoriteTarget:
+    type: object
+    properties:
+      file:
+        $ref: '#/definitions/FavoriteTargetNode'
+      folder:
+        $ref: '#/definitions/FavoriteTargetNode'
+      site:
+        $ref: '#/definitions/Site'
+  FavoriteTargetNode:
+    type: object
+    required:
+      - id
+      - name
+      - isFolder
+      - isFile
+      - createdAt
+      - createdByUser
+      - modifiedAt
+      - modifiedByUser
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        pattern: "^(?!(.*[\\\"\\*\\\\\\>\\<\\?\\/\\:\\|]+.*)|(.*[\\.]?.*[\\.]+$)|(.*[ ]+$))"
+        description: |
+          The name must not contain spaces or the following special characters: * " < > \ / ? : and |.
+          The character . must not be used at the end of the name.
+      nodeType:
+        type: string
+      isFolder:
+        type: boolean
+      isFile:
+        type: boolean
+      isLocked:
+        type: boolean
+        default: false
+      modifiedAt:
+        type: string
+        format: date-time
+      modifiedByUser:
+        $ref: '#/definitions/UserInfo'
+      createdAt:
+        type: string
+        format: date-time
+      createdByUser:
+        $ref: '#/definitions/UserInfo'
+      parentId:
+        type: string
+      isLink:
+        type: boolean
+      isFavorite:
+        type: boolean
+      content:
+        $ref: '#/definitions/ContentInfo'
+      aspectNames:
+        type: array
+        items:
+          type: string
+      properties:
+        type: object
+      allowableOperations:
+        type: array
+        items:
+          type: string
+      path:
+        $ref: '#/definitions/PathInfo'
+      permissions:
+        $ref: '#/definitions/PermissionsInfo'
   FavoriteSiteBodyCreate:
     type: object
     required:
