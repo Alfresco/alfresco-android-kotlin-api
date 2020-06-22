@@ -3198,7 +3198,7 @@ paths:
         '404':
           description: |
             **nodeId** does not exist
-  '/deleted-nodes':
+  '/alfresco/versions/1/deleted-nodes':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -3233,7 +3233,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -3299,7 +3299,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}/content':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -3342,7 +3342,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}/restore':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}/restore':
     post:
       x-alfresco-since: "5.2"
       tags:
@@ -3397,7 +3397,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}/renditions':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}/renditions':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -3440,7 +3440,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}/renditions/{renditionId}':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}/renditions/{renditionId}':
     get:
       x-alfresco-since: "5.2"
       tags:
@@ -3473,7 +3473,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/deleted-nodes/{nodeId}/renditions/{renditionId}/content':
+  '/alfresco/versions/1/deleted-nodes/{nodeId}/renditions/{renditionId}/content':
     get:
       x-alfresco-since: "5.2"
       tags:
