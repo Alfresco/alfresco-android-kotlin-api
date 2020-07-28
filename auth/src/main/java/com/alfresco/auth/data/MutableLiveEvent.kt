@@ -1,4 +1,4 @@
-package com.alfresco.core.data
+package com.alfresco.auth.data
 
 import android.util.Log
 import androidx.annotation.MainThread

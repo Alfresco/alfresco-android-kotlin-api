@@ -3,12 +3,12 @@ package com.alfresco.auth
 import android.content.Context
 import android.net.Uri
 import com.alfresco.auth.pkce.PkceAuthService
-import com.alfresco.core.data.Result
-import com.alfresco.core.network.Alfresco
-import com.alfresco.core.network.request.response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 class DiscoveryService(val context: Context, val authConfig: AuthConfig)
 {
@@ -28,15 +28,21 @@ class DiscoveryService(val context: Context, val authConfig: AuthConfig)
     private suspend fun isBasicType(endpoint: String): Boolean {
         val uri = serviceDocumentsEndpoint(endpoint).toString()
 
-        val result = withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             try {
-                Alfresco.with(uri).get().response()
+                val client = OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .build()
+                val request = Request.Builder()
+                    .url(URL(uri))
+                    .get()
+                    .build()
+                val response = client.newCall(request).execute()
+                response.code == 200
             } catch (e: Exception) {
-                Result.Error(IllegalArgumentException())
+                false
             }
         }
-
-        return result.isSuccess
     }
 
     private suspend fun isPkceType(endpoint: String): Boolean {

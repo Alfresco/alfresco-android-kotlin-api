@@ -5,8 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.alfresco.auth.AuthConfig
-import com.alfresco.core.data.Result
-import com.alfresco.core.extension.isNotBlankNorEmpty
+import com.alfresco.auth.data.Result
 import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -72,7 +71,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
      * Initiates the login in [activity] with activity result [requestCode]
      */
     suspend fun initiateLogin(endpoint: String, activity: Activity, requestCode: Int) {
-        require(endpoint.isNotBlankNorEmpty()) { "Identity url is blank or empty" }
+        require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
         // build discovery url using auth configuration
@@ -259,10 +258,10 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
      */
     private fun checkConfig(authConfig: AuthConfig) {
         requireNotNull(authConfig.port.toIntOrNull()) { "Invalid port or empty" }
-        require(authConfig.serviceDocuments.isNotBlankNorEmpty()) { "Service documents is blank or empty" }
-        require(authConfig.realm.isNotBlankNorEmpty()) { "Realm is blank or empty" }
-        require(authConfig.clientId.isNotBlankNorEmpty()) { "Client id is blank or empty" }
-        require(authConfig.redirectUrl.isNotBlankNorEmpty()) { "Redirect url is blank or empty" }
+        require(authConfig.serviceDocuments.isNotBlank()) { "Service documents is blank or empty" }
+        require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
+        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+        require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
     }
 
     companion object {

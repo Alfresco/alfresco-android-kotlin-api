@@ -13,8 +13,8 @@ import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.pkce.PkceAuthService
-import com.alfresco.core.data.LiveEvent
-import com.alfresco.core.data.MutableLiveEvent
+import com.alfresco.auth.data.LiveEvent
+import com.alfresco.auth.data.MutableLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthState
