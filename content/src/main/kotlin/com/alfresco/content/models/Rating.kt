@@ -8,7 +8,7 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 /**
  * A person can rate an item of content by liking it. They can also remove their like of an item of content. API methods exist to get a list of ratings and to add a new rating. 

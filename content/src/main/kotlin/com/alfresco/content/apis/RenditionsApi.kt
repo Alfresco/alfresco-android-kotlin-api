@@ -11,8 +11,8 @@ import com.alfresco.content.models.RenditionBodyCreate
 import com.alfresco.content.models.RenditionEntry
 import com.alfresco.content.models.RenditionPaging
 import java.io.File
+import java.time.ZonedDateTime
 import okhttp3.ResponseBody
-import org.threeten.bp.ZonedDateTime
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST

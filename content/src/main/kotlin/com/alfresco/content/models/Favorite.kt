@@ -8,7 +8,7 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 /**
  * A favorite describes an Alfresco entity that a person has marked as a favorite. The target can be a site, file or folder. 

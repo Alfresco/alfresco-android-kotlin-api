@@ -8,7 +8,7 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 /**
  * Activities describe any past activity in a site, for example creating an item of content, commenting on a node, liking an item of content. 

@@ -8,7 +8,7 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 /**
  * @property id

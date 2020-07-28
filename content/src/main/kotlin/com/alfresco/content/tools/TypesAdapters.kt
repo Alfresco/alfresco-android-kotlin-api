@@ -7,12 +7,13 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.internal.Util
 import java.lang.reflect.Type
 import java.math.BigDecimal
-import org.threeten.bp.DateTimeException
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.DateTimeException
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 
 /**
  * Moshi Factory to handle all the custom types we want to support,
@@ -65,13 +66,10 @@ internal class LocalDateAdapter : XNullableJsonAdapter<LocalDate>() {
 }
 
 internal class ZonedDateTimeAdapter : XNullableJsonAdapter<ZonedDateTime>() {
-    private val formatter = DateTimeFormatter.ISO_DATE_TIME
 
     override fun fromNonNullString(nextString: String): ZonedDateTime {
         return try {
-            // Temporary patch, should fix by patching support library or by moving to Java 8
-            val patchedString = nextString.replace("+0000", "+00:00")
-            ZonedDateTime.parse(patchedString, formatter)
+            ZonedDateTime.parse(nextString, formatter)
         } catch (parseException: DateTimeException) {
             val localDateTime = LocalDateTime.parse(nextString, formatter)
             localDateTime.atZone(ZoneId.of("Z"))
@@ -80,6 +78,13 @@ internal class ZonedDateTimeAdapter : XNullableJsonAdapter<ZonedDateTime>() {
 
     override fun toJson(writer: JsonWriter, value: ZonedDateTime?) {
         value?.let { writer.value(it.format(formatter)) }
+    }
+
+    companion object {
+        private val formatter = DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .optionalStart().appendOffset("+HHMM", "Z").optionalEnd()
+            .toFormatter()
     }
 }
 

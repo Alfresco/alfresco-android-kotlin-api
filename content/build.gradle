@@ -1,10 +1,11 @@
 buildscript {
     repositories {
+        maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath "com.yelp.codegen:plugin:1.4.1"
+        classpath "com.yelp.codegen:plugin:1.5.0"
     }
 }
 
@@ -21,10 +22,16 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1"
+        versionName "0.2"
     }
 
     sourceSets['main'].java.srcDir('src/main/kotlin')
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 generateSwagger {
@@ -33,7 +40,7 @@ generateSwagger {
     inputFile = file("./definitions/merged.yaml")
     outputDir = file("./src/main/kotlin/")
     features {
-        headersToRemove = ["X-Operation-ID"]
+        headersToRemove.add("X-Operation-ID")
     }
 }
 
@@ -48,11 +55,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:2.7.1"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
 
-    // Date Support
-    implementation "com.jakewharton.threetenabp:threetenabp:1.2.2"
-
-    // Testing Dependencies
-    testImplementation 'junit:junit:4.12'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 }
 
 apply from: '../config/publish.gradle'
