@@ -86,7 +86,7 @@ dependencies {
     api "net.openid:appauth:0.7.1-11-g5b56cff"
     implementation 'androidx.browser:browser:1.2.0'
 
-    testImplementation project(path: ':core', configuration: 'testImplementationDependencies')
+    testImplementation 'junit:junit:4.13'
 }
 
 repositories {

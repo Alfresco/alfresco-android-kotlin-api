@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Alfresco Sample</string>
+
+    <string name="auth_title">Sample App</string>
+    <string name="auth_connect_hint">Connect to</string>
+    <string name="auth_connect_button">Connect</string>
+    <string name="auth_error_check_connect_url">No authentication service can be found at the provided Alfresco URL.</string>
+
+    <string name="logout">Sign out</string>
+</resources>
