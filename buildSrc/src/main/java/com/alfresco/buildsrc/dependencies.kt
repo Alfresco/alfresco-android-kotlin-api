@@ -7,7 +7,9 @@ object Libs {
         const val desugar = "com.android.tools:desugar_jdk_libs:1.0.9"
     }
 
-    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:4.0.1"
+    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.1.0"
+
+    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.29.0"
 
     const val swaggerCodegen = "com.yelp.codegen:plugin:1.5.0"
 
@@ -27,16 +29,16 @@ object Libs {
         }
     }
 
-    const val okhttp = "com.squareup.okhttp3:okhttp:4.7.2"
+    const val okhttp = "com.squareup.okhttp3:okhttp:4.8.0"
 
     object Retrofit {
-        private const val version = "2.7.2"
+        private const val version = "2.9.0"
         const val retrofit = "com.squareup.retrofit2:retrofit:$version"
         const val converterMoshi = "com.squareup.retrofit2:converter-moshi:$version"
     }
 
     object Moshi {
-        private const val version = "1.9.2"
+        private const val version = "1.9.3"
         const val kotlin = "com.squareup.moshi:moshi-kotlin:$version"
         const val adapters = "com.squareup.moshi:moshi-adapters:$version"
         const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
@@ -44,7 +46,7 @@ object Libs {
 
     const val appauth = "net.openid:appauth:0.7.1-11-g5b56cff"
 
-    const val jwtdecode = "com.auth0.android:jwtdecode:1.4.0"
+    const val jwtdecode = "com.auth0.android:jwtdecode:2.0.0"
 
     const val gson = "com.google.code.gson:gson:2.8.6"
 

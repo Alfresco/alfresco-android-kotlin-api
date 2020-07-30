@@ -11,13 +11,14 @@ buildscript {
         classpath Libs.AndroidTools.gradlePlugin
         classpath Libs.Kotlin.gradlePlugin
         classpath Libs.spotless
+        classpath Libs.gradleVersions
     }
 }
 
 allprojects {
     repositories {
-        maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         mavenLocal()
+        maven { url 'https://artifacts.alfresco.com/nexus/content/groups/public' }
         google()
         jcenter()
     }
@@ -51,11 +52,9 @@ subprojects {
     }
 
     // Exclude 'content' module as it contains generated code
-    if (it.name != "content") {
-        apply from: "$project.rootDir/config/spotless.gradle"
+    if (it.name != 'content') {
+        apply from: "$rootDir/config/spotless.gradle"
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+apply from: "$rootDir/config/versions.gradle"
