@@ -2,7 +2,6 @@ package com.alfresco.auth.pkce
 
 import android.app.Activity
 import android.os.Bundle
-
 import net.openid.appauth.AuthorizationManagementActivity
 import net.openid.appauth.AuthorizationService
 

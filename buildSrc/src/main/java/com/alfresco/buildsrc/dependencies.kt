@@ -7,6 +7,8 @@ object Libs {
         const val desugar = "com.android.tools:desugar_jdk_libs:1.0.9"
     }
 
+    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:4.0.1"
+
     const val swaggerCodegen = "com.yelp.codegen:plugin:1.5.0"
 
     object Kotlin {

@@ -1,17 +1,17 @@
 package com.alfresco.auth.pkce
 
 import android.net.Uri
-import net.openid.appauth.connectivity.ConnectionBuilder
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import net.openid.appauth.connectivity.ConnectionBuilder
 
 /**
  * Creates {@link java.net.HttpURLConnection} instances using the default, platform-provided
  * mechanism, with sensible production defaults.
  */
-class PkceConnectionBuilder private constructor()// no need to construct new instances
+class PkceConnectionBuilder private constructor() // no need to construct new instances
     : ConnectionBuilder {
 
     @Throws(IOException::class)

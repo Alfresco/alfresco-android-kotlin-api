@@ -3,15 +3,14 @@ package com.alfresco.auth
 import android.content.Context
 import android.net.Uri
 import com.alfresco.auth.pkce.PkceAuthService
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.URL
-import java.util.concurrent.TimeUnit
 
-class DiscoveryService(val context: Context, val authConfig: AuthConfig)
-{
+class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
 
     suspend fun getAuthType(endpoint: String): AuthType {
 

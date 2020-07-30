@@ -50,7 +50,8 @@ sealed class Result<out D, out E : Exception> {
     fun handleResult(
         successAction: (D) -> Unit = {},
         errorAction: (Error<Exception>) -> Unit = {},
-        stateAction: (State) -> Unit = {}) {
+        stateAction: (State) -> Unit = {}
+    ) {
 
         when (this) {
             is Success -> successAction(data)
@@ -65,7 +66,8 @@ sealed class Result<out D, out E : Exception> {
     suspend fun <R> onResult(
         successAction: suspend (D) -> R,
         errorAction: suspend (E: Exception) -> R,
-        loadingAction: suspend (State) -> R): R {
+        loadingAction: suspend (State) -> R
+    ): R {
         return when (this) {
             is Success -> successAction(data)
             is Error -> errorAction(exception)

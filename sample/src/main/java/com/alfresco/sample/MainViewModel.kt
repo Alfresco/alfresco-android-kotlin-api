@@ -1,19 +1,28 @@
 package com.alfresco.sample
 
 import android.content.Context
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.content.apis.SearchApi
-import com.alfresco.content.models.*
+import com.alfresco.content.models.RequestFilterQueriesInner
+import com.alfresco.content.models.RequestIncludeEnum
+import com.alfresco.content.models.RequestPagination
+import com.alfresco.content.models.RequestQuery
+import com.alfresco.content.models.RequestSortDefinitionInner
+import com.alfresco.content.models.ResultNode
+import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-class MainViewModel(private val context: Context): ViewModel() {
+class MainViewModel(private val context: Context) : ViewModel() {
 
     private val retrofit: Retrofit
     private val authInterceptor: AuthInterceptor
@@ -25,7 +34,7 @@ class MainViewModel(private val context: Context): ViewModel() {
     init {
         val account = requireNotNull(Account.getAccount(context))
 
-        authInterceptor = AuthInterceptor (
+        authInterceptor = AuthInterceptor(
             context,
             account.username,
             account.authType,

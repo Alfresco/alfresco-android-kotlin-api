@@ -7,15 +7,24 @@ import android.net.Uri
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.data.Result
 import com.auth0.android.jwt.JWT
+import java.util.Locale
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import net.openid.appauth.*
+import net.openid.appauth.AppAuthConfiguration
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationRequest
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
-import java.util.*
-import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.resumeWithException
 
 open class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
@@ -79,7 +88,6 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
 
         withContext(Dispatchers.IO) {
             with(fetchDiscoveryFromUrl(discoveryUri)) {
-
 
                 onSuccess {
                     // save the authorization configuration
@@ -199,7 +207,7 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         }
     }
 
-    fun getUserEmail() : String? {
+    fun getUserEmail(): String? {
         try {
 
             val idToken = authState.get().idToken
@@ -210,13 +218,12 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
             }
 
             return null
-
         } catch (ex: java.lang.Exception) {
             return null
         }
     }
 
-    fun getAuthState() : AuthState? {
+    fun getAuthState(): AuthState? {
         return authState.get()
     }
 

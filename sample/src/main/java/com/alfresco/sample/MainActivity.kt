@@ -3,20 +3,24 @@ package com.alfresco.sample
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alfresco.content.models.*
+import com.alfresco.content.models.ResultNode
 import com.alfresco.sample.databinding.ActivityMainBinding
 import com.alfresco.sample.databinding.ViewResultRowBinding
 import com.google.android.material.snackbar.Snackbar
 
-class ResultAdapter(var resultList: List<ResultNode>)
-    : RecyclerView.Adapter<ResultAdapter.ResultViewHolder>() {
+class ResultAdapter(var resultList: List<ResultNode>) :
+    RecyclerView.Adapter<ResultAdapter.ResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -32,8 +36,8 @@ class ResultAdapter(var resultList: List<ResultNode>)
         holder.bind(resultList[position])
     }
 
-    class ResultViewHolder(private val binding: ViewResultRowBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ResultViewHolder(private val binding: ViewResultRowBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(result: ResultNode?) {
             binding.result = result

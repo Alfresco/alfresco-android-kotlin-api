@@ -2,15 +2,21 @@ package com.alfresco.auth
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
 import com.alfresco.auth.pkce.PkceAuthService
-import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONException
-import java.lang.ref.WeakReference
 
 class AuthInterceptor(private val context: Context, private val accountId: String, typeString: String, stateString: String, config: String) : Interceptor {
 
@@ -222,7 +228,7 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
         /**
          * Returns compatible state representation for basic authorization
          */
-        fun basicState(username: String, password: String) : String {
+        fun basicState(username: String, password: String): String {
             val credentials = "$username:$password"
             return Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         }

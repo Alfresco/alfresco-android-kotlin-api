@@ -2,10 +2,10 @@ package com.alfresco.sample
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import java.lang.Exception
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.Serializable
-import java.lang.Exception
 
 @Serializable
 data class Account(
@@ -41,7 +41,6 @@ data class Account(
             val editor = sharedPrefs.edit()
             editor.putString("account", jsonData)
             editor.apply()
-
         }
 
         fun delete(context: Context) {
