@@ -1,18 +1,15 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+import com.alfresco.buildsrc.Libs
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
-        mavenLocal()
         google()
         jcenter()
-        
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'de.mobilej.unmock:UnMockPlugin:0.7.3'
+        classpath Libs.AndroidTools.gradlePlugin
+        classpath Libs.Kotlin.gradlePlugin
     }
 }
 
@@ -22,6 +19,34 @@ allprojects {
         mavenLocal()
         google()
         jcenter()
+    }
+}
+
+subprojects {
+    afterEvaluate {
+        if(it.hasProperty('android')) {
+            android {
+                compileSdkVersion 29
+
+                defaultConfig {
+                    minSdkVersion 21
+                    targetSdkVersion 29
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+
+                sourceSets['main'].java.srcDir('src/main/kotlin')
+            }
+        }
+    }
+
+    tasks.withType(KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
     }
 }
 

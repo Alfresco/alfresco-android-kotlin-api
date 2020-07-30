@@ -1,3 +1,5 @@
+import com.alfresco.buildsrc.Libs
+
 buildscript {
     repositories {
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
@@ -5,57 +7,47 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.yelp.codegen:plugin:1.5.0"
+        classpath Libs.swaggerCodegen
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'maven-publish'
-apply plugin: "com.yelp.codegen.plugin"
 
 android {
-    compileSdkVersion 29
-
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
         versionName "0.2"
     }
 
-    sourceSets['main'].java.srcDir('src/main/kotlin')
-
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+apply plugin: 'com.yelp.codegen.plugin'
 
 generateSwagger {
     platform = "kotlin-coroutines"
     packageName = "com.alfresco.content"
-    inputFile = file("./definitions/merged.yaml")
-    outputDir = file("./src/main/kotlin/")
+    inputFile = file("$projectDir/definitions/merged.yaml")
+    outputDir = file("$projectDir/src/main/kotlin/")
     features {
         headersToRemove.add("X-Operation-ID")
     }
 }
 
 dependencies {
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation Libs.Kotlin.stdlib
 
-    // Moshi + OkHttp + Retrofit
-    implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
-    implementation "com.squareup.moshi:moshi-adapters:1.9.2"
-    implementation "com.squareup.retrofit2:retrofit:2.7.2"
-    implementation "com.squareup.retrofit2:converter-moshi:2.7.1"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
+    implementation Libs.Moshi.kotlin
+    implementation Libs.Moshi.adapters
+    kapt Libs.Moshi.codegen
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+    implementation Libs.Retrofit.retrofit
+    implementation Libs.Retrofit.converterMoshi
+
+    coreLibraryDesugaring Libs.AndroidTools.desugar
 }
 
-apply from: '../config/publish.gradle'
+apply from: "$rootDir/config/publish.gradle"

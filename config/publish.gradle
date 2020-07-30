@@ -1,3 +1,5 @@
+apply plugin: 'maven-publish'
+
 def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
 def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
 def maven_group    = 'com.alfresco.dbp.android'
