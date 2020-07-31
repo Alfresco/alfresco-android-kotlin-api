@@ -1,8 +1,12 @@
 package com.alfresco.auth
 
-import com.google.gson.Gson
-import com.google.gson.JsonParseException
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonException
 
+@Serializable
 data class AuthConfig(
     /**
      * Defines if the connection should be https or not
@@ -36,14 +40,16 @@ data class AuthConfig(
     var serviceDocuments: String
 ) {
     fun jsonSerialize(): String {
-        return Gson().toJson(this)
+        return Json(JsonConfiguration.Stable).stringify(serializer(), this)
     }
 
     companion object {
         fun jsonDeserialize(str: String): AuthConfig? {
             return try {
-                Gson().fromJson(str, AuthConfig::class.java)
-            } catch (ex: JsonParseException) {
+                Json(JsonConfiguration.Stable).parse(serializer(), str)
+            } catch (ex: JsonException) {
+                null
+            } catch (ex: SerializationException) {
                 null
             }
         }

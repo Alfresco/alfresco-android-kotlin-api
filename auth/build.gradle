@@ -2,6 +2,7 @@ import com.alfresco.buildsrc.Libs
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlinx-serialization'
 
 android {
     defaultConfig {
@@ -13,7 +14,7 @@ dependencies {
     implementation Libs.appauth
     implementation Libs.jwtdecode
 
-    implementation Libs.gson
+    implementation Libs.Kotlin.serializationRuntime
 
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Lifecycle.viewmodelKtx
