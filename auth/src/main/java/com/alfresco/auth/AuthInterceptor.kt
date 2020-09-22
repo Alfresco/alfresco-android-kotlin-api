@@ -232,6 +232,20 @@ class AuthInterceptor(private val context: Context, private val accountId: Strin
             val credentials = "$username:$password"
             return Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         }
+
+        /**
+         * Returns a <username, password> [Pair] from provided basic [state]
+         * Please try to avoid using this fun if possible.
+         */
+        fun decodeBasicState(state: String): Pair<String, String>? {
+            return try {
+                val decoded = String(Base64.decode(state, Base64.NO_WRAP))
+                val split = decoded.split(":")
+                Pair(split[0], split[1])
+            } catch (_: Exception) {
+                null
+            }
+        }
     }
 
     interface Listener {
