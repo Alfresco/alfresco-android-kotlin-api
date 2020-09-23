@@ -44,7 +44,7 @@ abstract class AuthenticationViewModel : ViewModel() {
         }
     }
 
-    protected open fun onAuthType(authType: AuthType) {}
+    protected open suspend fun onAuthType(authType: AuthType) {}
     open fun onPkceAuthCancelled() {}
 
     val pkceAuth = PkceAuth()
