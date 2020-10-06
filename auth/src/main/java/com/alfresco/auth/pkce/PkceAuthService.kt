@@ -21,6 +21,7 @@ import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.IdToken
 import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.AnyBrowserMatcher
@@ -38,6 +39,9 @@ open class PkceAuthService(context: Context, authState: AuthState?, authConfig: 
         this.authState = AtomicReference()
         this.authState.set(authState)
         this.authConfig = authConfig
+
+        // Disable https issuer check if testing in a non-https environment
+        IdToken.setIssuerHttpsCheckEnabled(authConfig.https)
 
         this.connectionBuilder = getConnectionBuilder()
         authService = AuthorizationService(

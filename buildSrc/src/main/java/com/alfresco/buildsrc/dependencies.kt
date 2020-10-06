@@ -46,7 +46,7 @@ object Libs {
         const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
     }
 
-    const val appauth = "net.openid:appauth:0.7.1-11-g5b56cff"
+    const val appauth = "com.agologan:appauth:0.7.1-16-gd12db86"
 
     const val jwtdecode = "com.auth0.android:jwtdecode:2.0.0"
 
