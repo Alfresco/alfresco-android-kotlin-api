@@ -35,7 +35,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
         }
     }
 
-    override fun onAuthType(authType: AuthType) {
+    override suspend fun onAuthType(authType: AuthType) {
         if (authType == AuthType.PKCE) {
             pkceLogin()
         } else {
