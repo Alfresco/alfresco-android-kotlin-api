@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alfresco.content.models.ResultNode
 import com.alfresco.sample.databinding.ActivityMainBinding
 import com.alfresco.sample.databinding.ViewResultRowBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 class ResultAdapter(var resultList: List<ResultNode>) :
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             adapter.resultList = it
             adapter.notifyDataSetChanged()
         }
+        viewModel.onSessionExpired.observe(this, ::onSessionExpired)
         viewModel.onError.observe(this, ::onError)
         viewModel.loadRecents()
     }
@@ -90,6 +92,17 @@ class MainActivity : AppCompatActivity() {
         val i = Intent(this, LoginActivity::class.java)
         startActivity(i)
         finish()
+    }
+
+    private fun onSessionExpired(expired: Boolean) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(resources.getString(R.string.auth_session_expired_title))
+            .setMessage(resources.getString(R.string.auth_session_expired_msg))
+            .setCancelable(false)
+            .setPositiveButton(resources.getString(R.string.auth_session_expired_button)) { _, _ ->
+                logout()
+            }
+            .show()
     }
 
     private fun onError(error: String) {

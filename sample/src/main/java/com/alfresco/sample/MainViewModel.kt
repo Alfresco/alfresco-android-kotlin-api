@@ -30,6 +30,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
     val results = MutableLiveData<List<ResultNode>>()
     val onError = MutableLiveEvent<String>()
+    val onSessionExpired = MutableLiveEvent<Boolean>()
 
     init {
         val account = requireNotNull(Account.getAccount(context))
@@ -41,6 +42,16 @@ class MainViewModel(private val context: Context) : ViewModel() {
             account.authState,
             AuthConfig.defaultConfig.jsonSerialize()
         )
+
+        authInterceptor.setListener(object : AuthInterceptor.Listener {
+            override fun onAuthStateChange(accountId: String, authState: String) {
+                Account.update(context, authState)
+            }
+
+            override fun onAuthFailure(accountId: String) {
+                onSessionExpired.postValue(true)
+            }
+        })
 
         loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY

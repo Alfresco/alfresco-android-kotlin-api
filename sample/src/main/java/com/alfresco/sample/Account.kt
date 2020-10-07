@@ -41,6 +41,17 @@ data class Account(
             editor.apply()
         }
 
+        fun update(context: Context, authState: String) {
+            val account = requireNotNull(getAccount(context))
+            val newAccount = account.copy(authState = authState)
+
+            val jsonData = Json.encodeToString(serializer(), newAccount)
+
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putString("account", jsonData)
+            editor.apply()
+        }
+
         fun delete(context: Context) {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
             val editor = sharedPrefs.edit()
