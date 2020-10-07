@@ -4,8 +4,6 @@ import java.lang.NumberFormatException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonException
 
 @Serializable
 data class ContentServerDetailsData(
@@ -44,9 +42,7 @@ data class ContentServerDetails(
     companion object {
         fun jsonDeserialize(str: String): ContentServerDetails? {
             return try {
-                Json(JsonConfiguration.Stable).parse(serializer(), str)
-            } catch (ex: JsonException) {
-                null
+                Json.decodeFromString(serializer(), str)
             } catch (ex: SerializationException) {
                 null
             }

@@ -38,8 +38,6 @@ generateSwagger {
 }
 
 dependencies {
-    implementation Libs.Kotlin.stdlib
-
     implementation Libs.Moshi.kotlin
     implementation Libs.Moshi.adapters
     kapt Libs.Moshi.codegen

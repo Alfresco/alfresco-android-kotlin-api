@@ -3,8 +3,6 @@ package com.alfresco.auth
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonException
 
 @Serializable
 data class AuthConfig(
@@ -40,15 +38,13 @@ data class AuthConfig(
     var serviceDocuments: String
 ) {
     fun jsonSerialize(): String {
-        return Json(JsonConfiguration.Stable).stringify(serializer(), this)
+        return Json.encodeToString(serializer(), this)
     }
 
     companion object {
         fun jsonDeserialize(str: String): AuthConfig? {
             return try {
-                Json(JsonConfiguration.Stable).parse(serializer(), str)
-            } catch (ex: JsonException) {
-                null
+                Json.decodeFromString(serializer(), str)
             } catch (ex: SerializationException) {
                 null
             }

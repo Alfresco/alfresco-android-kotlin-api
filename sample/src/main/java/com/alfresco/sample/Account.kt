@@ -5,7 +5,6 @@ import androidx.preference.PreferenceManager
 import java.lang.Exception
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 @Serializable
 data class Account(
@@ -35,8 +34,7 @@ data class Account(
                 serverUrl
             )
 
-            val json = Json(JsonConfiguration.Stable)
-            val jsonData = json.stringify(serializer(), acc)
+            val jsonData = Json.encodeToString(serializer(), acc)
 
             val editor = sharedPrefs.edit()
             editor.putString("account", jsonData)
@@ -53,10 +51,9 @@ data class Account(
         fun getAccount(context: Context): Account? {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
             val jsonData = sharedPrefs.getString(ACCOUNT_KEY, null)
-            val json = Json(JsonConfiguration.Stable)
 
             return try {
-                json.parse(serializer(), jsonData ?: "")
+                Json.decodeFromString(serializer(), jsonData ?: "")
             } catch (ex: Exception) {
                 null
             }

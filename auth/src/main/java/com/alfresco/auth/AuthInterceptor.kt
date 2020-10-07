@@ -3,6 +3,7 @@ package com.alfresco.auth
 import android.content.Context
 import android.util.Base64
 import com.alfresco.auth.pkce.PkceAuthService
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

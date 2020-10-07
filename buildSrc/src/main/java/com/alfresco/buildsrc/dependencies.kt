@@ -7,22 +7,21 @@ object Libs {
         const val desugar = "com.android.tools:desugar_jdk_libs:1.0.9"
     }
 
-    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.1.0"
+    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.6.1"
 
-    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.29.0"
+    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.33.0"
 
     const val swaggerCodegen = "com.yelp.codegen:plugin:1.5.0"
 
     object Kotlin {
-        private const val version = "1.3.72"
-        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
+        private const val version = "1.4.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
-        const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+        const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2"
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.1.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val browser = "androidx.browser:browser:1.2.0"
 
         object Lifecycle {
@@ -31,7 +30,7 @@ object Libs {
         }
     }
 
-    const val okhttp = "com.squareup.okhttp3:okhttp:4.8.0"
+    const val okhttp = "com.squareup.okhttp3:okhttp:4.9.0"
 
     object Retrofit {
         private const val version = "2.9.0"
@@ -40,7 +39,7 @@ object Libs {
     }
 
     object Moshi {
-        private const val version = "1.9.3"
+        private const val version = "1.11.0"
         const val kotlin = "com.squareup.moshi:moshi-kotlin:$version"
         const val adapters = "com.squareup.moshi:moshi-adapters:$version"
         const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
