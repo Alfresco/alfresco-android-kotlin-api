@@ -19,6 +19,10 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        maven {
+            url  "https://dl.bintray.com/agologan/com.agologan"
+            content { includeGroup "com.agologan" }
+        }
         google()
         jcenter()
     }
