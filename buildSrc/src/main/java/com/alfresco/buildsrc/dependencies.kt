@@ -11,7 +11,7 @@ object Libs {
 
     const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.33.0"
 
-    const val swaggerCodegen = "com.yelp.codegen:plugin:1.5.0"
+    const val swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-53-g0080d4e"
 
     object Kotlin {
         private const val version = "1.4.10"
@@ -45,7 +45,7 @@ object Libs {
         const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
     }
 
-    const val appauth = "com.agologan:appauth:0.7.1-16-gd12db86"
+    const val appauth = "com.agologan:appauth-android:0.7.1-16-gd12db86"
 
     const val jwtdecode = "com.auth0.android:jwtdecode:2.0.0"
 

@@ -1,16 +1,5 @@
 import com.alfresco.buildsrc.Libs
 
-buildscript {
-    repositories {
-        maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath Libs.swaggerCodegen
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'

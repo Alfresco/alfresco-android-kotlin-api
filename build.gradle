@@ -11,6 +11,9 @@ buildscript {
         classpath Libs.AndroidTools.gradlePlugin
         classpath Libs.Kotlin.gradlePlugin
         classpath Libs.Kotlin.serialization
+
+        classpath Libs.swaggerCodegen
+
         classpath Libs.spotless
         classpath Libs.gradleVersions
     }
@@ -19,10 +22,6 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
-        maven {
-            url  "https://dl.bintray.com/agologan/com.agologan"
-            content { includeGroup "com.agologan" }
-        }
         google()
         jcenter()
     }
