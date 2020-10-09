@@ -4,7 +4,7 @@ package com.alfresco.buildsrc
 object Libs {
     object AndroidTools {
         const val gradlePlugin = "com.android.tools.build:gradle:4.0.1"
-        const val desugar = "com.android.tools:desugar_jdk_libs:1.0.9"
+        const val desugar = "com.android.tools:desugar_jdk_libs:1.0.10"
     }
 
     const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.6.1"
