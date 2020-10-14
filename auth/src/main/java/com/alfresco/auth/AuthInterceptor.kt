@@ -19,7 +19,16 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONException
 
-class AuthInterceptor(private val context: Context, private val accountId: String, typeString: String, stateString: String, config: String) : Interceptor {
+/**
+ * OkHttp [Interceptor] which deals with managing session information and attaching authentication headers.
+ */
+class AuthInterceptor(
+    private val context: Context,
+    private val accountId: String,
+    typeString: String,
+    stateString: String,
+    config: String
+) : Interceptor {
 
     private val localScope = CoroutineScope(Dispatchers.IO)
     private var listener: Listener? = null

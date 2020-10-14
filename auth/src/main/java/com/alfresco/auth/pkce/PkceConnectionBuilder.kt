@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit
 import net.openid.appauth.connectivity.ConnectionBuilder
 
 /**
- * Creates {@link java.net.HttpURLConnection} instances using the default, platform-provided
+ * Creates [HttpURLConnection] instances using the default, platform-provided
  * mechanism, with sensible production defaults.
  */
-class PkceConnectionBuilder private constructor() // no need to construct new instances
+internal class PkceConnectionBuilder private constructor() // no need to construct new instances
     : ConnectionBuilder {
 
     @Throws(IOException::class)

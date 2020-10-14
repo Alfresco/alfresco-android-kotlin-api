@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
+import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
@@ -24,27 +25,61 @@ abstract class AuthenticationViewModel : ViewModel() {
     protected abstract var context: Context
     protected lateinit var discoveryService: DiscoveryService
 
+    protected val _onPkceLogin = MutableLiveEvent<String>()
     protected val _onCredentials = MutableLiveEvent<Credentials>()
     protected val _onError = MutableLiveEvent<String>()
 
+    val onPkceLogin: LiveEvent<String> get() = _onPkceLogin
     val onCredentials: LiveEvent<Credentials> get() = _onCredentials
     val onError: LiveEvent<String> get() = _onError
 
+    /**
+     * true if the session expired or was invalidated and user has to re-login.
+     */
     var isReLogin = false
 
-    fun checkAuthType(endpoint: String, authConfig: AuthConfig) {
+    /**
+     * Check which [AuthType] is supported by the [endpoint] based on the provided [authConfig].
+     */
+    fun checkAuthType(
+        endpoint: String,
+        authConfig: AuthConfig,
+        onResult: (authType: AuthType) -> Unit
+    ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
-
-        viewModelScope.launch {
-            val authType = discoveryService.getAuthType(endpoint)
-
-            withContext(Dispatchers.Main) {
-                onAuthType(authType)
-            }
-        }
+        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
+        onResult(authType)
     }
 
-    protected open suspend fun onAuthType(authType: AuthType) {}
+    /**
+     * Function takes [username] and [password] and returns result via [onCredentials].
+     * Note: This function does not provide any credential validation.
+     */
+    fun basicLogin(username: String, password: String) {
+        val state = AuthInterceptor.basicState(username, password)
+        _onCredentials.value = Credentials(username, state, AuthType.BASIC.value)
+    }
+
+    /**
+     * Initiate PKCE login, against [endpoint] with provided [authConfig].
+     * If an [authState] is provided the invocation is considered [isRelogin].
+     * On success credentials are provided via [onCredentials].
+     * On error [onError] is invoked instead.
+     * If the flow is cancelled by the user [onPkceAuthCancelled] is called.
+     */
+    fun pkceLogin(endpoint: String, authConfig: AuthConfig, authState: String? = null) {
+        if (authState != null) {
+            isReLogin = true
+        }
+
+        pkceAuth.initServiceWith(authConfig, authState)
+
+        _onPkceLogin.value = endpoint
+    }
+
+    /**
+     * Called if the user cancels the login by dismissing the webView.
+     */
     open fun onPkceAuthCancelled() {}
 
     val pkceAuth = PkceAuth()
@@ -79,6 +114,7 @@ abstract class AuthenticationViewModel : ViewModel() {
                 try {
                     authService.initiateReLogin(activity, requestCode)
                 } catch (ex: Exception) {
+                    _onError.value = ex.message
                 }
             }
         }
@@ -101,15 +137,24 @@ abstract class AuthenticationViewModel : ViewModel() {
     }
 }
 
-abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppCompatActivity() {
+abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatActivity() {
 
     protected abstract val viewModel: T
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        observe(viewModel.onPkceLogin, ::onPkceLogin)
         observe(viewModel.onCredentials, ::onCredentials)
         observe(viewModel.onError, ::onError)
+    }
+
+    protected fun onPkceLogin(endpoint: String) {
+        if (viewModel.isReLogin) {
+            viewModel.pkceAuth.reLogin(this, REQUEST_CODE_AUTHENTICATE)
+        } else {
+            viewModel.pkceAuth.login(endpoint, this, REQUEST_CODE_AUTHENTICATE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -124,15 +169,14 @@ abstract class AuthenticationActivity<out T : AuthenticationViewModel> : AppComp
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun pkceLogin(endpoint: String) {
-        if (viewModel.isReLogin) {
-            viewModel.pkceAuth.reLogin(this, REQUEST_CODE_AUTHENTICATE)
-        } else {
-            viewModel.pkceAuth.login(endpoint, this, REQUEST_CODE_AUTHENTICATE)
-        }
-    }
-
+    /**
+     * Called when [credentials] become available.
+     */
     abstract fun onCredentials(credentials: Credentials)
+
+    /**
+     * Called on [error] during the authentication process.
+     */
     abstract fun onError(error: String)
 
     companion object {

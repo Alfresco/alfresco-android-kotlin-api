@@ -41,18 +41,6 @@ The easiest way to integrate it is by using the abstract activities we have prov
 Simply extend the classes and implement the abstract methods.
 
 ```kotlin
-
-class MyLoginViewModel() : AuthenticationViewModel() {
-
-    override fun onAuthType(authType: AuthType) {
-        when (authType) {
-            AuthType.PKCE -> { /* SSO login available at URI */ }
-            AuthType.BASIC -> { /* Basic login available at URI */ }
-            AuthType.UNKNOWN -> { /* No Alfresco instance found */ }
-        }
-    }
-}
-
 class MyLoginActivity() : AuthenticationActivity<MyLoginViewModel>() {
   override val viewModel: MyLoginViewModel by viewModels
 
@@ -66,57 +54,34 @@ class MyLoginActivity() : AuthenticationActivity<MyLoginViewModel>() {
 }
 ```
 
-When logging in as a first step you should call `viewModel.checkAuthType(endpoint, authConfig)` to identify if an Alfresco instance is running at an URL and which authentication method it supports. Response will be provided via `viewModel.onAuthType(authType) { }`
+When logging in as a first step you should call `viewModel.checkAuthType(endpoint, authConfig, onResult)` to identify if an Alfresco instance is running at an URL and which authentication method it supports.
 
-### Basic Authentication
+### Basic Authentication (Not Recommended)
 
 For basic authentication build your own UI to collect credentials.
 
-There isn't much needed to provide to the lib in this case but we do recommend you follow this template in your **viewModel**:
+On login call `viewModel.basicAuth(username, password)` which will compute an `AuthInterceptor` -compatible state and return it via `onCredentials`.
 
-```kotlin
-class MyLoginViewModel() : AuthenticationViewModel() {
-    ...
-
-    fun login(username: String, password: String) {
-        val state = AuthInterceptor.basicState(username, password)
-        _onCredentials.value = Credentials(username, state, AuthType.BASIC.value)
-    }
-}
-```
-
-You may compute your own state but we offer a helper function `AuthInterceptor.basicState` that works neatly with our `AuthInterceptor`.
-
-Calling `_onCredentials` afterwards triggers `onCredentials` function in your activity so you may resume your normal validation flow.
+**Note**: `viewModel.basicAuth` does not provide any crendential validation. It's at this point where one could fetch the user's profile or permissions to complete the authentication process and validate the crendetials.
 
 ### SSO Authentication
 
-For SSO your activity will have to present the user a WebView for him to login and then collect the token at the end.
+For SSO your activity will have to present the user a WebView to log in. On success session information will be returned to the app.
 
-Several steps are required to make it work.
-
-First your viewModel will have to init the **pkceAuth** component with your config, and then call onSsoLogin with the URI of your server.
-
-```kotlin
-class MyLoginViewModel() : AuthenticationViewModel() {
-    init {
-        pkceAuth.initServiceWith(authConfig, null)
-    }
-    ...
-}
-```
-Next call `pkceLogin` in your activity which will show the user the SSO WebView:
+To trigger the process call `viewModel.pkceLogin()` which will prepare the auth service and then present the SSO WebView to the user:
 ```kotlin
 class MyLoginActivity() : AuthenticationActivity<MyLoginViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginButton.setOnClickListener { pkceLogin(server) }
+        loginButton.setOnClickListener { viewModel.pkceLogin(endpoint, authConfig) }
     }
     ...
 }
 ```
-Upon successful login the server will callback with your token and to make it work you'll need to declare the callback uri in your **AndroidManifest.xml**:
+Upon successful login the server will callback with your token via `onCredentials`. If any issue occurred it will trigger `onError` or call `onPkceAuthCancelled` if the user cancelled the proecess.
+
+To ensure a token is returned you'll need to declare the callback uri used in the process in your **AndroidManifest.xml**:
 ```
 <activity android:name="com.alfresco.auth.pkce.RedirectUriReceiverActivity">
     <intent-filter>
@@ -133,8 +98,6 @@ Upon successful login the server will callback with your token and to make it wo
 </activity>
 ```
 This **needs to match** your configuration in the Identity Service and the one provided in your **AuthConfig**
-
-Our library will take care of getting the token and will call you back in via the `onCredentials()` function
 
 ### After Authentication
 

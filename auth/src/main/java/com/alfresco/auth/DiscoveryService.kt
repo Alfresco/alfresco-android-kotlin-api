@@ -13,8 +13,10 @@ import okhttp3.Request
 
 class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
 
+    /**
+     * Determine which [AuthType] is supported by the [endpoint].
+     */
     suspend fun getAuthType(endpoint: String): AuthType {
-
         return when {
 
             isPkceType(endpoint) -> AuthType.PKCE
@@ -25,6 +27,9 @@ class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
         }
     }
 
+    /**
+     * Check if Content Services are installed on [endpoint].
+     */
     suspend fun isContentServicesInstalled(endpoint: String): Boolean {
         val uri = contentServicesDiscoveryEndpoint(endpoint).toString()
 
@@ -64,22 +69,23 @@ class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
         }
     }
 
-    fun serviceDocumentsEndpoint(endpoint: String): Uri {
-        return PkceAuthService.endpointWith(endpoint, authConfig)
+    /**
+     * Return service documents Uri based for [endpoint].
+     */
+    fun serviceDocumentsEndpoint(endpoint: String): Uri =
+        PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
             .appendPath(authConfig.serviceDocuments)
             .build()
-    }
 
-    private fun contentServicesDiscoveryEndpoint(endpoint: String): Uri {
-        return serviceDocumentsEndpoint(endpoint)
+    private fun contentServicesDiscoveryEndpoint(endpoint: String): Uri =
+        serviceDocumentsEndpoint(endpoint)
             .buildUpon()
             .appendEncodedPath(ACS_SERVER_DETAILS)
             .build()
-    }
 
     companion object {
-        const val ACS_SERVER_DETAILS = "service/api/server"
-        const val MIN_ACS_VERSION = "5.2.2"
+        private const val ACS_SERVER_DETAILS = "service/api/server"
+        private const val MIN_ACS_VERSION = "5.2.2"
     }
 }

@@ -27,12 +27,12 @@ import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
 
-open class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
+internal class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
-    protected val authConfig: AuthConfig
     private val connectionBuilder: ConnectionBuilder
     private val authService: AuthorizationService
-    protected var authState: AtomicReference<AuthState>
+    private val authConfig: AuthConfig
+    private var authState: AtomicReference<AuthState>
 
     init {
         checkConfig(authConfig)
