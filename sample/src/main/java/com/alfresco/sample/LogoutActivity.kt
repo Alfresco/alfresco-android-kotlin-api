@@ -30,7 +30,7 @@ class LogoutViewModel(context: Context, authType: AuthType?, authState: String, 
     }
 }
 
-class LogoutActivity() : EndSessionActivity<LogoutViewModel>() {
+class LogoutActivity : EndSessionActivity<LogoutViewModel>() {
 
     override val viewModel: LogoutViewModel by viewModels { LogoutViewModel.Factory(applicationContext) }
 }

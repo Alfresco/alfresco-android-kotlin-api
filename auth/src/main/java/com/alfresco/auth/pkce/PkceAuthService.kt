@@ -54,18 +54,16 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     }
 
     /**
-     * Fetch an AuthorizationServiceConfiguration from an OpenID Connect issuer url.
+     * Fetch an [AuthorizationServiceConfiguration] from an [openIdConnectIssuerUri].
      * This method automatically appends the OpenID connect well-known configuration path to the
      * url.
-     *
-     * @param openIdConnectIssuerUrl The issuer url, e.g. "https://accounts.google.com"
      * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
      */
     suspend fun fetchDiscoveryFromUrl(openIdConnectIssuerUri: Uri) =
         suspendCancellableCoroutine<Result<AuthorizationServiceConfiguration, AuthorizationException>> {
             AuthorizationServiceConfiguration.fetchFromUrl(
                 openIdConnectIssuerUri,
-                AuthorizationServiceConfiguration.RetrieveConfigurationCallback { serviceConfiguration, ex ->
+                { serviceConfiguration, ex ->
                     when {
                         ex != null -> {
                             it.resumeWith(kotlin.Result.success(Result.error(ex)))
@@ -234,7 +232,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     private fun generateAuthorizationRequest(serviceAuthorization: AuthorizationServiceConfiguration):
             AuthorizationRequest {
 
-        var builder = AuthorizationRequest.Builder(
+        val builder = AuthorizationRequest.Builder(
             serviceAuthorization,
             authConfig.clientId,
             ResponseTypeValues.CODE,
@@ -243,9 +241,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
 
         builder.setScope("openid")
 
-        val authRequest = builder.build()
-
-        return authRequest
+        return builder.build()
     }
 
     private fun makeEndSessionRequest(serviceAuthorization: AuthorizationServiceConfiguration): EndSessionRequest {

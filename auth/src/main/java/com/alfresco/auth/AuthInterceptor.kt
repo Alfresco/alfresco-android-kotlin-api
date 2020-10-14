@@ -62,7 +62,7 @@ class AuthInterceptor(
         fun finish()
     }
 
-    private inner class PlainProvider() : Provider {
+    private inner class PlainProvider : Provider {
 
         override fun intercept(chain: Interceptor.Chain): Response {
             return chain.proceed(chain.request())

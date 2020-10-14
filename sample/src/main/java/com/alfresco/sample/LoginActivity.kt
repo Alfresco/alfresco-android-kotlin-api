@@ -52,7 +52,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
     }
 }
 
-class LoginActivity() : AuthenticationActivity<LoginViewModel>() {
+class LoginActivity : AuthenticationActivity<LoginViewModel>() {
 
     override val viewModel: LoginViewModel by viewModels { LoginViewModel.Factory(applicationContext) }
 

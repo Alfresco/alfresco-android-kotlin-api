@@ -62,7 +62,7 @@ abstract class AuthenticationViewModel : ViewModel() {
 
     /**
      * Initiate PKCE login, against [endpoint] with provided [authConfig].
-     * If an [authState] is provided the invocation is considered [isRelogin].
+     * If an [authState] is provided the invocation is considered a re-login.
      * On success credentials are provided via [onCredentials].
      * On error [onError] is invoked instead.
      * If the flow is cancelled by the user [onPkceAuthCancelled] is called.

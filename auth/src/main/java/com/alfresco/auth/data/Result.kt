@@ -79,18 +79,14 @@ sealed class Result<out D, out E : Exception> {
      * Handles success result only if the type of the [Result] is [Result.Success]
      */
     suspend fun onSuccess(successAction: suspend (D) -> Unit) {
-        when (this) {
-            is Success -> successAction(data)
-        }
+        if (this is Success) successAction(data)
     }
 
     /**
      * Handles error result only if the type of the [Result] is [Result.Error]
      */
     suspend fun onError(errorAction: suspend (E) -> Unit) {
-        when (this) {
-            is Error -> errorAction(exception)
-        }
+        if (this is Error) errorAction(exception)
     }
 
     companion object {
