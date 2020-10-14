@@ -109,16 +109,13 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         }
     }
 
-    suspend fun initiateReLogin(activity: Activity, requestCode: Int) {
+    fun initiateReLogin(activity: Activity, requestCode: Int) {
         requireNotNull(authState.get())
 
-        withContext(Dispatchers.IO) {
-            val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
-            val authIntent = generateAuthIntent(authRequest)
-            withContext(Dispatchers.Main) {
-                activity.startActivityForResult(authIntent, requestCode)
-            }
-        }
+        val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+        val authIntent = generateAuthIntent(authRequest)
+
+        activity.startActivityForResult(authIntent, requestCode)
     }
 
     /**

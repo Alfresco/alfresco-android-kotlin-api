@@ -29,7 +29,7 @@ open class EndSessionViewModel(context: Context, authType: AuthType?, authState:
     }
 
     fun logout(activity: Activity, requestCode: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             if (authType == AuthType.PKCE) {
                 authService?.endSession(activity, requestCode)
             } else {

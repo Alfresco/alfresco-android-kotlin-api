@@ -100,7 +100,7 @@ abstract class AuthenticationViewModel : ViewModel() {
         }
 
         fun login(endpoint: String, activity: Activity, requestCode: Int) {
-            viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch {
                 try {
                     authService.initiateLogin(endpoint, activity, requestCode)
                 } catch (ex: Exception) {
@@ -110,13 +110,7 @@ abstract class AuthenticationViewModel : ViewModel() {
         }
 
         fun reLogin(activity: Activity, requestCode: Int) {
-            viewModelScope.launch(Dispatchers.Main) {
-                try {
-                    authService.initiateReLogin(activity, requestCode)
-                } catch (ex: Exception) {
-                    _onError.value = ex.message
-                }
-            }
+            authService.initiateReLogin(activity, requestCode)
         }
 
         fun handleActivityResult(intent: Intent) {
