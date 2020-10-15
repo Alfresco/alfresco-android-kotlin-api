@@ -147,9 +147,9 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 During the lifetime of a session it may become invalid.
 
-In the case of SSO the refresh token might expire or a remote actor might invalidate the user's session in the Identity Service.
+While using SSO the refresh token may expire or a remote actor may invalidate the user's session in the Identity Service.
 
-Even in the Basic Authentication scenario this may happen if the password gets changed.
+Even during basic authentication this may happen if the password gets changed.
 
 To help with this we provide the `AuthInterceptor` class that works with [OkHttp](https://square.github.io/okhttp/).
 
@@ -182,26 +182,21 @@ In case of SSO this class also takes care of automatic token refresh, and also c
 
 As mentioned before a session may become invalid for various reasons.
 
-When getting `onAuthFailure()` we recommend you prompt the user that he'll have to relogin and reuse the same `MyLoginActivity` created above to collect the user's credentials.
+When getting `onAuthFailure()` we recommend you prompt the user that they'll have to relogin and reuse the same `MyLoginActivity` created above to collect the user's credentials.
 
-While for Basic Authentication it's up to you to figure out the integration for SSO there is a special re-authentication flow.
+For basic authentication it's up to you to figure out the re-authentication flow.
 
-To trigger it init the `pkceAuth` instance providing the `authState` as a second parameter, notify the viewModel it's running in relogin mode and than trigger `pkceLogin` again
+For SSO we already provide a special re-authentication flow.
+
+To trigger it call `viewModel.pkceLogin()` but this time also provide the existing `authState`. During the process you can query `viewModel.isRelogin` if you need to figure out if the user is doing re-authentication.
 
 ```kotlin
-class MyLoginViewModel() : AuthenticationViewModel() {
-    init {
-        pkceAuth.initServiceWith(authConfig, authState)
-    }
-    ...
-}
 class MyLoginActivity() : AuthenticationActivity<MyLoginViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         reLoginButton.setOnClickListener {
-            viewModel.isReLogin = true
-            pkceLogin(server)
+            viewModel.pkceLogin(endpoint, authConfig, authState)
         }
     }
     ...
