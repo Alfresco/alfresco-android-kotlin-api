@@ -17,20 +17,20 @@ import net.openid.appauth.AuthorizationService
  * the OAuth2 redirect. If custom scheme redirect cannot be used with the identity provider
  * you are integrating with, then a custom intent filter should be defined in your
  * application manifest instead. For example, to handle
- * `https://www.example.com/oauth2redirect`:
+ * `myapp://aims/auth`:
  *
  * ```xml
  * <intent-filter>
  * <action android:name="android.intent.action.VIEW"></action>
  * <category android:name="android.intent.category.DEFAULT"></category>
  * <category android:name="android.intent.category.BROWSABLE"></category>
- * <data android:scheme="https" android:host="www.example.com" android:path="/oauth2redirect"></data>
+ * <data android:scheme="myapp" android:host="aims" android:path="/auth" />
 </intent-filter> *
  * ```
  */
 class RedirectUriReceiverActivity : Activity() {
 
-    public override fun onCreate(savedInstanceBundle: Bundle?) {
+    override fun onCreate(savedInstanceBundle: Bundle?) {
         super.onCreate(savedInstanceBundle)
 
         // while this does not appear to be achieving much, handling the redirect in this way

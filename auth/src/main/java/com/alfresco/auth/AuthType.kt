@@ -1,5 +1,8 @@
 package com.alfresco.auth
 
+/**
+ * Enum representing currently supported authentication types.
+ */
 enum class AuthType(val value: String) {
 
     /**
@@ -19,6 +22,10 @@ enum class AuthType(val value: String) {
 
     companion object {
         private val map = values().associateBy(AuthType::value)
-        fun fromValue(value: String) = map[value]
+
+        /**
+         * Convert string representation to enum.
+         */
+        @JvmStatic fun fromValue(value: String) = map[value]
     }
 }

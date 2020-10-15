@@ -18,9 +18,17 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 abstract class LiveEvent<T> : LiveData<T>()
 
+/**
+ * [LiveEvent] which publicly exposes [setValue] and [postValue] method.
+ */
 class MutableLiveEvent<T> : LiveEvent<T>() {
     private val mPending = AtomicBoolean(false)
 
+    /**
+     * Similar to [LiveData.observe] adds the given [observer] to the observers list within the
+     * lifespan of the given [owner]. The events are dispatched on the main thread. Data will only
+     * be delivered to the observer only on explicit [setValue]/[postValue].
+     */
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
         if (hasActiveObservers()) {
@@ -35,25 +43,31 @@ class MutableLiveEvent<T> : LiveEvent<T>() {
         })
     }
 
+    /**
+     * Similar to [LiveData.setValue] but ensures data is only delivered during an explicit call.
+     */
     @MainThread
     public override fun setValue(value: T?) {
         mPending.set(true)
         super.setValue(value)
     }
 
+    /**
+     * Similar to [LiveData.postValue].
+     */
     public override fun postValue(value: T?) {
         super.postValue(value)
     }
 
     /**
-     * Used for cases where T is Void, to make calls cleaner.
+     * Used for cases where [T] is Void, to make calls cleaner.
      */
     @MainThread
     fun call() {
         value = null
     }
 
-    companion object {
-        private const val TAG = "MutableLiveEvent"
+    private companion object {
+        const val TAG = "MutableLiveEvent"
     }
 }

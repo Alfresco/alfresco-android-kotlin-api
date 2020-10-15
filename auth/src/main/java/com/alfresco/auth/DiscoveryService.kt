@@ -11,7 +11,13 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
+/**
+ * Class that facilitates service discovery process.
+ */
+class DiscoveryService(
+    private val context: Context,
+    private val authConfig: AuthConfig
+) {
 
     /**
      * Determine which [AuthType] is supported by the [endpoint].
@@ -84,8 +90,8 @@ class DiscoveryService(val context: Context, val authConfig: AuthConfig) {
             .appendEncodedPath(ACS_SERVER_DETAILS)
             .build()
 
-    companion object {
-        private const val ACS_SERVER_DETAILS = "service/api/server"
-        private const val MIN_ACS_VERSION = "5.2.2"
+    private companion object {
+        const val ACS_SERVER_DETAILS = "service/api/server"
+        const val MIN_ACS_VERSION = "5.2.2"
     }
 }

@@ -20,6 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.openid.appauth.AuthState
 
+/**
+ * Companion [ViewModel] to [AuthenticationActivity] which facilitates authentication.
+ */
 abstract class AuthenticationViewModel : ViewModel() {
 
     protected abstract var context: Context
@@ -82,8 +85,8 @@ abstract class AuthenticationViewModel : ViewModel() {
      */
     open fun onPkceAuthCancelled() {}
 
-    val pkceAuth = PkceAuth()
-    inner class PkceAuth {
+    internal val pkceAuth = PkceAuth()
+    internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
         /**
@@ -131,6 +134,9 @@ abstract class AuthenticationViewModel : ViewModel() {
     }
 }
 
+/**
+ * Abstract activity used to build the authentication flow.
+ */
 abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatActivity() {
 
     protected abstract val viewModel: T
@@ -173,7 +179,7 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
      */
     abstract fun onError(error: String)
 
-    companion object {
+    private companion object {
         const val REQUEST_CODE_AUTHENTICATE = 20
     }
 }

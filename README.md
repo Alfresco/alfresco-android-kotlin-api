@@ -109,7 +109,7 @@ Things you could check at this time, could be profile information or permissions
 
 While normally you could just destroy the persisted credentials, in case of SSO the session needs to be invalidated or the user will log back in without a credentials prompt.
 
-To do so, just extend `EndSessionActivity` and provide the credentials you were previously given.
+First, extend `EndSessionActivity` and provide the credentials you were previously given.
 
 ```kotlin
 class MyLogoutViewModel(context: Context, authType: AuthType?, authState: String, authConfig: AuthConfig)
@@ -122,7 +122,7 @@ class MyLogoutActivity() : EndSessionActivity<MyLogoutViewModel>() {
 }
 ```
 
-To trigger the logout just `startActivityForResult`:
+Then, to logout, call `startActivityForResult`:
 
 ```kotlin
 fun logout() {

@@ -6,14 +6,14 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class ContentServerDetailsData(
+internal data class ContentServerDetailsData(
     val edition: String,
     val version: String,
     val schema: String
 )
 
 @Serializable
-data class ContentServerDetails(
+internal data class ContentServerDetails(
     val data: ContentServerDetailsData
 ) {
     /**

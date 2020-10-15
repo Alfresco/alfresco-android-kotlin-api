@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
+/**
+ * Data class holding authentication configuration.
+ */
 @Serializable
 data class AuthConfig(
     /**
@@ -37,12 +40,18 @@ data class AuthConfig(
      */
     var serviceDocuments: String
 ) {
+    /**
+     * Convenience method for JSON serialization.
+     */
     fun jsonSerialize(): String {
         return Json.encodeToString(serializer(), this)
     }
 
     companion object {
-        fun jsonDeserialize(str: String): AuthConfig? {
+        /**
+         * Convenience method for deserializing a JSON string representation.
+         */
+        @JvmStatic fun jsonDeserialize(str: String): AuthConfig? {
             return try {
                 Json.decodeFromString(serializer(), str)
             } catch (ex: SerializationException) {

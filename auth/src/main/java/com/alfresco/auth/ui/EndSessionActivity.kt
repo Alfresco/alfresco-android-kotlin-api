@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 import net.openid.appauth.AuthState
 import org.json.JSONException
 
+/**
+ * Companion [ViewModel] to [EndSessionActivity] for invoking the logout procedure.
+ */
 open class EndSessionViewModel(
     context: Context,
     authType: AuthType?,
@@ -32,6 +35,9 @@ open class EndSessionViewModel(
         }
     }
 
+    /**
+     * Invoke logout procedure, presenting extra activities if necessary.
+     */
     fun logout(activity: Activity, requestCode: Int) {
         viewModelScope.launch {
             if (authType == AuthType.PKCE) {
@@ -44,6 +50,10 @@ open class EndSessionViewModel(
     }
 }
 
+/**
+ * Abstract activity that will trigger logout [onResume] and return the result to the caller.
+ * Can be used with all [AuthType]s.
+ */
 abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivity() {
     protected abstract val viewModel: T
 
@@ -68,7 +78,7 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
         }
     }
 
-    companion object {
-        private const val REQUEST_CODE_END_SESSION = 1
+    private companion object {
+        const val REQUEST_CODE_END_SESSION = 1
     }
 }

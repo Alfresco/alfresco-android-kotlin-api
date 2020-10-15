@@ -45,10 +45,16 @@ class AuthInterceptor(
         }
     }
 
+    /**
+     * Associates event [listener] with current object.
+     */
     fun setListener(listener: Listener) {
         this.listener = listener
     }
 
+    /**
+     * Call to cleanup any running tasks before the object is GCed to avoid any leaks.
+     */
     fun finish() {
         this.provider.finish()
     }
@@ -238,16 +244,16 @@ class AuthInterceptor(
         /**
          * Returns compatible state representation for basic authorization
          */
-        fun basicState(username: String, password: String): String {
+        @JvmStatic fun basicState(username: String, password: String): String {
             val credentials = "$username:$password"
             return Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         }
 
         /**
          * Returns a <username, password> [Pair] from provided basic [state]
-         * Please try to avoid using this fun if possible.
+         * Please try to avoid using this function if possible.
          */
-        fun decodeBasicState(state: String): Pair<String, String>? {
+        @JvmStatic fun decodeBasicState(state: String): Pair<String, String>? {
             return try {
                 val decoded = String(Base64.decode(state, Base64.NO_WRAP))
                 val split = decoded.split(":")
@@ -258,8 +264,18 @@ class AuthInterceptor(
         }
     }
 
+    /**
+     * Interface definition for a callback to be invoked on authentication events.
+     */
     interface Listener {
+        /**
+         * Called when [authState] changes during a refresh.
+         */
         fun onAuthStateChange(accountId: String, authState: String)
+
+        /**
+         * Called when a non-recoverable authentication failure occurs.
+         */
         fun onAuthFailure(accountId: String)
     }
 }
