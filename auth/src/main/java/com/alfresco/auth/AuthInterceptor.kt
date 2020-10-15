@@ -204,17 +204,16 @@ class AuthInterceptor(
         }
 
         private suspend fun runTokenRefresh(): AuthState? {
-            val result = pkceAuthService.refreshToken()
-
-            if (result.isSuccess) {
+            return try {
+                pkceAuthService.refreshToken()
                 val state = pkceAuthService.getAuthState()
                 state?.jsonSerializeString()?.let {
                     listener?.onAuthStateChange(accountId, it)
                 }
                 return state
+            } catch (ex: Exception) {
+                null
             }
-
-            return null
         }
     }
 

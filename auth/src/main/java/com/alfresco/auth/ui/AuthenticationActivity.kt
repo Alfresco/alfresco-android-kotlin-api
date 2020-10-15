@@ -118,16 +118,12 @@ abstract class AuthenticationViewModel : ViewModel() {
 
         fun handleActivityResult(intent: Intent) {
             viewModelScope.launch {
-
-                val tokenResult = authService.getAuthResponse(intent)
-
-                tokenResult.onSuccess {
+                try {
+                    val result = authService.getAuthResponse(intent)
                     val userEmail = authService.getUserEmail() ?: ""
-                    _onCredentials.value = Credentials(userEmail, it, AuthType.PKCE.value)
-                }
-
-                tokenResult.onError {
-                    _onError.value = it.message ?: ""
+                    _onCredentials.value = Credentials(userEmail, result, AuthType.PKCE.value)
+                } catch (ex: Exception) {
+                    _onError.value = ex.message ?: ""
                 }
             }
         }

@@ -66,13 +66,11 @@ class DiscoveryService(
 
     private suspend fun isPkceType(endpoint: String): Boolean {
         val uri = PkceAuthService.discoveryUriWith(endpoint, authConfig)
-        return try {
+        val result = try {
             val authService = PkceAuthService(context, null, authConfig)
-            val discoveryResult = authService.fetchDiscoveryFromUrl(uri)
-            discoveryResult.isSuccess
-        } catch (exception: Exception) {
-            false
-        }
+            authService.fetchDiscoveryFromUrl(uri)
+        } catch (exception: Exception) { null }
+        return result != null
     }
 
     /**

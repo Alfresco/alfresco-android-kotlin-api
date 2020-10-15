@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.data.Result
 import com.auth0.android.jwt.JWT
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
@@ -60,16 +59,16 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @see <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect discovery 1.0</a>
      */
     suspend fun fetchDiscoveryFromUrl(openIdConnectIssuerUri: Uri) =
-        suspendCancellableCoroutine<Result<AuthorizationServiceConfiguration, AuthorizationException>> {
+        suspendCancellableCoroutine<AuthorizationServiceConfiguration> {
             AuthorizationServiceConfiguration.fetchFromUrl(
                 openIdConnectIssuerUri,
                 { serviceConfiguration, ex ->
                     when {
-                        ex != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
-                        }
                         serviceConfiguration != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.success(serviceConfiguration)))
+                            it.resumeWith(Result.success(serviceConfiguration))
+                        }
+                        ex != null -> {
+                            it.resumeWithException(ex)
                         }
                         else -> it.resumeWithException(Exception())
                     }
@@ -89,20 +88,16 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         val discoveryUri = discoveryUriWith(endpoint, authConfig)
 
         withContext(Dispatchers.IO) {
-            with(fetchDiscoveryFromUrl(discoveryUri)) {
+            val config = fetchDiscoveryFromUrl(discoveryUri)
 
-                onSuccess {
-                    // save the authorization configuration
-                    authState.set(AuthState(it))
+            // save the authorization configuration
+            authState.set(AuthState(config))
 
-                    val authRequest = generateAuthorizationRequest(it)
-                    val authIntent = generateAuthIntent(authRequest)
+            val authRequest = generateAuthorizationRequest(config)
+            val authIntent = generateAuthIntent(authRequest)
 
-                    withContext(Dispatchers.Main) {
-                        activity.startActivityForResult(authIntent, requestCode)
-                    }
-                }
-                onError { throw it }
+            withContext(Dispatchers.Main) {
+                activity.startActivityForResult(authIntent, requestCode)
             }
         }
     }
@@ -130,7 +125,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      *
      * @param intent the intent received as a result from the initiation of the pkce login action
      */
-    suspend fun getAuthResponse(intent: Intent): Result<String, AuthorizationException> {
+    suspend fun getAuthResponse(intent: Intent): String {
         val authResponse = AuthorizationResponse.fromIntent(intent)
         val exception = AuthorizationException.fromIntent(intent)
 
@@ -138,11 +133,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
 
         if (authResponse != null) {
             return getToken(authResponse)
-        } else if (exception != null) {
-            return Result.error(exception)
         }
 
-        throw Exception()
+        throw exception ?: Exception()
     }
 
     /**
@@ -153,7 +146,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      */
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
         withContext(Dispatchers.IO) {
-            suspendCancellableCoroutine<Result<String, AuthorizationException>> {
+            suspendCancellableCoroutine<String> {
                 authService.performTokenRequest(
                     authorizationResponse.createTokenExchangeRequest(),
                     authState.get().clientAuthentication
@@ -162,10 +155,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
 
                     when {
                         response != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.success(authState.get().jsonSerializeString())))
+                            it.resumeWith(Result.success(authState.get().jsonSerializeString()))
                         }
                         ex != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
+                            it.resumeWithException(ex)
                         }
                         else -> it.resumeWithException(Exception())
                     }
@@ -175,7 +168,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
 
     suspend fun refreshToken() =
         withContext(Dispatchers.IO) {
-            suspendCancellableCoroutine<Result<TokenResponse, AuthorizationException>> {
+            suspendCancellableCoroutine<TokenResponse> {
                 authService.performTokenRequest(
                     authState.get().createTokenRefreshRequest(),
                     authState.get().clientAuthentication
@@ -185,10 +178,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
 
                     when {
                         response != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.success(response)))
+                            it.resumeWith(Result.success(response))
                         }
                         ex != null -> {
-                            it.resumeWith(kotlin.Result.success(Result.error(ex)))
+                            it.resumeWithException(ex)
                         }
                         else -> it.resumeWithException(Exception())
                     }
