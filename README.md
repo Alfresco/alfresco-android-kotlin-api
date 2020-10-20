@@ -10,7 +10,7 @@ To add any of them use:
 
 ```groovy
 repositories {
-    maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
+    maven { url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots" }
 }
 
 dependencies {
