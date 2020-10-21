@@ -255,7 +255,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      */
     private fun checkConfig(authConfig: AuthConfig) {
         requireNotNull(authConfig.port.toIntOrNull()) { "Invalid port or empty" }
-        require(authConfig.serviceDocuments.isNotBlank()) { "Service documents is blank or empty" }
+        require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
         require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
         require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
         require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }

@@ -34,10 +34,10 @@ class DiscoveryService(
     }
 
     /**
-     * Check if Content Services are installed on [endpoint].
+     * Check whether the content service is running on [endpoint].
      */
-    suspend fun isContentServicesInstalled(endpoint: String): Boolean {
-        val uri = contentServicesDiscoveryEndpoint(endpoint).toString()
+    suspend fun isContentServiceInstalled(endpoint: String): Boolean {
+        val uri = contentServiceDiscoveryUrl(endpoint).toString()
 
         return withContext(Dispatchers.IO) {
             try {
@@ -62,7 +62,7 @@ class DiscoveryService(
         }
     }
 
-    private suspend fun isBasicType(endpoint: String): Boolean = isContentServicesInstalled(endpoint)
+    private suspend fun isBasicType(endpoint: String): Boolean = isContentServiceInstalled(endpoint)
 
     private suspend fun isPkceType(endpoint: String): Boolean {
         val uri = PkceAuthService.discoveryUriWith(endpoint, authConfig)
@@ -74,16 +74,16 @@ class DiscoveryService(
     }
 
     /**
-     * Return service documents Uri based for [endpoint].
+     * Return content service url based on [endpoint].
      */
-    fun serviceDocumentsEndpoint(endpoint: String): Uri =
+    fun contentServiceUrl(endpoint: String): Uri =
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
-            .appendPath(authConfig.serviceDocuments)
+            .appendPath(authConfig.contentServicePath)
             .build()
 
-    private fun contentServicesDiscoveryEndpoint(endpoint: String): Uri =
-        serviceDocumentsEndpoint(endpoint)
+    private fun contentServiceDiscoveryUrl(endpoint: String): Uri =
+        contentServiceUrl(endpoint)
             .buildUpon()
             .appendEncodedPath(ACS_SERVER_DETAILS)
             .build()

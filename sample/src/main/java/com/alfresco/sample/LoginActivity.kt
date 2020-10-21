@@ -22,7 +22,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
     var server: String = ""
 
     val applicationUrl: String
-        get() = discoveryService.serviceDocumentsEndpoint(server).toString()
+        get() = discoveryService.contentServiceUrl(server).toString()
 
     fun connect() {
         try {

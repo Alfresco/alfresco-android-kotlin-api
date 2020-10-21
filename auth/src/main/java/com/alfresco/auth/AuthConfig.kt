@@ -36,9 +36,9 @@ data class AuthConfig(
     var port: String,
 
     /**
-     * Url path for service documents
+     * Path to content service
      */
-    var serviceDocuments: String
+    var contentServicePath: String
 ) {
     /**
      * Convenience method for JSON serialization.

@@ -15,7 +15,7 @@ class PkceServiceTests {
             clientId = "clientId",
             realm = "realm",
             redirectUrl = "redirectUrl",
-            serviceDocuments = "serviceDocs"
+            contentServicePath = "path"
         )
     }
 
