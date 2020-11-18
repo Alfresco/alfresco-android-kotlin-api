@@ -68,7 +68,7 @@ interface VersionsApi {
     suspend fun getVersionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?
     ): ResponseBody
@@ -88,10 +88,10 @@ interface VersionsApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/versions")
     suspend fun listVersionHistory(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null
     ): VersionPaging
     /**
      * Revert a version
@@ -110,6 +110,6 @@ interface VersionsApi {
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("versionId") versionId: String,
         @retrofit2.http.Body revertBody: RevertBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): VersionEntry
 }

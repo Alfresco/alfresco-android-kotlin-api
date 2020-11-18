@@ -28,7 +28,7 @@ interface NetworksApi {
     @GET("alfresco/versions/1/networks/{networkId}")
     suspend fun getNetwork(
         @retrofit2.http.Path("networkId") networkId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonNetworkEntry
     /**
      * Get network information
@@ -45,7 +45,7 @@ interface NetworksApi {
     suspend fun getNetworkForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("networkId") networkId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonNetworkEntry
     /**
      * List network membership
@@ -62,8 +62,8 @@ interface NetworksApi {
     @GET("alfresco/versions/1/people/{personId}/networks")
     suspend fun listNetworksForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonNetworkPaging
 }

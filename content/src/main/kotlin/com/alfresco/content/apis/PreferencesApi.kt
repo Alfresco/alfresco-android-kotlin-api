@@ -30,7 +30,7 @@ interface PreferencesApi {
     suspend fun getPreference(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("preferenceName") preferenceName: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PreferenceEntry
     /**
      * List preferences
@@ -47,8 +47,8 @@ interface PreferencesApi {
     @GET("alfresco/versions/1/people/{personId}/preferences")
     suspend fun listPreferences(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PreferencePaging
 }

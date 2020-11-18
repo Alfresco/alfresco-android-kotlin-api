@@ -38,8 +38,8 @@ interface FavoritesApi {
     suspend fun createFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body favoriteBodyCreate: FavoriteBodyCreate,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): FavoriteEntry
     /**
      * Create a site favorite
@@ -57,7 +57,7 @@ interface FavoritesApi {
     suspend fun createSiteFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body favoriteSiteBodyCreate: FavoriteSiteBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): FavoriteSiteEntry
     /**
      * Delete a favorite
@@ -106,8 +106,8 @@ interface FavoritesApi {
     suspend fun getFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("favoriteId") favoriteId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): FavoriteEntry
     /**
      * Get a favorite site
@@ -125,7 +125,7 @@ interface FavoritesApi {
     suspend fun getFavoriteSite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
     /**
      * List favorite sites
@@ -143,9 +143,9 @@ interface FavoritesApi {
     @Deprecated(message = "Deprecated")
     suspend fun listFavoriteSitesForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SitePaging
     /**
      * List favorites
@@ -165,11 +165,11 @@ interface FavoritesApi {
     @GET("alfresco/versions/1/people/{personId}/favorites")
     suspend fun listFavorites(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): FavoritePaging
 }

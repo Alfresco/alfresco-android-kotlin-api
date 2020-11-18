@@ -43,7 +43,7 @@ interface DownloadsApi {
     @POST("alfresco/versions/1/downloads")
     suspend fun createDownload(
         @retrofit2.http.Body downloadBodyCreate: DownloadBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): DownloadEntry
     /**
      * Get a download
@@ -58,6 +58,6 @@ interface DownloadsApi {
     @GET("alfresco/versions/1/downloads/{downloadId}")
     suspend fun getDownload(
         @retrofit2.http.Path("downloadId") downloadId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): DownloadEntry
 }

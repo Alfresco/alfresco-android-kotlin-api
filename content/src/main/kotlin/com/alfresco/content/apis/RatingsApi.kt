@@ -33,7 +33,7 @@ interface RatingsApi {
     suspend fun createRating(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body ratingBodyCreate: RatingBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): RatingEntry
     /**
      * Delete a rating
@@ -65,7 +65,7 @@ interface RatingsApi {
     suspend fun getRating(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("ratingId") ratingId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): RatingEntry
     /**
      * List ratings
@@ -82,8 +82,8 @@ interface RatingsApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/ratings")
     suspend fun listRatings(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): RatingPaging
 }

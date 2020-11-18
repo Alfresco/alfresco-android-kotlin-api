@@ -67,9 +67,9 @@ interface SitesApi {
     @POST("alfresco/versions/1/sites")
     suspend fun createSite(
         @retrofit2.http.Body siteBodyCreate: SiteBodyCreate,
-        @retrofit2.http.Query("skipConfiguration") skipConfiguration: Boolean?,
-        @retrofit2.http.Query("skipAddToFavorites") skipAddToFavorites: Boolean?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipConfiguration") skipConfiguration: Boolean? = null,
+        @retrofit2.http.Query("skipAddToFavorites") skipAddToFavorites: Boolean? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
     /**
      * Create a site membership
@@ -86,7 +86,7 @@ interface SitesApi {
     suspend fun createSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Body siteMembershipBodyCreate: SiteMembershipBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMemberEntry
     /**
      * Create a site membership request
@@ -103,7 +103,7 @@ interface SitesApi {
     suspend fun createSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body siteMembershipRequestBodyCreate: SiteMembershipRequestBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMembershipRequestEntry
     /**
      * Delete a site
@@ -118,7 +118,7 @@ interface SitesApi {
     @DELETE("alfresco/versions/1/sites/{siteId}")
     suspend fun deleteSite(
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("permanent") permanent: Boolean?
+        @retrofit2.http.Query("permanent") permanent: Boolean? = null
     ): Unit
     /**
      * Delete a site membership
@@ -179,8 +179,8 @@ interface SitesApi {
     @GET("alfresco/versions/1/sites/{siteId}")
     suspend fun getSite(
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("relations") @CSV relations: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("relations") @CSV relations: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
     /**
      * Get a site container
@@ -197,7 +197,7 @@ interface SitesApi {
     suspend fun getSiteContainer(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("containerId") containerId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteContainerEntry
     /**
      * Get a site membership
@@ -214,7 +214,7 @@ interface SitesApi {
     suspend fun getSiteMembership(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMemberEntry
     /**
      * Get a site membership
@@ -246,7 +246,7 @@ interface SitesApi {
     suspend fun getSiteMembershipRequestForPerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMembershipRequestEntry
     /**
      * Get site membership requests
@@ -262,10 +262,10 @@ interface SitesApi {
     )
     @GET("alfresco/versions/1/site-membership-requests")
     suspend fun getSiteMembershipRequests(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMembershipRequestWithPersonPaging
     /**
      * List site containers
@@ -282,9 +282,9 @@ interface SitesApi {
     @GET("alfresco/versions/1/sites/{siteId}/containers")
     suspend fun listSiteContainers(
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteContainerPaging
     /**
      * List site membership requests
@@ -301,9 +301,9 @@ interface SitesApi {
     @GET("alfresco/versions/1/people/{personId}/site-membership-requests")
     suspend fun listSiteMembershipRequestsForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMembershipRequestPaging
     /**
      * List site memberships
@@ -320,9 +320,9 @@ interface SitesApi {
     @GET("alfresco/versions/1/sites/{siteId}/members")
     suspend fun listSiteMemberships(
         @retrofit2.http.Path("siteId") siteId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMemberPaging
     /**
      * List site memberships
@@ -342,12 +342,12 @@ interface SitesApi {
     @GET("alfresco/versions/1/people/{personId}/sites")
     suspend fun listSiteMembershipsForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("relations") @CSV relations: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("where") where: String?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("relations") @CSV relations: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null
     ): SiteRolePaging
     /**
      * List sites
@@ -365,12 +365,12 @@ interface SitesApi {
     )
     @GET("alfresco/versions/1/sites")
     suspend fun listSites(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("relations") @CSV relations: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("where") where: String?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("relations") @CSV relations: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null
     ): SitePaging
     /**
      * Reject a site membership request
@@ -404,7 +404,7 @@ interface SitesApi {
     suspend fun updateSite(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Body siteBodyUpdate: SiteBodyUpdate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
     /**
      * Update a site membership
@@ -423,7 +423,7 @@ interface SitesApi {
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body siteMembershipBodyUpdate: SiteMembershipBodyUpdate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMemberEntry
     /**
      * Update a site membership request
@@ -442,6 +442,6 @@ interface SitesApi {
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Body siteMembershipRequestBodyUpdate: SiteMembershipRequestBodyUpdate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteMembershipRequestEntry
 }

@@ -38,8 +38,8 @@ interface SharedLinksApi {
     @POST("alfresco/versions/1/shared-links")
     suspend fun createSharedLink(
         @retrofit2.http.Body sharedLinkBodyCreate: SharedLinkBodyCreate,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SharedLinkEntry
     /**
      * Deletes a shared link
@@ -82,7 +82,7 @@ interface SharedLinksApi {
     @GET("alfresco/versions/1/shared-links/{sharedId}")
     suspend fun getSharedLink(
         @retrofit2.http.Path("sharedId") sharedId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SharedLinkEntry
     /**
      * Get shared link content
@@ -99,7 +99,7 @@ interface SharedLinksApi {
     @GET("alfresco/versions/1/shared-links/{sharedId}/content")
     suspend fun getSharedLinkContent(
         @retrofit2.http.Path("sharedId") sharedId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?
     ): ResponseBody
@@ -135,7 +135,7 @@ interface SharedLinksApi {
     suspend fun getSharedLinkRenditionContent(
         @retrofit2.http.Path("sharedId") sharedId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?
     ): ResponseBody
@@ -167,10 +167,10 @@ interface SharedLinksApi {
     )
     @GET("alfresco/versions/1/shared-links")
     suspend fun listSharedLinks(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SharedLinkPaging
 }

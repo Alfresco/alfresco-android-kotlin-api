@@ -37,8 +37,8 @@ interface GroupsApi {
     @POST("alfresco/versions/1/groups")
     suspend fun createGroup(
         @retrofit2.http.Body groupBodyCreate: GroupBodyCreate,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupEntry
     /**
      * Create a group membership
@@ -55,7 +55,7 @@ interface GroupsApi {
     suspend fun createGroupMembership(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Body groupMembershipBodyCreate: GroupMembershipBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupMemberEntry
     /**
      * Delete a group
@@ -70,7 +70,7 @@ interface GroupsApi {
     @DELETE("alfresco/versions/1/groups/{groupId}")
     suspend fun deleteGroup(
         @retrofit2.http.Path("groupId") groupId: String,
-        @retrofit2.http.Query("cascade") cascade: Boolean?
+        @retrofit2.http.Query("cascade") cascade: Boolean? = null
     ): Unit
     /**
      * Delete a group membership
@@ -101,8 +101,8 @@ interface GroupsApi {
     @GET("alfresco/versions/1/groups/{groupId}")
     suspend fun getGroup(
         @retrofit2.http.Path("groupId") groupId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupEntry
     /**
      * List memberships of a group
@@ -121,11 +121,11 @@ interface GroupsApi {
     @GET("alfresco/versions/1/groups/{groupId}/members")
     suspend fun listGroupMemberships(
         @retrofit2.http.Path("groupId") groupId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupMemberPaging
     /**
      * List group memberships
@@ -145,12 +145,12 @@ interface GroupsApi {
     @GET("alfresco/versions/1/people/{personId}/groups")
     suspend fun listGroupMembershipsForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupPaging
     /**
      * List groups
@@ -168,12 +168,12 @@ interface GroupsApi {
     )
     @GET("alfresco/versions/1/groups")
     suspend fun listGroups(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupPaging
     /**
      * Update group details
@@ -191,7 +191,7 @@ interface GroupsApi {
     suspend fun updateGroup(
         @retrofit2.http.Path("groupId") groupId: String,
         @retrofit2.http.Body groupBodyUpdate: GroupBodyUpdate,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): GroupEntry
 }

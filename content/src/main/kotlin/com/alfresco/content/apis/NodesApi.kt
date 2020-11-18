@@ -47,8 +47,8 @@ interface NodesApi {
     suspend fun copyNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyCopy: NodeBodyCopy,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Create node association
@@ -65,7 +65,7 @@ interface NodesApi {
     suspend fun createAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body associationBodyCreate: AssociationBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AssociationEntry
     /**
      * Create a node
@@ -84,9 +84,9 @@ interface NodesApi {
     suspend fun createNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyCreate: NodeBodyCreate,
-        @retrofit2.http.Query("autoRename") autoRename: Boolean?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("autoRename") autoRename: Boolean? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Create secondary child
@@ -103,7 +103,7 @@ interface NodesApi {
     suspend fun createSecondaryChildAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body secondaryChildAssociationBodyCreate: ChildAssociationBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): ChildAssociationEntry
     /**
      * Delete node association(s)
@@ -120,7 +120,7 @@ interface NodesApi {
     suspend fun deleteAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("targetId") targetId: String,
-        @retrofit2.http.Query("assocType") assocType: String?
+        @retrofit2.http.Query("assocType") assocType: String? = null
     ): Unit
     /**
      * Delete a node
@@ -135,7 +135,7 @@ interface NodesApi {
     @DELETE("alfresco/versions/1/nodes/{nodeId}")
     suspend fun deleteNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("permanent") permanent: Boolean?
+        @retrofit2.http.Query("permanent") permanent: Boolean? = null
     ): Unit
     /**
      * Delete secondary child or children
@@ -152,7 +152,7 @@ interface NodesApi {
     suspend fun deleteSecondaryChildAssociation(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("childId") childId: String,
-        @retrofit2.http.Query("assocType") assocType: String?
+        @retrofit2.http.Query("assocType") assocType: String? = null
     ): Unit
     /**
      * Get a node
@@ -169,9 +169,9 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}")
     suspend fun getNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("relativePath") relativePath: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("relativePath") relativePath: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Get node content
@@ -188,7 +188,7 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/content")
     suspend fun getNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?
     ): ResponseBody
@@ -212,14 +212,14 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/children")
     suspend fun listNodeChildren(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("relativePath") relativePath: String?,
-        @retrofit2.http.Query("includeSource") includeSource: Boolean?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("relativePath") relativePath: String? = null,
+        @retrofit2.http.Query("includeSource") includeSource: Boolean? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeChildAssociationPaging
     /**
      * List parents
@@ -239,12 +239,12 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/parents")
     suspend fun listParents(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("includeSource") includeSource: Boolean?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("includeSource") includeSource: Boolean? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeAssociationPaging
     /**
      * List secondary children
@@ -264,12 +264,12 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/secondary-children")
     suspend fun listSecondaryChildren(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("includeSource") includeSource: Boolean?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("includeSource") includeSource: Boolean? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeChildAssociationPaging
     /**
      * List source associations
@@ -286,9 +286,9 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/sources")
     suspend fun listSourceAssociations(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeAssociationPaging
     /**
      * List target associations
@@ -305,9 +305,9 @@ interface NodesApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/targets")
     suspend fun listTargetAssociations(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeAssociationPaging
     /**
      * Lock a node
@@ -325,8 +325,8 @@ interface NodesApi {
     suspend fun lockNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyLock: NodeBodyLock,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Move a node
@@ -344,8 +344,8 @@ interface NodesApi {
     suspend fun moveNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyMove: NodeBodyMove,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Unlock a node
@@ -361,8 +361,8 @@ interface NodesApi {
     @POST("alfresco/versions/1/nodes/{nodeId}/unlock")
     suspend fun unlockNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Update a node
@@ -380,8 +380,8 @@ interface NodesApi {
     suspend fun updateNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body nodeBodyUpdate: NodeBodyUpdate,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
     /**
      * Update node content
@@ -402,10 +402,10 @@ interface NodesApi {
     suspend fun updateNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body contentBodyUpdate: List<Byte>,
-        @retrofit2.http.Query("majorVersion") majorVersion: Boolean?,
-        @retrofit2.http.Query("comment") comment: String?,
-        @retrofit2.http.Query("name") name: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("majorVersion") majorVersion: Boolean? = null,
+        @retrofit2.http.Query("comment") comment: String? = null,
+        @retrofit2.http.Query("name") name: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
 }

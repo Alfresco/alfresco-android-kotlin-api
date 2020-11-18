@@ -64,8 +64,8 @@ interface AuditApi {
     @GET("alfresco/versions/1/audit-applications/{auditApplicationId}")
     suspend fun getAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null
     ): AuditApp
     /**
      * Get audit entry
@@ -82,7 +82,7 @@ interface AuditApi {
     suspend fun getAuditEntry(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Path("auditEntryId") auditEntryId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AuditEntryEntry
     /**
      * List audit applications
@@ -97,9 +97,9 @@ interface AuditApi {
     )
     @GET("alfresco/versions/1/audit-applications")
     suspend fun listAuditApps(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AuditAppPaging
     /**
      * List audit entries for an audit application
@@ -119,12 +119,12 @@ interface AuditApi {
     @GET("alfresco/versions/1/audit-applications/{auditApplicationId}/audit-entries")
     suspend fun listAuditEntriesForAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AuditEntryPaging
     /**
      * List audit entries for a node
@@ -144,12 +144,12 @@ interface AuditApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/audit-entries")
     suspend fun listAuditEntriesForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("where") where: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("where") where: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AuditEntryPaging
     /**
      * Update audit application info
@@ -166,6 +166,6 @@ interface AuditApi {
     suspend fun updateAuditApp(
         @retrofit2.http.Path("auditApplicationId") auditApplicationId: String,
         @retrofit2.http.Body auditAppBodyUpdate: AuditBodyUpdate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): AuditApp
 }

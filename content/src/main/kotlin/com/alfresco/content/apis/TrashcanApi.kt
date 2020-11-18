@@ -70,10 +70,10 @@ interface TrashcanApi {
     suspend fun getArchivedNodeRenditionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?,
-        @retrofit2.http.Query("placeholder") placeholder: Boolean?
+        @retrofit2.http.Query("placeholder") placeholder: Boolean? = null
     ): ResponseBody
     /**
      * Get a deleted node
@@ -88,7 +88,7 @@ interface TrashcanApi {
     @GET("alfresco/versions/1/deleted-nodes/{nodeId}")
     suspend fun getDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("include") @CSV include: List<String>?
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null
     ): DeletedNodeEntry
     /**
      * Get deleted node content
@@ -105,7 +105,7 @@ interface TrashcanApi {
     @GET("alfresco/versions/1/deleted-nodes/{nodeId}/content")
     suspend fun getDeletedNodeContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?
     ): ResponseBody
@@ -122,7 +122,7 @@ interface TrashcanApi {
     @GET("alfresco/versions/1/deleted-nodes/{nodeId}/renditions")
     suspend fun listDeletedNodeRenditions(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?
+        @retrofit2.http.Query("where") where: String? = null
     ): RenditionPaging
     /**
      * List deleted nodes
@@ -137,9 +137,9 @@ interface TrashcanApi {
     )
     @GET("alfresco/versions/1/deleted-nodes")
     suspend fun listDeletedNodes(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null
     ): DeletedNodesPaging
     /**
      * Restore a deleted node
@@ -155,7 +155,7 @@ interface TrashcanApi {
     @POST("alfresco/versions/1/deleted-nodes/{nodeId}/restore")
     suspend fun restoreDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
         @retrofit2.http.Body deletedNodeBodyRestore: DeletedNodeBodyRestore
     ): NodeEntry
 
@@ -169,6 +169,6 @@ interface TrashcanApi {
     @POST("alfresco/versions/1/deleted-nodes/{nodeId}/restore")
     suspend fun restoreDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
 }

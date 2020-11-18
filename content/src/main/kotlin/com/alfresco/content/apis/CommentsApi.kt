@@ -34,7 +34,7 @@ interface CommentsApi {
     suspend fun createComment(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body commentBodyCreate: CommentBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): CommentEntry
     /**
      * Delete a comment
@@ -66,9 +66,9 @@ interface CommentsApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/comments")
     suspend fun listComments(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): CommentPaging
     /**
      * Update a comment
@@ -87,6 +87,6 @@ interface CommentsApi {
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("commentId") commentId: String,
         @retrofit2.http.Body commentBodyUpdate: CommentBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): CommentEntry
 }

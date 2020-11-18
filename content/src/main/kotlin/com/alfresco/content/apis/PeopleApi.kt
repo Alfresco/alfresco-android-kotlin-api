@@ -38,7 +38,7 @@ interface PeopleApi {
     @POST("alfresco/versions/1/people")
     suspend fun createPerson(
         @retrofit2.http.Body personBodyCreate: PersonBodyCreate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonEntry
     /**
      * Delete avatar image
@@ -68,9 +68,9 @@ interface PeopleApi {
     @GET("alfresco/versions/1/people/{personId}/avatar")
     suspend fun getAvatarImage(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
-        @retrofit2.http.Query("placeholder") placeholder: Boolean?
+        @retrofit2.http.Query("placeholder") placeholder: Boolean? = null
     ): ResponseBody
     /**
      * Get a person
@@ -85,7 +85,7 @@ interface PeopleApi {
     @GET("alfresco/versions/1/people/{personId}")
     suspend fun getPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonEntry
     /**
      * List people
@@ -102,11 +102,11 @@ interface PeopleApi {
     )
     @GET("alfresco/versions/1/people")
     suspend fun listPeople(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonPaging
     /**
      * Request password reset
@@ -168,6 +168,6 @@ interface PeopleApi {
     suspend fun updatePerson(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Body personBodyUpdate: PersonBodyUpdate,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): PersonEntry
 }

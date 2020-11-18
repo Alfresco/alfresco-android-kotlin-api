@@ -35,13 +35,13 @@ interface QueriesApi {
     @GET("alfresco/versions/1/queries/nodes")
     suspend fun findNodes(
         @retrofit2.http.Query("term") term: String,
-        @retrofit2.http.Query("rootNodeId") rootNodeId: String?,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("nodeType") nodeType: String?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("rootNodeId") rootNodeId: String? = null,
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("nodeType") nodeType: String? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodePaging
     /**
      * Find people
@@ -59,10 +59,10 @@ interface QueriesApi {
     @GET("alfresco/versions/1/queries/people")
     suspend fun findPeople(
         @retrofit2.http.Query("term") term: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null
     ): PersonPaging
     /**
      * Find sites
@@ -80,9 +80,9 @@ interface QueriesApi {
     @GET("alfresco/versions/1/queries/sites")
     suspend fun findSites(
         @retrofit2.http.Query("term") term: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("orderBy") @CSV orderBy: List<String>? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SitePaging
 }

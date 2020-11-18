@@ -67,10 +67,10 @@ interface RenditionsApi {
     suspend fun getRenditionContent(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Path("renditionId") renditionId: String,
-        @retrofit2.http.Query("attachment") attachment: Boolean?,
+        @retrofit2.http.Query("attachment") attachment: Boolean? = null,
         @retrofit2.http.Header("If-Modified-Since") ifModifiedSince: ZonedDateTime?,
         @retrofit2.http.Header("Range") range: String?,
-        @retrofit2.http.Query("placeholder") placeholder: Boolean?
+        @retrofit2.http.Query("placeholder") placeholder: Boolean? = null
     ): ResponseBody
     /**
      * List renditions
@@ -85,6 +85,6 @@ interface RenditionsApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/renditions")
     suspend fun listRenditions(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("where") where: String?
+        @retrofit2.http.Query("where") where: String? = null
     ): RenditionPaging
 }

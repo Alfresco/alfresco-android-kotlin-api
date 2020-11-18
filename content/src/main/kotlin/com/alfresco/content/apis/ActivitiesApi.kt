@@ -31,10 +31,10 @@ interface ActivitiesApi {
     @GET("alfresco/versions/1/people/{personId}/activities")
     suspend fun listActivitiesForPerson(
         @retrofit2.http.Path("personId") personId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("who") who: String?,
-        @retrofit2.http.Query("siteId") siteId: String?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("who") who: String? = null,
+        @retrofit2.http.Query("siteId") siteId: String? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): ActivityPaging
 }

@@ -11,7 +11,7 @@ object Libs {
 
     const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.33.0"
 
-    const val swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-53-g0080d4e"
+    const val swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
 
     object Kotlin {
         private const val version = "1.4.10"

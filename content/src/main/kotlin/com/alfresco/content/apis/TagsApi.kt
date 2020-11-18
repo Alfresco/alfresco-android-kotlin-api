@@ -34,7 +34,7 @@ interface TagsApi {
     suspend fun createTagForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Body tagBodyCreate: TagBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): TagEntry
     /**
      * Delete a tag from a node
@@ -64,7 +64,7 @@ interface TagsApi {
     @GET("alfresco/versions/1/tags/{tagId}")
     suspend fun getTag(
         @retrofit2.http.Path("tagId") tagId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): TagEntry
     /**
      * List tags
@@ -80,10 +80,10 @@ interface TagsApi {
     )
     @GET("alfresco/versions/1/tags")
     suspend fun listTags(
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?,
-        @retrofit2.http.Query("include") @CSV include: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("include") @CSV include: List<String>? = null
     ): TagPaging
     /**
      * List tags for a node
@@ -100,9 +100,9 @@ interface TagsApi {
     @GET("alfresco/versions/1/nodes/{nodeId}/tags")
     suspend fun listTagsForNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("skipCount") skipCount: Int?,
-        @retrofit2.http.Query("maxItems") maxItems: Int?,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): TagPaging
     /**
      * Update a tag
@@ -119,6 +119,6 @@ interface TagsApi {
     suspend fun updateTag(
         @retrofit2.http.Path("tagId") tagId: String,
         @retrofit2.http.Body tagBodyUpdate: TagBody,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>?
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): TagEntry
 }
