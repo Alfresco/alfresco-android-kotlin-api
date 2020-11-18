@@ -1,0 +1,17 @@
+import com.alfresco.buildsrc.Libs
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    defaultConfig {
+        versionName "0.2"
+    }
+}
+
+dependencies {
+    api project(':content')
+    implementation Libs.Retrofit.retrofit
+}
+
+apply from: "$rootDir/config/publish.gradle"

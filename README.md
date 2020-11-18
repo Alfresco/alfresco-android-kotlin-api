@@ -19,6 +19,9 @@ dependencies {
 
   // Content Services API bindings
   implementation 'com.alfresco.android:content:latest.integration'
+
+  // Content Services API binding extensions
+  implementation 'com.alfresco.android:content-ktx:latest.integration'
 }
 ```
 
