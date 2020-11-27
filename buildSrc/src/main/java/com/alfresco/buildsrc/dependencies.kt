@@ -3,21 +3,21 @@ package com.alfresco.buildsrc
 @Suppress("unused")
 object Libs {
     object AndroidTools {
-        const val gradlePlugin = "com.android.tools.build:gradle:4.0.1"
-        const val desugar = "com.android.tools:desugar_jdk_libs:1.0.10"
+        const val gradlePlugin = "com.android.tools.build:gradle:4.1.1"
+        const val desugar = "com.android.tools:desugar_jdk_libs:1.1.1"
     }
 
-    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.6.1"
+    const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.8.2"
 
-    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.33.0"
+    const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.36.0"
 
     const val swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
 
     object Kotlin {
-        private const val version = "1.4.10"
+        private const val version = "1.4.20"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
-        const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2"
+        const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
     }
 
     object AndroidX {
@@ -49,5 +49,5 @@ object Libs {
 
     const val jwtdecode = "com.auth0.android:jwtdecode:2.0.0"
 
-    const val junit = "junit:junit:4.13"
+    const val junit = "junit:junit:4.13.1"
 }
