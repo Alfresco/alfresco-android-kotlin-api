@@ -32,6 +32,7 @@ dependencies {
     kapt Libs.Moshi.codegen
 
     implementation Libs.Retrofit.retrofit
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation Libs.Retrofit.converterMoshi
 
     coreLibraryDesugaring Libs.AndroidTools.desugar

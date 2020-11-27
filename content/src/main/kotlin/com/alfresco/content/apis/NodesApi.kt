@@ -14,12 +14,17 @@ import com.alfresco.content.models.Error
 import com.alfresco.content.models.NodeAssociationPaging
 import com.alfresco.content.models.NodeBodyCopy
 import com.alfresco.content.models.NodeBodyCreate
+import com.alfresco.content.models.NodeBodyCreateAssociation
 import com.alfresco.content.models.NodeBodyLock
 import com.alfresco.content.models.NodeBodyMove
 import com.alfresco.content.models.NodeBodyUpdate
 import com.alfresco.content.models.NodeChildAssociationPaging
 import com.alfresco.content.models.NodeEntry
+import com.alfresco.content.models.PermissionsBody
 import com.alfresco.content.tools.CSV
+import com.squareup.moshi.Json
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
 import java.time.ZonedDateTime
 import okhttp3.ResponseBody
@@ -88,6 +93,25 @@ interface NodesApi {
         @retrofit2.http.Query("include") @CSV include: List<String>? = null,
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): NodeEntry
+
+
+    @retrofit2.http.Multipart
+    @POST("alfresco/versions/1/nodes/{nodeId}/children")
+    suspend fun createNode(
+        @retrofit2.http.Path("nodeId") nodeId: String,
+        @retrofit2.http.Part filedata: MultipartBody.Part,
+        @retrofit2.http.Part("name") name: String?,
+        @retrofit2.http.Part("autoRename") autoRename: Boolean? = null,
+        @retrofit2.http.Part("nodeType") nodeType: String? = "cm:content",
+        @retrofit2.http.Part("overwrite") overwrite: Boolean? = null,
+        @retrofit2.http.Part("majorversion") majorVersion: Boolean? = null,
+        @retrofit2.http.Part("comment") comment: String? = null,
+        @retrofit2.http.Part("relativepath") relativePath: String? = null,
+        @retrofit2.http.Part("renditions") renditions: String? = null,
+        @retrofit2.http.Part("include") @CSV include: List<String>? = null,
+        @retrofit2.http.Part("fields") @CSV fields: List<String>? = null,
+    ): NodeEntry
+
     /**
      * Create secondary child
      * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Create a secondary child association, with the given association type, between the parent **nodeId** and a child node.  **Note:** You can create more than one secondary child association by  specifying a list of associations in the JSON body like this:  ```JSON [   {     \"childId\": \"string\",     \"assocType\": \"string\"   },   {     \"childId\": \"string\",     \"assocType\": \"string\"   } ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example:  ```JSON {   \"list\": {     \"pagination\": {       \"count\": 2,       \"hasMoreItems\": false,       \"totalItems\": 2,       \"skipCount\": 0,       \"maxItems\": 100     },     \"entries\": [       {         \"entry\": {           ...         }       },       {         \"entry\": {           ...         }       }     ]   } } ``` 
