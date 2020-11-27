@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.alfresco.auth.AuthConfig
@@ -13,9 +14,8 @@ import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.ui.AuthenticationActivity
 import com.alfresco.auth.ui.AuthenticationViewModel
+import com.alfresco.sample.databinding.ActivityLoginBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_login.connectButton
-import kotlinx.android.synthetic.main.activity_login.serverInput
 
 class LoginViewModel(override var context: Context) : AuthenticationViewModel() {
 
@@ -55,14 +55,15 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
 class LoginActivity : AuthenticationActivity<LoginViewModel>() {
 
     override val viewModel: LoginViewModel by viewModels { LoginViewModel.Factory(applicationContext) }
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
-        connectButton.setOnClickListener {
-            viewModel.server = serverInput.text.toString()
+        binding.connectButton.setOnClickListener {
+            viewModel.server = binding.serverInput.text.toString()
             viewModel.connect()
 
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
