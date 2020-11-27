@@ -11,16 +11,14 @@ import com.squareup.moshi.JsonClass
 
 /**
  * @property id
- * @property person
+ * @property group
  * @property role
- * @property isMemberOfGroup
  */
 @JsonClass(generateAdapter = true)
-data class SiteMember(
+data class SiteGroup(
     @Json(name = "id") @field:Json(name = "id") var id: String,
-    @Json(name = "person") @field:Json(name = "person") var person: Person,
-    @Json(name = "role") @field:Json(name = "role") var role: SiteMember.RoleEnum,
-    @Json(name = "isMemberOfGroup") @field:Json(name = "isMemberOfGroup") var isMemberOfGroup: Boolean? = null
+    @Json(name = "group") @field:Json(name = "group") var group: GroupMember,
+    @Json(name = "role") @field:Json(name = "role") var role: SiteGroup.RoleEnum
 ) {
     /**
      * Values: SITECONSUMER, SITECOLLABORATOR, SITECONTRIBUTOR, SITEMANAGER

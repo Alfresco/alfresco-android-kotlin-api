@@ -30,6 +30,7 @@ import java.time.ZonedDateTime
  * @property allowableOperations
  * @property path
  * @property permissions
+ * @property definition
  * @property association
  */
 @JsonClass(generateAdapter = true)
@@ -53,5 +54,6 @@ data class NodeChildAssociation(
     @Json(name = "allowableOperations") @field:Json(name = "allowableOperations") var allowableOperations: List<String>? = null,
     @Json(name = "path") @field:Json(name = "path") var path: PathInfo? = null,
     @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsInfo? = null,
+    @Json(name = "definition") @field:Json(name = "definition") var definition: Definition? = null,
     @Json(name = "association") @field:Json(name = "association") var association: ChildAssociationInfo? = null
 )

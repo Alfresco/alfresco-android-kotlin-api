@@ -12,6 +12,8 @@ import com.alfresco.content.models.SiteBodyUpdate
 import com.alfresco.content.models.SiteContainerEntry
 import com.alfresco.content.models.SiteContainerPaging
 import com.alfresco.content.models.SiteEntry
+import com.alfresco.content.models.SiteGroupEntry
+import com.alfresco.content.models.SiteGroupPaging
 import com.alfresco.content.models.SiteMemberEntry
 import com.alfresco.content.models.SiteMemberPaging
 import com.alfresco.content.models.SiteMembershipApprovalBody
@@ -54,7 +56,7 @@ interface SitesApi {
     ): Unit
     /**
      * Create a site
-     * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Creates a default site with the given details.  Unless explicitly specified, the site id will be generated from the site title. The site id must be unique and only contain alphanumeric and/or dash characters.  Note: the id of a site cannot be updated once the site has been created.  For example, to create a public site called \"Marketing\" the following body could be used: ```JSON {   \"title\": \"Marketing\",   \"visibility\": \"PUBLIC\" } ```  The creation of the (surf) configuration files required by Share can be skipped via the **skipConfiguration** query parameter.  **Note:** if skipped then such a site will **not** work within Share.  The addition of the site to the user's site favorites can be skipped via the **skipAddToFavorites** query parameter.  The creator will be added as a member with Site Manager role.  When you create a site, a container called **documentLibrary** is created for you in the new site.  This container is the root folder for content stored in the site. 
+     * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Creates a default site with the given details.  Unless explicitly specified, the site id will be generated from the site title. The site id must be unique and only contain alphanumeric and/or dash characters.  Note: the id of a site cannot be updated once the site has been created.  For example, to create a public site called \"Marketing\" the following body could be used: ```JSON {   \"title\": \"Marketing\",   \"visibility\": \"PUBLIC\" } ```  The creation of the (surf) configuration files required by Share can be skipped via the **skipConfiguration** query parameter.  **Note:** if skipped then such a site will **not** work within Share.  The addition of the site to the user's site favorites can be skipped via the **skipAddToFavorites** query parameter.  The creator will be added as a member with Site Manager role.  When you create a site, a container called **documentLibrary** is created for you in the new site. This container is the root folder for content stored in the site. 
      * The endpoint is owned by defaultname service owner
      * @param siteBodyCreate The site details (required)
      * @param skipConfiguration Flag to indicate whether the Share-specific (surf) configuration files for the site should not be created. (optional, default to false)
@@ -72,8 +74,25 @@ interface SitesApi {
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
     /**
+     * Create a site membership for group
+     * **Note:** this endpoint is available in Alfresco 7.0.0 and newer versions.  Creates a site membership for group **groupId** on site **siteId**. You can set the **role** to one of four types: * SiteConsumer * SiteCollaborator * SiteContributor * SiteManager **Note:** You can create more than one site membership by specifying a list of group in the JSON body like this:  ```JSON   [    {      \"role\": \"SiteConsumer\",      \"id\": \"authorityId\"    },    {      \"role\": \"SiteConsumer\",      \"id\": \"authorityId\"    }   ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example: ```JSON   {     \"list\": {       \"pagination\": {         \"count\": 2,         \"hasMoreItems\": false,         \"totalItems\": 2,         \"skipCount\": 0,         \"maxItems\": 100       },       \"entries\": [         {           \"entry\": {             ...           }         },         {           \"entry\": {             ...           }         }       ]     }   } ``` 
+     * The endpoint is owned by defaultname service owner
+     * @param siteId The identifier of a site. (required)
+     * @param siteMembershipBodyCreate The group to add and their role (required)
+     * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     */
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @POST("alfresco/versions/1/sites/{siteId}/group-members")
+    suspend fun createSiteGroupMembership(
+        @retrofit2.http.Path("siteId") siteId: String,
+        @retrofit2.http.Body siteMembershipBodyCreate: SiteMembershipBodyCreate,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
+    ): SiteGroupEntry
+    /**
      * Create a site membership
-     * Creates a site membership for person **personId** on site **siteId**.  You can set the **role** to one of four types:  * SiteConsumer * SiteCollaborator * SiteContributor * SiteManager  **Note:** You can create more than one site membership by  specifying a list of people in the JSON body like this:  ```JSON [   {     \"role\": \"SiteConsumer\",     \"id\": \"joe\"   },   {     \"role\": \"SiteConsumer\",     \"id\": \"fred\"   } ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example:  ```JSON {   \"list\": {     \"pagination\": {       \"count\": 2,       \"hasMoreItems\": false,       \"totalItems\": 2,       \"skipCount\": 0,       \"maxItems\": 100     },     \"entries\": [       {         \"entry\": {           ...         }       },       {         \"entry\": {           ...         }       }     ]   } } ``` 
+     * Creates a site membership for person **personId** on site **siteId**.  You can set the **role** to one of four types:  * SiteConsumer * SiteCollaborator * SiteContributor * SiteManager  **Note:** You can create more than one site membership by specifying a list of people in the JSON body like this:  ```JSON [   {     \"role\": \"SiteConsumer\",     \"id\": \"joe\"   },   {     \"role\": \"SiteConsumer\",     \"id\": \"fred\"   } ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example:  ```JSON {   \"list\": {     \"pagination\": {       \"count\": 2,       \"hasMoreItems\": false,       \"totalItems\": 2,       \"skipCount\": 0,       \"maxItems\": 100     },     \"entries\": [       {         \"entry\": {           ...         }       },       {         \"entry\": {           ...         }       }     ]   } } ``` 
      * The endpoint is owned by defaultname service owner
      * @param siteId The identifier of a site. (required)
      * @param siteMembershipBodyCreate The person to add and their role (required)
@@ -90,7 +109,7 @@ interface SitesApi {
     ): SiteMemberEntry
     /**
      * Create a site membership request
-     * Create a site membership request for yourself on the site with the identifier of **id**, specified in the JSON body.  The result of the request differs depending on the type of site.  * For a **public** site, you join the site immediately as a SiteConsumer. * For a **moderated** site, your request is added to the site membership request list. The request waits for approval from the Site Manager. * You cannot request membership of a **private** site. Members are invited by the site administrator.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user.   **Note:** You can create site membership requests for more than one site by  specifying a list of sites in the JSON body like this:  ```JSON [   {     \"message\": \"Please can you add me\",     \"id\": \"test-site-1\",     \"title\": \"Request for test site 1\",   },   {     \"message\": \"Please can you add me\",     \"id\": \"test-site-2\",     \"title\": \"Request for test site 2\",   } ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example:  ```JSON {   \"list\": {     \"pagination\": {       \"count\": 2,       \"hasMoreItems\": false,       \"totalItems\": 2,       \"skipCount\": 0,       \"maxItems\": 100     },     \"entries\": [       {         \"entry\": {           ...         }       },       {         \"entry\": {           ...         }       }     ]   } } ``` 
+     * Create a site membership request for yourself on the site with the identifier of **id**, specified in the JSON body. The result of the request differs depending on the type of site.  * For a **public** site, you join the site immediately as a SiteConsumer. * For a **moderated** site, your request is added to the site membership request list. The request waits for approval from the Site Manager. * You cannot request membership of a **private** site. Members are invited by the site administrator.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user.   **Note:** You can create site membership requests for more than one site by specifying a list of sites in the JSON body like this:  ```JSON [   {     \"message\": \"Please can you add me\",     \"id\": \"test-site-1\",     \"title\": \"Request for test site 1\",   },   {     \"message\": \"Please can you add me\",     \"id\": \"test-site-2\",     \"title\": \"Request for test site 2\",   } ] ``` If you specify a list as input, then a paginated list rather than an entry is returned in the response body. For example:  ```JSON {   \"list\": {     \"pagination\": {       \"count\": 2,       \"hasMoreItems\": false,       \"totalItems\": 2,       \"skipCount\": 0,       \"maxItems\": 100     },     \"entries\": [       {         \"entry\": {           ...         }       },       {         \"entry\": {           ...         }       }     ]   } } ``` 
      * The endpoint is owned by defaultname service owner
      * @param personId The identifier of a person. (required)
      * @param siteMembershipRequestBodyCreate Site membership request details (required)
@@ -119,6 +138,21 @@ interface SitesApi {
     suspend fun deleteSite(
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("permanent") permanent: Boolean? = null
+    ): Unit
+    /**
+     * Delete a group membership for site
+     * **Note:** this endpoint is available in Alfresco 7.0.0 and newer versions.  Deletes group **groupId** as a member of site **siteId**. 
+     * The endpoint is owned by defaultname service owner
+     * @param siteId The identifier of a site. (required)
+     * @param groupId The identifier of a group. (required)
+     */
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @DELETE("alfresco/versions/1/sites/{siteId}/group-members/{groupId}")
+    suspend fun deleteSiteGroupMembership(
+        @retrofit2.http.Path("siteId") siteId: String,
+        @retrofit2.http.Path("groupId") groupId: String
     ): Unit
     /**
      * Delete a site membership
@@ -200,6 +234,23 @@ interface SitesApi {
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteContainerEntry
     /**
+     * Get information about site membership of group
+     * **Note:** this endpoint is available in Alfresco 7.0.0 and newer versions.  Gets site membership information for group **groupId** on site **siteId**. 
+     * The endpoint is owned by defaultname service owner
+     * @param siteId The identifier of a site. (required)
+     * @param groupId The identifier of a group. (required)
+     * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     */
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @GET("alfresco/versions/1/sites/{siteId}/group-members/{groupId}")
+    suspend fun getSiteGroupMembership(
+        @retrofit2.http.Path("siteId") siteId: String,
+        @retrofit2.http.Path("groupId") groupId: String,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
+    ): SiteGroupEntry
+    /**
      * Get a site membership
      * Gets site membership information for person **personId** on site **siteId**.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user. 
      * The endpoint is owned by defaultname service owner
@@ -252,8 +303,8 @@ interface SitesApi {
      * Get site membership requests
      * Get the list of site membership requests the user can action.  You can use the **where** parameter to filter the returned site membership requests by **siteId**. For example:  ``` (siteId=mySite) ```  The **where** parameter can also be used to filter by ***personId***. For example:  ``` where=(personId=person) ```  This may be combined with the siteId filter, as shown below:  ``` where=(siteId=mySite AND personId=person)) ``` 
      * The endpoint is owned by defaultname service owner
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param where A string to restrict the returned objects by using a predicate. (optional)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
      */
@@ -272,8 +323,8 @@ interface SitesApi {
      * Gets a list of containers for the site **siteId**.
      * The endpoint is owned by defaultname service owner
      * @param siteId The identifier of a site. (required)
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
      */
     @Headers(
@@ -287,12 +338,31 @@ interface SitesApi {
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteContainerPaging
     /**
+     * List group membership for site
+     * **Note:** this endpoint is available in Alfresco 7.0.0 and newer versions.  Gets a list of group membership for site **siteId**. 
+     * The endpoint is owned by defaultname service owner
+     * @param siteId The identifier of a site. (required)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
+     * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     */
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @GET("alfresco/versions/1/sites/{siteId}/group-members")
+    suspend fun listSiteGroups(
+        @retrofit2.http.Path("siteId") siteId: String,
+        @retrofit2.http.Query("skipCount") skipCount: Int? = null,
+        @retrofit2.http.Query("maxItems") maxItems: Int? = null,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
+    ): SiteGroupPaging
+    /**
      * List site membership requests
      * Gets a list of the current site membership requests for person **personId**.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user. 
      * The endpoint is owned by defaultname service owner
      * @param personId The identifier of a person. (required)
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
      */
     @Headers(
@@ -310,9 +380,10 @@ interface SitesApi {
      * Gets a list of site memberships for site **siteId**.
      * The endpoint is owned by defaultname service owner
      * @param siteId The identifier of a site. (required)
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     * @param where Optionally filter the list. *   &#x60;&#x60;&#x60;where&#x3D;(isMemberOfGroup&#x3D;false|true)&#x60;&#x60;&#x60;  (optional)
      */
     @Headers(
         "Content-Type: application/json"
@@ -322,15 +393,16 @@ interface SitesApi {
         @retrofit2.http.Path("siteId") siteId: String,
         @retrofit2.http.Query("skipCount") skipCount: Int? = null,
         @retrofit2.http.Query("maxItems") maxItems: Int? = null,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
+        @retrofit2.http.Query("where") where: String? = null
     ): SiteMemberPaging
     /**
      * List site memberships
      * Gets a list of site membership information for person **personId**.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user.  You can use the **where** parameter to filter the returned sites by **visibility** or site **preset**.  Example to filter by **visibility**, use any one of:  ``` (visibility='PRIVATE') (visibility='PUBLIC') (visibility='MODERATED') ```  Example to filter by site **preset**:  ``` (preset='site-dashboard') ```  The default sort order for the returned list is for sites to be sorted by ascending title. You can override the default by using the **orderBy** parameter. You can specify one or more of the following fields in the **orderBy** parameter: * id * title * role 
      * The endpoint is owned by defaultname service owner
      * @param personId The identifier of a person. (required)
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param orderBy A string to control the order of the entities returned in a list. You can use the **orderBy** parameter to sort the list by one or more fields.  Each field has a default sort order, which is normally ascending order. Read the API method implementation notes above to check if any fields used in this method have a descending default search order.  To sort the entities in a specific order, you can use the **ASC** and **DESC** keywords for any field.  (optional)
      * @param relations Use the relations parameter to include one or more related entities in a single response. (optional)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
@@ -353,8 +425,8 @@ interface SitesApi {
      * List sites
      * Gets a list of sites in this repository.  You can use the **where** parameter to filter the returned sites by **visibility** or site **preset**.  Example to filter by **visibility**, use any one of:  ``` (visibility='PRIVATE') (visibility='PUBLIC') (visibility='MODERATED') ```  Example to filter by site **preset**:  ``` (preset='site-dashboard') ```  The default sort order for the returned list is for sites to be sorted by ascending title. You can override the default by using the **orderBy** parameter. You can specify one or more of the following fields in the **orderBy** parameter: * id * title * description  You can use the **relations** parameter to include one or more related entities in a single response and so reduce network traffic.  The entity types in Alfresco are organized in a tree structure. The **sites** entity has two children, **containers** and **members**. The following relations parameter returns all the container and member objects related to each site:  ``` containers,members ``` 
      * The endpoint is owned by defaultname service owner
-     * @param skipCount The number of entities that exist in the collection before those included in this list.  If not supplied then the default value is 0.  (optional, default to 0)
-     * @param maxItems The maximum number of items to return in the list.  If not supplied then the default value is 100.  (optional, default to 100)
+     * @param skipCount The number of entities that exist in the collection before those included in this list. If not supplied then the default value is 0.  (optional, default to 0)
+     * @param maxItems The maximum number of items to return in the list. If not supplied then the default value is 100.  (optional, default to 100)
      * @param orderBy A string to control the order of the entities returned in a list. You can use the **orderBy** parameter to sort the list by one or more fields.  Each field has a default sort order, which is normally ascending order. Read the API method implementation notes above to check if any fields used in this method have a descending default search order.  To sort the entities in a specific order, you can use the **ASC** and **DESC** keywords for any field.  (optional)
      * @param relations Use the relations parameter to include one or more related entities in a single response. (optional)
      * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
@@ -391,7 +463,7 @@ interface SitesApi {
     ): Unit
     /**
      * Update a site
-     * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Update the details for the given site **siteId**. Site Manager or otherwise a  (site) admin can update title, description or visibility.  Note: the id of a site cannot be updated once the site has been created. 
+     * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Update the details for the given site **siteId**. Site Manager or otherwise a (site) admin can update title, description or visibility.  Note: the id of a site cannot be updated once the site has been created. 
      * The endpoint is owned by defaultname service owner
      * @param siteId The identifier of a site. (required)
      * @param siteBodyUpdate The site information to update. (required)
@@ -406,6 +478,25 @@ interface SitesApi {
         @retrofit2.http.Body siteBodyUpdate: SiteBodyUpdate,
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
     ): SiteEntry
+    /**
+     * Update site membership of group
+     * **Note:** this endpoint is available in Alfresco 7.0.0 and newer versions.  Update the membership of person **groupId** in site **siteId**. You can set the **role** to one of four types: * SiteConsumer * SiteCollaborator * SiteContributor * SiteManager 
+     * The endpoint is owned by defaultname service owner
+     * @param siteId The identifier of a site. (required)
+     * @param groupId The identifier of a group. (required)
+     * @param siteMembershipBodyUpdate The groupId new role (required)
+     * @param fields A list of field names.  You can use this parameter to restrict the fields returned within a response if, for example, you want to save on overall bandwidth.  The list applies to a returned individual entity or entries within a collection.  If the API method also supports the **include** parameter, then the fields specified in the **include** parameter are returned in addition to those specified in the **fields** parameter.  (optional)
+     */
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @PUT("alfresco/versions/1/sites/{siteId}/group-members/{groupId}")
+    suspend fun updateSiteGroupMembership(
+        @retrofit2.http.Path("siteId") siteId: String,
+        @retrofit2.http.Path("groupId") groupId: String,
+        @retrofit2.http.Body siteMembershipBodyUpdate: SiteMembershipBodyUpdate,
+        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
+    ): SiteGroupEntry
     /**
      * Update a site membership
      * Update the membership of person **personId** in site **siteId**.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user.  You can set the **role** to one of four types:  * SiteConsumer * SiteCollaborator * SiteContributor * SiteManager 

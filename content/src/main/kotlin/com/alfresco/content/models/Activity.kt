@@ -28,5 +28,5 @@ data class Activity(
     @Json(name = "activityType") @field:Json(name = "activityType") var activityType: String,
     @Json(name = "siteId") @field:Json(name = "siteId") var siteId: String? = null,
     @Json(name = "postedAt") @field:Json(name = "postedAt") var postedAt: ZonedDateTime? = null,
-    @Json(name = "activitySummary") @field:Json(name = "activitySummary") var activitySummary: Map<String, Any?>? = null
+    @Json(name = "activitySummary") @field:Json(name = "activitySummary") var activitySummary: Map<String, String>? = null
 )

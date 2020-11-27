@@ -8,16 +8,15 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.math.BigDecimal
 
 /**
- * @property id
- * @property tag
- * @property count
+ * @property isAdmin
+ * @property isGuest
+ * @property isMutable
  */
 @JsonClass(generateAdapter = true)
-data class Tag(
-    @Json(name = "id") @field:Json(name = "id") var id: String,
-    @Json(name = "tag") @field:Json(name = "tag") var tag: String,
-    @Json(name = "count") @field:Json(name = "count") var count: BigDecimal? = null
+data class Capabilities(
+    @Json(name = "isAdmin") @field:Json(name = "isAdmin") var isAdmin: Boolean? = null,
+    @Json(name = "isGuest") @field:Json(name = "isGuest") var isGuest: Boolean? = null,
+    @Json(name = "isMutable") @field:Json(name = "isMutable") var isMutable: Boolean? = null
 )

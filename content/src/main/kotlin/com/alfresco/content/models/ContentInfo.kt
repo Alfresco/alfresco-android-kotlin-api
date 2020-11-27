@@ -19,8 +19,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ContentInfo(
     @Json(name = "mimeType") @field:Json(name = "mimeType") var mimeType: String,
-    @Json(name = "mimeTypeName") @field:Json(name = "mimeTypeName") var mimeTypeName: String? = null,
-    @Json(name = "sizeInBytes") @field:Json(name = "sizeInBytes") var sizeInBytes: Long? = null,
+    @Json(name = "mimeTypeName") @field:Json(name = "mimeTypeName") var mimeTypeName: String,
+    @Json(name = "sizeInBytes") @field:Json(name = "sizeInBytes") var sizeInBytes: Long,
     @Json(name = "encoding") @field:Json(name = "encoding") var encoding: String? = null,
     @Json(name = "mimeTypeGroup") @field:Json(name = "mimeTypeGroup") var mimeTypeGroup: String? = null
 )

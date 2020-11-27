@@ -13,7 +13,7 @@ import java.time.ZonedDateTime
 /**
  * @property id
  * @property versionComment
- * @property name The name must not contain spaces or the following special characters: * \&quot; &lt; &gt; \\ / ? : and |.  The character . must not be used at the end of the name. 
+ * @property name The name must not contain spaces or the following special characters: * \&quot; &lt; &gt; \\ / ? : and |. The character . must not be used at the end of the name. 
  * @property nodeType
  * @property isFolder
  * @property isFile

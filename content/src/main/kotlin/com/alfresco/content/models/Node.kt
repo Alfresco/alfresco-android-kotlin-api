@@ -30,6 +30,7 @@ import java.time.ZonedDateTime
  * @property allowableOperations
  * @property path
  * @property permissions
+ * @property definition
  */
 @JsonClass(generateAdapter = true)
 data class Node(
@@ -51,5 +52,6 @@ data class Node(
     @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null,
     @Json(name = "allowableOperations") @field:Json(name = "allowableOperations") var allowableOperations: List<String>? = null,
     @Json(name = "path") @field:Json(name = "path") var path: PathInfo? = null,
-    @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsInfo? = null
+    @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsInfo? = null,
+    @Json(name = "definition") @field:Json(name = "definition") var definition: Definition? = null
 )

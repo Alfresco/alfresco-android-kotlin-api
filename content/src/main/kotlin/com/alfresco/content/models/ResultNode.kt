@@ -30,6 +30,7 @@ import java.time.ZonedDateTime
  * @property allowableOperations
  * @property path
  * @property permissions
+ * @property definition
  * @property search
  * @property archivedByUser
  * @property archivedAt
@@ -57,6 +58,7 @@ data class ResultNode(
     @Json(name = "allowableOperations") @field:Json(name = "allowableOperations") var allowableOperations: List<String>? = null,
     @Json(name = "path") @field:Json(name = "path") var path: PathInfo? = null,
     @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsInfo? = null,
+    @Json(name = "definition") @field:Json(name = "definition") var definition: Definition? = null,
     @Json(name = "search") @field:Json(name = "search") var search: SearchEntry? = null,
     @Json(name = "archivedByUser") @field:Json(name = "archivedByUser") var archivedByUser: UserInfo? = null,
     @Json(name = "archivedAt") @field:Json(name = "archivedAt") var archivedAt: ZonedDateTime? = null,

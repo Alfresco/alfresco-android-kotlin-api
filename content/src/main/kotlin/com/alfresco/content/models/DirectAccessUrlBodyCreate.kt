@@ -8,16 +8,14 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.math.BigDecimal
+import java.time.ZonedDateTime
 
 /**
- * @property id
- * @property tag
- * @property count
+ * @property expiresAt
+ * @property validFor The length of time in seconds that the url is valid for. 
  */
 @JsonClass(generateAdapter = true)
-data class Tag(
-    @Json(name = "id") @field:Json(name = "id") var id: String,
-    @Json(name = "tag") @field:Json(name = "tag") var tag: String,
-    @Json(name = "count") @field:Json(name = "count") var count: BigDecimal? = null
+data class DirectAccessUrlBodyCreate(
+    @Json(name = "expiresAt") @field:Json(name = "expiresAt") var expiresAt: ZonedDateTime? = null,
+    @Json(name = "validFor") @field:Json(name = "validFor") var validFor: Int? = null
 )

@@ -21,6 +21,6 @@ data class NodeBodyUpdate(
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "nodeType") @field:Json(name = "nodeType") var nodeType: String? = null,
     @Json(name = "aspectNames") @field:Json(name = "aspectNames") var aspectNames: List<String>? = null,
-    @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null,
+    @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, String>? = null,
     @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsBody? = null
 )

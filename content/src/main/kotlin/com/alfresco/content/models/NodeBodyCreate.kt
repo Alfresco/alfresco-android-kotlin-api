@@ -15,6 +15,7 @@ import com.squareup.moshi.JsonClass
  * @property aspectNames
  * @property properties
  * @property permissions
+ * @property definition
  * @property relativePath
  * @property association
  * @property secondaryChildren
@@ -27,6 +28,7 @@ data class NodeBodyCreate(
     @Json(name = "aspectNames") @field:Json(name = "aspectNames") var aspectNames: List<String>? = null,
     @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null,
     @Json(name = "permissions") @field:Json(name = "permissions") var permissions: PermissionsBody? = null,
+    @Json(name = "definition") @field:Json(name = "definition") var definition: Definition? = null,
     @Json(name = "relativePath") @field:Json(name = "relativePath") var relativePath: String? = null,
     @Json(name = "association") @field:Json(name = "association") var association: NodeBodyCreateAssociation? = null,
     @Json(name = "secondaryChildren") @field:Json(name = "secondaryChildren") var secondaryChildren: List<ChildAssociationBody>? = null,

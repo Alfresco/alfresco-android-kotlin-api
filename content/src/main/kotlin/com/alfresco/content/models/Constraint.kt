@@ -10,15 +10,17 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * @property message
  * @property id
- * @property title
- * @property client Optional client name used when sending an email to the end user, defaults to \&quot;share\&quot; if not provided. **Note:** The client must be registered before this API can send an email. **Note:** This is available in Alfresco 7.0.0 and newer versions. 
+ * @property type the type of the constraint
+ * @property title the human-readable constraint title
+ * @property description the human-readable constraint description
+ * @property parameters
  */
 @JsonClass(generateAdapter = true)
-data class SiteMembershipRequestBodyCreate(
+data class Constraint(
     @Json(name = "id") @field:Json(name = "id") var id: String,
-    @Json(name = "message") @field:Json(name = "message") var message: String? = null,
+    @Json(name = "type") @field:Json(name = "type") var type: String? = null,
     @Json(name = "title") @field:Json(name = "title") var title: String? = null,
-    @Json(name = "client") @field:Json(name = "client") var client: String? = null
+    @Json(name = "description") @field:Json(name = "description") var description: String? = null,
+    @Json(name = "parameters") @field:Json(name = "parameters") var parameters: Map<String, Map<String, Any?>>? = null
 )

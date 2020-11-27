@@ -8,16 +8,11 @@ package com.alfresco.content.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.math.BigDecimal
 
 /**
- * @property id
- * @property tag
- * @property count
+ * @property properties List of property definitions effective for this node as the result of combining the type with all aspects.
  */
 @JsonClass(generateAdapter = true)
-data class Tag(
-    @Json(name = "id") @field:Json(name = "id") var id: String,
-    @Json(name = "tag") @field:Json(name = "tag") var tag: String,
-    @Json(name = "count") @field:Json(name = "count") var count: BigDecimal? = null
+data class Definition(
+    @Json(name = "properties") @field:Json(name = "properties") var properties: List<Property>? = null
 )

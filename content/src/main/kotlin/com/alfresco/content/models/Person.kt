@@ -56,6 +56,6 @@ data class Person(
     @Json(name = "userStatus") @field:Json(name = "userStatus") var userStatus: String? = null,
     @Json(name = "emailNotificationsEnabled") @field:Json(name = "emailNotificationsEnabled") var emailNotificationsEnabled: Boolean? = null,
     @Json(name = "aspectNames") @field:Json(name = "aspectNames") var aspectNames: List<String>? = null,
-    @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null,
-    @Json(name = "capabilities") @field:Json(name = "capabilities") var capabilities: Map<String, Any?>? = null
+    @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, String>? = null,
+    @Json(name = "capabilities") @field:Json(name = "capabilities") var capabilities: Capabilities? = null
 )
