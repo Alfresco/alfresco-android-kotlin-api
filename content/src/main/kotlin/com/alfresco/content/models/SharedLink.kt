@@ -26,6 +26,7 @@ import java.time.ZonedDateTime
  * @property isFavorite
  * @property properties A subset of the target node&#39;s properties, system properties and properties already available in the SharedLink are excluded. 
  * @property aspectNames
+ * @property path
  */
 @JsonClass(generateAdapter = true)
 data class SharedLink(
@@ -43,5 +44,6 @@ data class SharedLink(
     @Json(name = "allowableOperationsOnTarget") @field:Json(name = "allowableOperationsOnTarget") var allowableOperationsOnTarget: List<String>? = null,
     @Json(name = "isFavorite") @field:Json(name = "isFavorite") var isFavorite: Boolean? = null,
     @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null,
-    @Json(name = "aspectNames") @field:Json(name = "aspectNames") var aspectNames: List<String>? = null
+    @Json(name = "aspectNames") @field:Json(name = "aspectNames") var aspectNames: List<String>? = null,
+    @Json(name = "path") @field:Json(name = "path") var path: PathInfo? = null
 )
