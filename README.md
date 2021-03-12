@@ -1,4 +1,9 @@
-# <img title="Alfresco" alt='Alfresco' src='docs/logo.svg' height="32px" /> Android Kotlin API
+[<img title="Alfresco" alt='Alfresco' src='docs/logo.svg' align="right" height="32px" />](https://alfresco.com/)
+
+# Alfresco Android Kotlin API
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Alfresco/alfresco-android-kotlin-api/Continous%20delivery?logo=github)](https://github.com/Alfresco/alfresco-android-kotlin-api/actions/workflows/cd.yml)
+![License](https://img.shields.io/github/license/Alfresco/alfresco-android-kotlin-api)
 
 Support libraries which enable easier development of Android applications that work with Alfresco products.
 
