@@ -34,11 +34,11 @@ The libraries require at minimum Android **API 21**.
 
 ## Getting started
 
-Easiest way to get off the group is to check the included [Sample App](sample)
+Easiest way to get off the ground is to check the included [Sample App](sample).
 
-The sample shows how to get authentication working with the identity service, and how to integrate that with the API bindings to get a first request going.
+The sample shows you how to get authentication working with the identity service, and how to integrate that with the API bindings to get your first request going.
 
-The app should just work with your identity service install, but might not match your current configuration so edit [AuthConfig.kt](sample/src/main/java/com/alfresco/sample/AuthConfig.kt) if you run into any issues.
+The app should just work with your identity service install, but might not match your current configuration so edit [AuthConfig.kt](sample/src/main/java/com/alfresco/sample/AuthConfig.kt) if you run into issues.
 
 ## Authentication
 
@@ -70,11 +70,11 @@ For basic authentication build your own UI to collect credentials.
 
 On login call `viewModel.basicAuth(username, password)` which will compute an `AuthInterceptor` -compatible state and return it via `onCredentials`.
 
-**Note**: `viewModel.basicAuth` does not provide any crendential validation. It's at this point where one could fetch the user's profile or permissions to complete the authentication process and validate the crendetials.
+**Note**: `viewModel.basicAuth` does not provide any crendential validation. It's at this point where you could fetch the user's profile or permissions to complete the authentication process and validate the crendetials.
 
 ### SSO Authentication
 
-For SSO your activity will have to present the user a WebView to log in. On success session information will be returned to the app.
+For SSO, your activity will have to present the user a WebView to log in to. On success the session information will be returned to the app.
 
 To trigger the process call `viewModel.pkceLogin()` which will prepare the auth service and then present the SSO WebView to the user:
 ```kotlin
@@ -87,7 +87,7 @@ class MyLoginActivity() : AuthenticationActivity<MyLoginViewModel>() {
     ...
 }
 ```
-Upon successful login the server will callback with your token via `onCredentials`. If any issue occurred it will trigger `onError` or call `onPkceAuthCancelled` if the user cancelled the proecess.
+Upon successful login the server will callback with your token via `onCredentials`. If any issue occurred it will trigger `onError` or call `onPkceAuthCancelled` if the user cancelled the process.
 
 To ensure a token is returned you'll need to declare the callback uri used in the process in your **AndroidManifest.xml**:
 ```
@@ -180,7 +180,7 @@ val okHttpClient: OkHttpClient = OkHttpClient()
 
 Creation takes the same parameters we provide via the `onCredentials()` callback.
 
-When a request fails due to authentication problems we callback with `onAuthFailure()`.
+When a request fails due to authentication problems we call back with `onAuthFailure()`.
 
 In case of SSO this class also takes care of automatic token refresh, and also calls back with `onAuthStateChange()` so you can persist the new session information.
 
