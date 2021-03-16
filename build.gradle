@@ -1,7 +1,8 @@
-import com.alfresco.buildsrc.Libs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
+    apply from: rootProject.file('config/versions.gradle')
+
     repositories {
         google()
         jcenter()
@@ -20,6 +21,8 @@ buildscript {
 }
 
 allprojects {
+    apply from: rootProject.file('config/versions.gradle')
+
     repositories {
         mavenLocal()
         google()
