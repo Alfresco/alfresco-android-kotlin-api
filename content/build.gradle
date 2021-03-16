@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     defaultConfig {
-        versionName "0.2"
+        versionName "0.3.0"
     }
 
     compileOptions {

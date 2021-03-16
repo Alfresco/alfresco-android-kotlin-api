@@ -6,7 +6,7 @@ apply plugin: 'kotlinx-serialization'
 
 android {
     defaultConfig {
-        versionName "0.7"
+        versionName "0.8.0"
     }
 }
 
