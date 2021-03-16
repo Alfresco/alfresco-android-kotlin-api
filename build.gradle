@@ -61,4 +61,4 @@ subprojects {
     }
 }
 
-apply from: "$rootDir/config/versions.gradle"
+apply from: "$rootDir/config/dependencyUpdates.gradle"
