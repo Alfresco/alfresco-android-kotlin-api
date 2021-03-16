@@ -10,6 +10,11 @@ project.afterEvaluate {
         classifier "sources"
     }
 
+    task javadocJar(type: Jar, dependsOn: 'dokkaJavadoc') {
+        from "$buildDir/dokka/javadoc"
+        classifier = 'javadoc'
+    }
+
     publishing {
         publications {
             library(MavenPublication) {
@@ -20,6 +25,7 @@ project.afterEvaluate {
 
                 artifact bundleReleaseAar
                 artifact sourcesJar
+                artifact javadocJar
 
                 pom {
                     licenses {

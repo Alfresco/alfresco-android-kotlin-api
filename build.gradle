@@ -15,6 +15,7 @@ buildscript {
 
         classpath Libs.swaggerCodegen
 
+        classpath Libs.dokka
         classpath Libs.spotless
         classpath Libs.gradleVersions
     }
@@ -55,6 +56,24 @@ subprojects {
     tasks.withType(KotlinCompile).all {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    }
+
+    tasks.withType(org.jetbrains.dokka.gradle.DokkaTask).configureEach {
+        dokkaSourceSets.configureEach {
+            reportUndocumented.set(true)
+            skipEmptyPackages.set(true)
+            skipDeprecated.set(true)
+            jdkVersion.set(8)
+
+            // Add Android SDK packages
+            noAndroidSdkLink.set(false)
+
+            // AndroidX docs
+            externalDocumentationLink {
+                url.set(new URL("https://developer.android.com/reference/"))
+                packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
+            }
         }
     }
 

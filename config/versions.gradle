@@ -8,6 +8,8 @@ libs.AndroidTools = [
     desugar: "com.android.tools:desugar_jdk_libs:1.1.1",
 ]
 
+libs.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.30"
+
 libs.spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.11.0"
 
 libs.gradleVersions = "com.github.ben-manes:gradle-versions-plugin:0.36.0"
