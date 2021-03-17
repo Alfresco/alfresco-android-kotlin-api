@@ -2,7 +2,6 @@ apply plugin: 'maven-publish'
 
 def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
 def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
-def maven_group    = 'com.alfresco.android'
 
 group = GROUP
 
@@ -54,23 +53,16 @@ project.afterEvaluate {
 
                 pom.withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')
-                    ['implementation', 'compile'].each {
-                        getConfigurations().getByName(it).allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            def dependencyGroup = dp.group == defaultGroupId ? maven_group : dp.group
-                            dependencyNode.appendNode('groupId', dependencyGroup)
-                            dependencyNode.appendNode('artifactId', dp.name)
-                            dependencyNode.appendNode('version', dp.version)
 
-                            // for exclusions
-                            if (dp.excludeRules.size() > 0) {
-                                def exclusions = dependencyNode.appendNode('exclusions')
-                                dp.excludeRules.each { ExcludeRule ex ->
-                                    def exclusion = exclusions.appendNode('exclusion')
-                                    exclusion.appendNode('groupId', ex.group)
-                                    exclusion.appendNode('artifactId', ex.module)
-                                }
-                            }
+                    project.configurations.implementation.allDependencies.each {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        if (it.version == "unspecified" && it.group == GROUP) {
+                            // Assume dependent modules in the project use the same version
+                            dependencyNode.appendNode('version', version)
+                        } else {
+                            dependencyNode.appendNode('version', it.version)
                         }
                     }
                 }
