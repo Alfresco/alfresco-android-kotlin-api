@@ -4,6 +4,8 @@ def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
 def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
 def maven_group    = 'com.alfresco.android'
 
+group = GROUP
+
 project.afterEvaluate {
     task sourcesJar(type: Jar) {
         from android.sourceSets.main.java.srcDirs
@@ -18,9 +20,6 @@ project.afterEvaluate {
     publishing {
         publications {
             library(MavenPublication) {
-                def defaultGroupId = groupId
-                setGroupId maven_group
-                setArtifactId artifactId
                 version android.defaultConfig.versionName + "-SNAPSHOT"
 
                 artifact bundleReleaseAar
@@ -28,12 +27,28 @@ project.afterEvaluate {
                 artifact javadocJar
 
                 pom {
+                    name = POM_NAME
+                    description = POM_DESCRIPTION
+                    packaging = POM_PACKAGING
+                    url = POM_URL
                     licenses {
                         license {
-                            name = "The Apache Software License, Version 2.0"
-                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                            distribution = "repo"
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
                         }
+                    }
+                    developers {
+                        developer {
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
+                            url = POM_DEVELOPER_URL
+                        }
+                    }
+                    scm {
+                        url = POM_SCM_URL
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
                     }
                 }
 
