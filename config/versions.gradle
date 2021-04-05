@@ -38,6 +38,7 @@ versions.retrofit = "2.9.0"
 libs.Retrofit = [
     retrofit: "com.squareup.retrofit2:retrofit:$versions.retrofit",
     converterMoshi: "com.squareup.retrofit2:converter-moshi:$versions.retrofit",
+    converterScalars: "com.squareup.retrofit2:converter-scalars:$versions.retrofit",
 ]
 
 versions.moshi = "1.11.0"

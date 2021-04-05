@@ -3,6 +3,7 @@ package com.alfresco.content.tools
 import com.squareup.moshi.Moshi
 import retrofit2.Converter
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object GeneratedCodeConverters {
     private val moshi = Moshi.Builder()
@@ -19,6 +20,7 @@ object GeneratedCodeConverters {
     @JvmStatic
     fun converterFactory(): Converter.Factory {
         return WrapperConverterFactory(
+            ScalarsConverterFactory.create(),
             CollectionFormatConverterFactory(),
             EnumToValueConverterFactory(),
             MoshiConverterFactory.create(moshi)
