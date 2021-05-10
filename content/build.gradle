@@ -26,15 +26,15 @@ generateSwagger {
 }
 
 dependencies {
-    implementation Libs.Moshi.kotlin
-    implementation Libs.Moshi.adapters
-    kapt Libs.Moshi.codegen
+    implementation libs.moshi.core
+    implementation libs.moshi.adapters
+    kapt libs.moshi.codegen
 
-    implementation Libs.Retrofit.retrofit
-    implementation Libs.Retrofit.converterMoshi
-    implementation Libs.Retrofit.converterScalars
+    implementation libs.retrofit.core
+    implementation libs.retrofit.converter.moshi
+    implementation libs.retrofit.converter.scalars
 
-    coreLibraryDesugaring Libs.AndroidTools.desugar
+    coreLibraryDesugaring libs.android.desugar
 }
 
 apply from: "$rootDir/config/publish.gradle"

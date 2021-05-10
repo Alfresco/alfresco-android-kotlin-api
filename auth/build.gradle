@@ -10,18 +10,18 @@ android {
 }
 
 dependencies {
-    implementation Libs.appauth
-    implementation Libs.jwtdecode
+    implementation libs.appauth
+    implementation libs.jwtdecode
 
-    implementation Libs.Kotlin.serializationRuntime
+    implementation libs.kotlin.serialization.json
 
-    implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.Lifecycle.viewmodelKtx
-    implementation Libs.AndroidX.browser
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.lifecycle.viewmodelKtx
+    implementation libs.androidx.browser
 
-    implementation Libs.okhttp
+    implementation libs.okhttp
 
-    testImplementation Libs.junit
+    testImplementation libs.junit
 }
 
 apply from: "$rootDir/config/publish.gradle"

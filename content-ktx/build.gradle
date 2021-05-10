@@ -10,7 +10,7 @@ android {
 
 dependencies {
     api project(':content')
-    implementation Libs.Retrofit.retrofit
+    implementation libs.retrofit.core
 }
 
 apply from: "$rootDir/config/publish.gradle"

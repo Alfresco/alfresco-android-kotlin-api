@@ -1,29 +1,26 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    apply from: rootProject.file('config/versions.gradle')
-
     repositories {
+        gradlePluginPortal()
         google()
         jcenter()
     }
 
     dependencies {
-        classpath Libs.AndroidTools.gradlePlugin
-        classpath Libs.Kotlin.gradlePlugin
-        classpath Libs.Kotlin.serialization
+        classpath libs.android.gradlePlugin
+        classpath libs.kotlin.gradlePlugin
+        classpath libs.kotlin.serialization.plugin
 
-        classpath Libs.swaggerCodegen
+        classpath libs.swaggerCodegen
 
-        classpath Libs.dokka
-        classpath Libs.spotless
-        classpath Libs.gradleVersions
+        classpath libs.dokka
+        classpath libs.spotless
+        classpath libs.gradleVersionsPlugin
     }
 }
 
 allprojects {
-    apply from: rootProject.file('config/versions.gradle')
-
     repositories {
         mavenLocal()
         google()
