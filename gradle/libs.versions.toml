@@ -23,7 +23,7 @@ junit = "junit:junit:4.13.2"
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-serialization-plugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
 
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
