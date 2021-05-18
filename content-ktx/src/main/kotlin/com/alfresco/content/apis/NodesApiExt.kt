@@ -17,6 +17,7 @@ interface NodesApiExt {
         @retrofit2.http.Part("filedata\"; filename=\"filedata") fileData: RequestBody,
         @retrofit2.http.Part("name") name: String?,
         @retrofit2.http.Part("nodeType") nodeType: String? = "cm:content",
+        @retrofit2.http.PartMap properties: Map<String, @JvmSuppressWildcards RequestBody>? = null,
         @retrofit2.http.Part("overwrite") overwrite: Boolean? = null,
         @retrofit2.http.Part("comment") comment: String? = null,
         @retrofit2.http.Part("relativepath") relativePath: String? = null,
