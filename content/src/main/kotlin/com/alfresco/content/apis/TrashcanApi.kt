@@ -158,17 +158,4 @@ interface TrashcanApi {
         @retrofit2.http.Query("fields") @CSV fields: List<String>? = null,
         @retrofit2.http.Body deletedNodeBodyRestore: DeletedNodeBodyRestore
     ): NodeEntry
-
-    /**
-     * Overload of [restoreDeletedNode] without [retrofit2.http.Body].
-     * Ref: https://github.com/square/retrofit/issues/1488
-     */
-    @Headers(
-        "Content-Type: application/json"
-    )
-    @POST("alfresco/versions/1/deleted-nodes/{nodeId}/restore")
-    suspend fun restoreDeletedNode(
-        @retrofit2.http.Path("nodeId") nodeId: String,
-        @retrofit2.http.Query("fields") @CSV fields: List<String>? = null
-    ): NodeEntry
 }
