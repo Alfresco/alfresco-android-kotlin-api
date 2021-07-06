@@ -235,10 +235,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     }
 
     private fun makeEndSessionRequest(serviceAuthorization: AuthorizationServiceConfiguration): EndSessionRequest {
-        return EndSessionRequest.Builder(
-            serviceAuthorization,
-            authState.get().idToken!!,
-            Uri.parse(authConfig.redirectUrl))
+        return EndSessionRequest.Builder(serviceAuthorization)
+            .setIdTokenHint(authState.get().idToken!!)
+            .setPostLogoutRedirectUri(Uri.parse(authConfig.redirectUrl))
             .build()
     }
 
