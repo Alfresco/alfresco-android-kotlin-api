@@ -75,9 +75,7 @@ class DiscoveryService(
         val result = try {
             val authService = PkceAuthService(context, null, authConfig)
             authService.fetchDiscoveryFromUrl(uri)
-        } catch (exception: Exception) {
-            null
-        }
+        } catch (exception: Exception) { null }
         return result != null
     }
 
