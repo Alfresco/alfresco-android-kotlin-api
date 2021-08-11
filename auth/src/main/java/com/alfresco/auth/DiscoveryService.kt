@@ -2,6 +2,7 @@ package com.alfresco.auth
 
 import android.content.Context
 import android.net.Uri
+import com.alfresco.auth.data.AuthServerData
 import com.alfresco.auth.data.ContentServerDetails
 import com.alfresco.auth.pkce.PkceAuthService
 import java.net.URL
@@ -16,20 +17,21 @@ import okhttp3.Request
  */
 class DiscoveryService(
     private val context: Context,
-    private val authConfig: AuthConfig
+    private val authConfig: AuthConfig,
+    private var isEnterprise: Boolean = false
 ) {
 
     /**
      * Determine which [AuthType] is supported by the [endpoint].
      */
-    suspend fun getAuthType(endpoint: String): AuthType {
+    suspend fun getAuthType(endpoint: String): AuthServerData {
         return when {
 
-            isPkceType(endpoint) -> AuthType.PKCE
+            isPkceType(endpoint) -> AuthServerData(authType = AuthType.PKCE, isEnterprise)
 
-            isBasicType(endpoint) -> AuthType.BASIC
+            isBasicType(endpoint) -> AuthServerData(authType = AuthType.BASIC, isEnterprise)
 
-            else -> AuthType.UNKNOWN
+            else -> AuthServerData(authType = AuthType.UNKNOWN, isEnterprise)
         }
     }
 
@@ -48,12 +50,16 @@ class DiscoveryService(
                     .url(URL(uri))
                     .get()
                     .build()
+
                 val response = client.newCall(request).execute()
 
                 if (response.code != 200) return@withContext false
 
                 val body = response.body?.string() ?: ""
+
                 val data = ContentServerDetails.jsonDeserialize(body)
+
+                isEnterprise = data?.data?.edition == ENTERPRISE
 
                 data?.isAtLeast(MIN_ACS_VERSION) ?: false
             } catch (e: Exception) {
@@ -69,7 +75,9 @@ class DiscoveryService(
         val result = try {
             val authService = PkceAuthService(context, null, authConfig)
             authService.fetchDiscoveryFromUrl(uri)
-        } catch (exception: Exception) { null }
+        } catch (exception: Exception) {
+            null
+        }
         return result != null
     }
 
@@ -91,5 +99,6 @@ class DiscoveryService(
     private companion object {
         const val ACS_SERVER_DETAILS = "service/api/server"
         const val MIN_ACS_VERSION = "5.2.2"
+        const val ENTERPRISE = "Enterprise"
     }
 }

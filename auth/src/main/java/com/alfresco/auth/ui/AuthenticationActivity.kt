@@ -12,6 +12,7 @@ import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
+import com.alfresco.auth.data.AuthServerData
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.auth.pkce.PkceAuthService
@@ -47,11 +48,11 @@ abstract class AuthenticationViewModel : ViewModel() {
     fun checkAuthType(
         endpoint: String,
         authConfig: AuthConfig,
-        onResult: (authType: AuthType) -> Unit
+        onResult: (authType: AuthServerData) -> Unit
     ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
-        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
-        onResult(authType)
+        val authServerData = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
+        onResult(authServerData)
     }
 
     /**
