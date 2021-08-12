@@ -62,7 +62,7 @@ class DiscoveryService(
     }
 
     /**
-     * Check whether it's enterprise distribution or not on [endpoint].
+     * Check whether [endpoint] is running an enterprise distribution..
      */
     suspend fun isEnterpriseDistribution(endpoint: String): Boolean {
         val uri = contentServiceDiscoveryUrl(endpoint).toString()
