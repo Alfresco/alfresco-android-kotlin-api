@@ -42,6 +42,12 @@ abstract class AuthenticationViewModel : ViewModel() {
     var isReLogin = false
 
     /**
+     * true if the enterprise version otherwise false.
+     */
+
+    var isEnterprise = false
+
+    /**
      * Check which [AuthType] is supported by the [endpoint] based on the provided [authConfig].
      */
     fun checkAuthType(
@@ -51,6 +57,7 @@ abstract class AuthenticationViewModel : ViewModel() {
     ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
         val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
+        isEnterprise = discoveryService.isEnterprise
         onResult(authType)
     }
 
@@ -86,6 +93,7 @@ abstract class AuthenticationViewModel : ViewModel() {
     open fun onPkceAuthCancelled() {}
 
     internal val pkceAuth = PkceAuth()
+
     internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
