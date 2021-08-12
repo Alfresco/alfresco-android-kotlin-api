@@ -16,8 +16,7 @@ import okhttp3.Request
  */
 class DiscoveryService(
     private val context: Context,
-    private val authConfig: AuthConfig,
-    var isEnterprise: Boolean = false
+    private val authConfig: AuthConfig
 ) {
 
     /**
@@ -55,7 +54,7 @@ class DiscoveryService(
 
                 val body = response.body?.string() ?: ""
                 val data = ContentServerDetails.jsonDeserialize(body)
-                isEnterprise = data?.data?.edition == ENTERPRISE
+
                 data?.isAtLeast(MIN_ACS_VERSION) ?: false
             } catch (e: Exception) {
                 false
@@ -70,9 +69,7 @@ class DiscoveryService(
         val result = try {
             val authService = PkceAuthService(context, null, authConfig)
             authService.fetchDiscoveryFromUrl(uri)
-        } catch (exception: Exception) {
-            null
-        }
+        } catch (exception: Exception) { null }
         return result != null
     }
 
@@ -94,6 +91,5 @@ class DiscoveryService(
     private companion object {
         const val ACS_SERVER_DETAILS = "service/api/server"
         const val MIN_ACS_VERSION = "5.2.2"
-        const val ENTERPRISE = "Enterprise"
     }
 }
