@@ -16,8 +16,7 @@ import okhttp3.Request
  */
 class DiscoveryService(
     private val context: Context,
-    private val authConfig: AuthConfig,
-    var isEnterprise: Boolean = false
+    private val authConfig: AuthConfig
 ) {
 
     /**
@@ -55,8 +54,35 @@ class DiscoveryService(
 
                 val body = response.body?.string() ?: ""
                 val data = ContentServerDetails.jsonDeserialize(body)
-                isEnterprise = data?.data?.edition == ENTERPRISE
                 data?.isAtLeast(MIN_ACS_VERSION) ?: false
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    /**
+     * Check whether it's enterprise distribution or not on [endpoint].
+     */
+    suspend fun isEnterpriseDistribution(endpoint: String): Boolean {
+        val uri = contentServiceDiscoveryUrl(endpoint).toString()
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val client = OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .build()
+                val request = Request.Builder()
+                    .url(URL(uri))
+                    .get()
+                    .build()
+                val response = client.newCall(request).execute()
+
+                if (response.code != 200) return@withContext false
+
+                val body = response.body?.string() ?: ""
+                val data = ContentServerDetails.jsonDeserialize(body)
+                data?.data?.edition == ENTERPRISE
             } catch (e: Exception) {
                 false
             }
@@ -70,7 +96,9 @@ class DiscoveryService(
         val result = try {
             val authService = PkceAuthService(context, null, authConfig)
             authService.fetchDiscoveryFromUrl(uri)
-        } catch (exception: Exception) { null }
+        } catch (exception: Exception) {
+            null
+        }
         return result != null
     }
 
