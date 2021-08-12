@@ -93,7 +93,6 @@ abstract class AuthenticationViewModel : ViewModel() {
     open fun onPkceAuthCancelled() {}
 
     internal val pkceAuth = PkceAuth()
-
     internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
