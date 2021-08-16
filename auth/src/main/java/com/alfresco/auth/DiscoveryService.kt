@@ -54,8 +54,35 @@ class DiscoveryService(
 
                 val body = response.body?.string() ?: ""
                 val data = ContentServerDetails.jsonDeserialize(body)
-
                 data?.isAtLeast(MIN_ACS_VERSION) ?: false
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    /**
+     * Check whether [endpoint] is running an enterprise distribution..
+     */
+    suspend fun isEnterpriseDistribution(endpoint: String): Boolean {
+        val uri = contentServiceDiscoveryUrl(endpoint).toString()
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val client = OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .build()
+                val request = Request.Builder()
+                    .url(URL(uri))
+                    .get()
+                    .build()
+                val response = client.newCall(request).execute()
+
+                if (response.code != 200) return@withContext false
+
+                val body = response.body?.string() ?: ""
+                val data = ContentServerDetails.jsonDeserialize(body)
+                data?.data?.edition == ENTERPRISE
             } catch (e: Exception) {
                 false
             }
@@ -91,5 +118,6 @@ class DiscoveryService(
     private companion object {
         const val ACS_SERVER_DETAILS = "service/api/server"
         const val MIN_ACS_VERSION = "5.2.2"
+        const val ENTERPRISE = "Enterprise"
     }
 }
