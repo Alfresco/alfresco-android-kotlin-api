@@ -64,7 +64,7 @@ class DiscoveryService(
     }
 
     /**
-     * Check whether [endpoint] is running an enterprise distribution..
+     * returns content server details based on [endpoint].
      */
     suspend fun getContentServiceDetails(endpoint: String): ContentServerDetailsData? {
         val uri = contentServiceDiscoveryUrl(endpoint).toString()
@@ -76,7 +76,6 @@ class DiscoveryService(
                     .build()
                 val request = Request.Builder()
                     .url(URL(uri))
-                    .cacheControl(CacheControl.FORCE_CACHE)
                     .get()
                     .build()
                 val response = client.newCall(request).execute()
