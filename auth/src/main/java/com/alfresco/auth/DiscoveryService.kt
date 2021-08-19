@@ -3,11 +3,13 @@ package com.alfresco.auth
 import android.content.Context
 import android.net.Uri
 import com.alfresco.auth.data.ContentServerDetails
+import com.alfresco.auth.data.ContentServerDetailsData
 import com.alfresco.auth.pkce.PkceAuthService
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -64,7 +66,7 @@ class DiscoveryService(
     /**
      * Check whether [endpoint] is running an enterprise distribution..
      */
-    suspend fun isEnterpriseDistribution(endpoint: String): Boolean {
+    suspend fun getContentServiceDetails(endpoint: String): ContentServerDetailsData? {
         val uri = contentServiceDiscoveryUrl(endpoint).toString()
 
         return withContext(Dispatchers.IO) {
@@ -74,17 +76,18 @@ class DiscoveryService(
                     .build()
                 val request = Request.Builder()
                     .url(URL(uri))
+                    .cacheControl(CacheControl.FORCE_CACHE)
                     .get()
                     .build()
                 val response = client.newCall(request).execute()
 
-                if (response.code != 200) return@withContext false
+                if (response.code != 200) return@withContext null
 
                 val body = response.body?.string() ?: ""
                 val data = ContentServerDetails.jsonDeserialize(body)
-                data?.data?.edition == ENTERPRISE
+                data?.data
             } catch (e: Exception) {
-                false
+                null
             }
         }
     }
@@ -118,6 +121,5 @@ class DiscoveryService(
     private companion object {
         const val ACS_SERVER_DETAILS = "service/api/server"
         const val MIN_ACS_VERSION = "5.2.2"
-        const val ENTERPRISE = "Enterprise"
     }
 }
