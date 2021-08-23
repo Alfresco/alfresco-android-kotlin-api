@@ -6,7 +6,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 @Serializable
-internal data class ContentServerDetailsData(
+data class ContentServerDetailsData(
     val edition: String,
     val version: String,
     val schema: String

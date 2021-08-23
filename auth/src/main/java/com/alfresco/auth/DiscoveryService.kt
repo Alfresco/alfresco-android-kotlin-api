@@ -3,6 +3,7 @@ package com.alfresco.auth
 import android.content.Context
 import android.net.Uri
 import com.alfresco.auth.data.ContentServerDetails
+import com.alfresco.auth.data.ContentServerDetailsData
 import com.alfresco.auth.pkce.PkceAuthService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -62,9 +63,9 @@ class DiscoveryService(
     }
 
     /**
-     * Check whether [endpoint] is running an enterprise distribution..
+     * returns content server details based on [endpoint].
      */
-    suspend fun isEnterpriseDistribution(endpoint: String): Boolean {
+    suspend fun getContentServiceDetails(endpoint: String): ContentServerDetailsData? {
         val uri = contentServiceDiscoveryUrl(endpoint).toString()
 
         return withContext(Dispatchers.IO) {
@@ -78,13 +79,13 @@ class DiscoveryService(
                     .build()
                 val response = client.newCall(request).execute()
 
-                if (response.code != 200) return@withContext false
+                if (response.code != 200) return@withContext null
 
                 val body = response.body?.string() ?: ""
                 val data = ContentServerDetails.jsonDeserialize(body)
-                data?.data?.edition == ENTERPRISE
+                data?.data
             } catch (e: Exception) {
-                false
+                null
             }
         }
     }
