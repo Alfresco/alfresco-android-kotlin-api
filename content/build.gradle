@@ -30,6 +30,8 @@ dependencies {
     implementation libs.moshi.adapters
     kapt libs.moshi.codegen
 
+    implementation libs.androidx.core.ktx
+
     implementation libs.retrofit.core
     implementation libs.retrofit.converter.moshi
     implementation libs.retrofit.converter.scalars
