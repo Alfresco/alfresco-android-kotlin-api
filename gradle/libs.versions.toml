@@ -14,7 +14,6 @@ androidx-lifecycle-viewmodelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.
 
 appauth = "net.openid:appauth:0.9.1"
 
-
 dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
 
 gradleVersionsPlugin = "com.github.ben-manes:gradle-versions-plugin:0.39.0"
@@ -40,4 +39,3 @@ retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "ret
 spotless = "com.diffplug.spotless:spotless-plugin-gradle:5.14.0"
 
 swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
-

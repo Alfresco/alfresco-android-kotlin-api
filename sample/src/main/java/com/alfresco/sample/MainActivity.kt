@@ -107,11 +107,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun onError(error: String) {
         val parentLayout: View = findViewById(android.R.id.content)
-        Snackbar.make(
-            parentLayout,
+        Snackbar.make(parentLayout,
             error,
-            Snackbar.LENGTH_LONG
-        ).show()
+            Snackbar.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
