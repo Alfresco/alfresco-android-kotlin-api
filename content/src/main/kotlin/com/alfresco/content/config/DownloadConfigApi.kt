@@ -7,6 +7,9 @@ import android.os.Environment
 import androidx.core.content.ContextCompat
 import java.util.concurrent.CancellationException
 
+/**
+ * DownloadConfigApi contains method to download app.config from server
+ */
 class DownloadConfigApi(private val context: Context) {
 
 
