@@ -83,9 +83,14 @@ class MainActivity : AppCompatActivity() {
             adapter.resultList = it
             adapter.notifyDataSetChanged()
         }
+        viewModel.resultsConfig.observe(this, {
+            println("config class $it")
+        })
+
         viewModel.onSessionExpired.observe(this, ::onSessionExpired)
         viewModel.onError.observe(this, ::onError)
         viewModel.loadRecents()
+        viewModel.loadAppConfig()
     }
 
     private fun navigateToLogin() {
