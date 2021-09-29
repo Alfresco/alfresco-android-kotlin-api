@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
+import com.alfresco.content.apis.AppConfigApi
 import com.alfresco.content.apis.SearchApi
+import com.alfresco.content.models.AppConfigModel
 import com.alfresco.content.models.RequestFilterQueriesInner
 import com.alfresco.content.models.RequestIncludeEnum
 import com.alfresco.content.models.RequestPagination
@@ -25,10 +27,12 @@ import retrofit2.Retrofit
 class MainViewModel(private val context: Context) : ViewModel() {
 
     private val retrofit: Retrofit
+    private val retrofitConfig: Retrofit
     private val authInterceptor: AuthInterceptor
     private val loggingInterceptor: HttpLoggingInterceptor
 
     val results = MutableLiveData<List<ResultNode>>()
+    val resultsConfig = MutableLiveData<AppConfigModel>()
     val onError = MutableLiveEvent<String>()
     val onSessionExpired = MutableLiveEvent<Boolean>()
 
@@ -68,6 +72,11 @@ class MainViewModel(private val context: Context) : ViewModel() {
             .addConverterFactory(GeneratedCodeConverters.converterFactory())
             .baseUrl(baseUrl)
             .build()
+        retrofitConfig = Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(GeneratedCodeConverters.converterFactory())
+            .baseUrl("https://mobileapps.envalfresco.com/adf/")
+            .build()
     }
 
     fun loadRecents() {
@@ -86,6 +95,17 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 results.value = service.search(search).list?.entries?.map { it.entry } ?: emptyList()
+            } catch (ex: Exception) {
+                onError.value = ex.localizedMessage ?: ""
+            }
+        }
+    }
+
+    fun loadAppConfig() {
+        val service = retrofitConfig.create(AppConfigApi::class.java)
+        viewModelScope.launch {
+            try {
+                resultsConfig.value = service.getAppConfig()
             } catch (ex: Exception) {
                 onError.value = ex.localizedMessage ?: ""
             }

@@ -83,9 +83,14 @@ class MainActivity : AppCompatActivity() {
             adapter.resultList = it
             adapter.notifyDataSetChanged()
         }
+        viewModel.resultsConfig.observe(this, {
+            println("config class $it")
+        })
+
         viewModel.onSessionExpired.observe(this, ::onSessionExpired)
         viewModel.onError.observe(this, ::onError)
         viewModel.loadRecents()
+        viewModel.loadAppConfig()
     }
 
     private fun navigateToLogin() {
@@ -107,9 +112,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun onError(error: String) {
         val parentLayout: View = findViewById(android.R.id.content)
-        Snackbar.make(parentLayout,
+        Snackbar.make(
+            parentLayout,
             error,
-            Snackbar.LENGTH_LONG).show()
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
