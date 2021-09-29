@@ -32,7 +32,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     private val loggingInterceptor: HttpLoggingInterceptor
 
     val results = MutableLiveData<List<ResultNode>>()
-    val resultsConfig = MutableLiveData<AppConfigModel>()
+    val resultsConfig = MutableLiveData<AppConfigModel?>()
     val onError = MutableLiveEvent<String>()
     val onSessionExpired = MutableLiveEvent<Boolean>()
 
