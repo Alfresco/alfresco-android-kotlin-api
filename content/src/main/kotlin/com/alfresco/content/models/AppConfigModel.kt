@@ -1,16 +1,19 @@
 package com.alfresco.content.models
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 /**
  * Advance search model
  * @property search
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class AppConfigModel(
     @Json(name = "search") @field:Json(name = "search") val search: List<SearchItem>?
-)
+):Parcelable
 
 /**
  * Categories model
@@ -20,6 +23,7 @@ data class AppConfigModel(
  * @property id
  * @property enabled
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class CategoriesItem(
     @Json(name = "expanded") @field:Json(name = "expanded") val expanded: Boolean?,
@@ -27,18 +31,19 @@ data class CategoriesItem(
     @Json(name = "name") @field:Json(name = "name") val name: String?,
     @Json(name = "id") @field:Json(name = "id") val id: String?,
     @Json(name = "enabled") @field:Json(name = "enabled") val enabled: Boolean?
-)
+):Parcelable
 
 /**
  * Component model
  * @property settings
  * @property selector
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class Component(
     @Json(name = "settings") @field:Json(name = "settings") val settings: Settings?,
     @Json(name = "selector") @field:Json(name = "selector") val selector: String?
-)
+):Parcelable
 
 /**
  * SearchItem model
@@ -48,6 +53,7 @@ data class Component(
  * @property categories
  * @property resetButton
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class SearchItem(
     @Json(name = "default") @field:Json(name = "default") val default: Boolean?,
@@ -55,7 +61,7 @@ data class SearchItem(
     @Json(name = "filterWithContains") @field:Json(name = "filterWithContains") val filterWithContains: Boolean?,
     @Json(name = "categories") @field:Json(name = "categories") val categories: List<CategoriesItem>?,
     @Json(name = "resetButton") @field:Json(name = "resetButton") val resetButton: Boolean?
-)
+):Parcelable
 
 /**
  * Settings model
@@ -63,6 +69,7 @@ data class SearchItem(
  * @property pattern
  * @property placeholder
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class Settings(
     @Json(name = "field") @field:Json(name = "field") val field: String?,
@@ -78,16 +85,17 @@ data class Settings(
     @Json(name = "format") @field:Json(name = "format") val format: String?,
     @Json(name = "dateFormat") @field:Json(name = "dateFormat") val dateFormat: String?,
     @Json(name = "maxDate") @field:Json(name = "maxDate") val maxDate: String?
-)
+):Parcelable
 
 /**
  * Options model
  * @property name
  * @property value
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class Options(
     @Json(name = "name") @field:Json(name = "name") val name: String?,
     @Json(name = "value") @field:Json(name = "value") val value: String?,
     @Json(name = "default") @field:Json(name = "default") val default: Boolean?
-)
+):Parcelable
