@@ -36,16 +36,18 @@ suspend fun SearchApi.simpleSearch(
         RequestQuery.LanguageEnum.AFTS
     )
 
+    val nameKeywords = "keywords"
+
     val templates =
         listOf(
             RequestTemplatesInner(
-                "keywords",
+                nameKeywords,
                 "%(cm:name cm:title cm:description TEXT TAG)"
             )
         )
 
     val defaults = RequestDefaults(
-        defaultFieldName = "keywords",
+        defaultFieldName = nameKeywords,
         defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
     )
 
@@ -54,8 +56,6 @@ suspend fun SearchApi.simpleSearch(
     } else {
         include
     }).joinToString(separator = " OR ") { "+TYPE:'${it.value}'" }
-
-    println("type filter query 1: $typeFilter")
 
     val filter =
         (makeFilterQueries(typeFilter) + excludeUnsupportedTypes()).toMutableList()
@@ -123,8 +123,6 @@ suspend fun SearchApi.advanceSearch(
     } else {
         include.joinToString(separator = " AND ") { "(${it.query})" }
     }
-
-    println("type filter query 2: $typeFilter")
 
     val filter =
         (makeFilterQueries(typeFilter) + excludeUnsupportedTypes()).toMutableList()
