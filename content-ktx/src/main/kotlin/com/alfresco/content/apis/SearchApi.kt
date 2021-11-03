@@ -16,6 +16,9 @@ enum class SearchInclude(val value: String) {
     Folders("cm:folder")
 }
 
+/**
+ * Mark as AdvanceSearchInclude class
+ */
 data class AdvanceSearchInclude(val query: String, val name: String)
 
 /**
@@ -99,16 +102,18 @@ suspend fun SearchApi.advanceSearch(
         RequestQuery.LanguageEnum.AFTS
     )
 
+    val nameKeywords = "keywords"
+
     val templates =
         listOf(
             RequestTemplatesInner(
-                "keywords",
+                nameKeywords,
                 "%(cm:name cm:title cm:description TEXT TAG)"
             )
         )
 
     val defaults = RequestDefaults(
-        defaultFieldName = "keywords",
+        defaultFieldName = nameKeywords,
         defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
     )
 
