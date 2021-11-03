@@ -17,6 +17,11 @@ enum class SearchInclude(val value: String) {
 }
 
 /**
+ * Mark as AdvanceSearchInclude class
+ */
+data class AdvanceSearchInclude(val query: String, val name: String)
+
+/**
  * Searches for files and folders using the current recommended way.
  */
 suspend fun SearchApi.simpleSearch(
@@ -31,14 +36,18 @@ suspend fun SearchApi.simpleSearch(
         RequestQuery.LanguageEnum.AFTS
     )
 
+    val nameKeywords = "keywords"
+
     val templates =
-        listOf(RequestTemplatesInner(
-            "keywords",
-            "%(cm:name cm:title cm:description TEXT TAG)"
-        ))
+        listOf(
+            RequestTemplatesInner(
+                nameKeywords,
+                "%(cm:name cm:title cm:description TEXT TAG)"
+            )
+        )
 
     val defaults = RequestDefaults(
-        defaultFieldName = "keywords",
+        defaultFieldName = nameKeywords,
         defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
     )
 
@@ -56,22 +65,93 @@ suspend fun SearchApi.simpleSearch(
     }
 
     val reqInclude = listOf(RequestIncludeEnum.PATH)
-    val sort = listOf(RequestSortDefinitionInner(
-        RequestSortDefinitionInner.TypeEnum.FIELD,
-        "score",
-        false
-    ))
+    val sort = listOf(
+        RequestSortDefinitionInner(
+            RequestSortDefinitionInner.TypeEnum.FIELD,
+            "score",
+            false
+        )
+    )
     val paging = RequestPagination(maxItems, skipCount)
 
-    return search(SearchRequest(
-        reqQuery,
-        paging,
-        reqInclude,
-        sort = sort,
-        templates = templates,
-        defaults = defaults,
-        filterQueries = filter
-    ))
+    return search(
+        SearchRequest(
+            reqQuery,
+            paging,
+            reqInclude,
+            sort = sort,
+            templates = templates,
+            defaults = defaults,
+            filterQueries = filter
+        )
+    )
+}
+
+/**
+ * Advance Search using the filters .
+ */
+suspend fun SearchApi.advanceSearch(
+    query: String,
+    parentId: String?,
+    skipCount: Int,
+    maxItems: Int,
+    include: Set<AdvanceSearchInclude>
+): ResultSetPaging {
+    val reqQuery = RequestQuery(
+        "$query*",
+        RequestQuery.LanguageEnum.AFTS
+    )
+
+    val nameKeywords = "keywords"
+
+    val templates =
+        listOf(
+            RequestTemplatesInner(
+                nameKeywords,
+                "%(cm:name cm:title cm:description TEXT TAG)"
+            )
+        )
+
+    val defaults = RequestDefaults(
+        defaultFieldName = nameKeywords,
+        defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
+    )
+
+    val typeFilter: String = if (include.isEmpty()) {
+        setOf(SearchInclude.Files, SearchInclude.Folders)
+            .joinToString(separator = " OR ") { "+TYPE:'$it'" }
+    } else {
+        include.joinToString(separator = " AND ") { "(${it.query})" }
+    }
+
+    val filter =
+        (makeFilterQueries(typeFilter) + excludeUnsupportedTypes()).toMutableList()
+
+    if (parentId != null) {
+        filter.add(RequestFilterQueriesInner("ANCESTOR:'workspace://SpacesStore/$parentId'"))
+    }
+
+    val reqInclude = listOf(RequestIncludeEnum.PATH)
+    val sort = listOf(
+        RequestSortDefinitionInner(
+            RequestSortDefinitionInner.TypeEnum.FIELD,
+            "score",
+            false
+        )
+    )
+    val paging = RequestPagination(maxItems, skipCount)
+
+    return search(
+        SearchRequest(
+            reqQuery,
+            paging,
+            reqInclude,
+            sort = sort,
+            templates = templates,
+            defaults = defaults,
+            filterQueries = filter
+        )
+    )
 }
 
 /**
@@ -90,20 +170,24 @@ suspend fun SearchApi.recentFiles(
         "TYPE:'content'"
     ) + excludeUnsupportedTypes()
     val include = listOf(RequestIncludeEnum.PATH)
-    val sort = listOf(RequestSortDefinitionInner(
-        RequestSortDefinitionInner.TypeEnum.FIELD,
-        "cm:modified",
-        false
-    ))
+    val sort = listOf(
+        RequestSortDefinitionInner(
+            RequestSortDefinitionInner.TypeEnum.FIELD,
+            "cm:modified",
+            false
+        )
+    )
     val paging = RequestPagination(maxItems, skipCount)
 
-    return search(SearchRequest(
-        query,
-        paging,
-        include,
-        sort = sort,
-        filterQueries = filter
-    ))
+    return search(
+        SearchRequest(
+            query,
+            paging,
+            include,
+            sort = sort,
+            filterQueries = filter
+        )
+    )
 }
 
 internal fun SearchApi.excludeUnsupportedTypes() =

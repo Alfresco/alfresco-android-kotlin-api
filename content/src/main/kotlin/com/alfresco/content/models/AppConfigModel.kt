@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 data class AppConfigModel(
     @Json(name = "search") @field:Json(name = "search") val search: List<SearchItem>?
-):Parcelable
+) : Parcelable
 
 /**
  * Categories model
@@ -31,7 +31,7 @@ data class CategoriesItem(
     @Json(name = "name") @field:Json(name = "name") val name: String?,
     @Json(name = "id") @field:Json(name = "id") val id: String?,
     @Json(name = "enabled") @field:Json(name = "enabled") val enabled: Boolean?
-):Parcelable
+) : Parcelable
 
 /**
  * Component model
@@ -43,7 +43,7 @@ data class CategoriesItem(
 data class Component(
     @Json(name = "settings") @field:Json(name = "settings") val settings: Settings?,
     @Json(name = "selector") @field:Json(name = "selector") val selector: String?
-):Parcelable
+) : Parcelable
 
 /**
  * SearchItem model
@@ -60,8 +60,17 @@ data class SearchItem(
     @Json(name = "name") @field:Json(name = "name") val name: String?,
     @Json(name = "filterWithContains") @field:Json(name = "filterWithContains") val filterWithContains: Boolean?,
     @Json(name = "categories") @field:Json(name = "categories") val categories: List<CategoriesItem>?,
-    @Json(name = "resetButton") @field:Json(name = "resetButton") val resetButton: Boolean?
-):Parcelable
+    @Json(name = "resetButton") @field:Json(name = "resetButton") val resetButton: Boolean?,
+    @Json(name = "filterQueries") @field:Json(name = "filterQueries") val filterQueries: List<FilterQueriesItem>?
+) : Parcelable
+
+/**
+ * Filter Queries Model
+ * @property query
+ */
+@Parcelize
+@JsonClass(generateAdapter = true)
+data class FilterQueriesItem(@Json(name = "query") @field:Json(name = "query") val query: String?) : Parcelable
 
 /**
  * Settings model
@@ -85,7 +94,7 @@ data class Settings(
     @Json(name = "format") @field:Json(name = "format") val format: String?,
     @Json(name = "dateFormat") @field:Json(name = "dateFormat") val dateFormat: String?,
     @Json(name = "maxDate") @field:Json(name = "maxDate") val maxDate: String?
-):Parcelable
+) : Parcelable
 
 /**
  * Options model
@@ -98,4 +107,4 @@ data class Options(
     @Json(name = "name") @field:Json(name = "name") val name: String?,
     @Json(name = "value") @field:Json(name = "value") val value: String?,
     @Json(name = "default") @field:Json(name = "default") val default: Boolean?
-):Parcelable
+) : Parcelable
