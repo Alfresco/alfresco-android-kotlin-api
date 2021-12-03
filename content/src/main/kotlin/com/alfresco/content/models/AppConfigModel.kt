@@ -184,6 +184,7 @@ data class SetsItem(
     @Json(name = "label") @field:Json(name = "label") val label: String?,
     @Json(name = "start") @field:Json(name = "start") val start: String?,
     @Json(name = "end") @field:Json(name = "end") val end: String?,
+    @Json(name = "startInclusive") @field:Json(name = "startInclusive") val startInclusive: Boolean?,
     @Json(name = "endInclusive") @field:Json(name = "endInclusive") val endInclusive: Boolean?
 ) : Parcelable
 
