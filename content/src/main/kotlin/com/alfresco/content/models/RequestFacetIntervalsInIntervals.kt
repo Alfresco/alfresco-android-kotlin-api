@@ -15,7 +15,7 @@ import com.squareup.moshi.JsonClass
  * @property sets Sets the intervals for all fields.
  */
 @JsonClass(generateAdapter = true)
-data class RequestFacetIntervalsIntervals(
+data class RequestFacetIntervalsInIntervals(
     @Json(name = "field") @field:Json(name = "field") var field: String? = null,
     @Json(name = "label") @field:Json(name = "label") var label: String? = null,
     @Json(name = "sets") @field:Json(name = "sets") var sets: List<RequestFacetSet>? = null

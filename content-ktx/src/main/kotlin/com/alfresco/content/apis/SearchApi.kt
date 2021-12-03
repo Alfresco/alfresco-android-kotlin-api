@@ -4,7 +4,7 @@ import com.alfresco.content.models.RequestDefaults
 import com.alfresco.content.models.RequestFacetField
 import com.alfresco.content.models.RequestFacetFields
 import com.alfresco.content.models.RequestFacetIntervals
-import com.alfresco.content.models.RequestFacetIntervalsIntervals
+import com.alfresco.content.models.RequestFacetIntervalsInIntervals
 import com.alfresco.content.models.RequestFacetQueriesInner
 import com.alfresco.content.models.RequestFilterQueries
 import com.alfresco.content.models.RequestFilterQueriesInner
@@ -32,7 +32,7 @@ data class AdvanceSearchInclude(val query: String, val name: String)
 data class FacetSearchInclude(
     val fields: List<RequestFacetField>?,
     val queries: List<RequestFacetQueriesInner>?,
-    val intervals: List<RequestFacetIntervalsIntervals>?
+    val intervals: List<RequestFacetIntervalsInIntervals>?
 )
 
 /**

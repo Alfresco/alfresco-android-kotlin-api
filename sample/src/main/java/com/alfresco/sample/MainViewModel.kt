@@ -14,7 +14,7 @@ import com.alfresco.content.models.AppConfigModel
 import com.alfresco.content.models.RequestFacetField
 import com.alfresco.content.models.RequestFacetFields
 import com.alfresco.content.models.RequestFacetIntervals
-import com.alfresco.content.models.RequestFacetIntervalsIntervals
+import com.alfresco.content.models.RequestFacetIntervalsInIntervals
 import com.alfresco.content.models.RequestFacetQueriesInner
 import com.alfresco.content.models.RequestFacetSet
 import com.alfresco.content.models.RequestFilterQueriesInner
@@ -113,13 +113,13 @@ class MainViewModel(private val context: Context) : ViewModel() {
         )
 
         val facetInterval = listOf(
-            RequestFacetIntervalsIntervals(
+            RequestFacetIntervalsInIntervals(
                 label = "The Created", field = "cm:created", sets = listOf(
                     RequestFacetSet(label = "lastYear", start = "2018", end = "2019", endInclusive = false),
                     RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
                     RequestFacetSet(label = "earlier", start = "*", end = "2018", endInclusive = false)
                 )
-            ), RequestFacetIntervalsIntervals(
+            ), RequestFacetIntervalsInIntervals(
                 label = "TheModified", field = "cm:modified", sets = listOf(
                     RequestFacetSet(label = "2017", start = "2017", end = "2018", endInclusive = false),
                     RequestFacetSet(label = "2017-2018", start = "2017", end = "2018", endInclusive = true),
