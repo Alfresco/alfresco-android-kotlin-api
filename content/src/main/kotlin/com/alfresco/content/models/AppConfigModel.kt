@@ -105,7 +105,7 @@ data class FacetFieldsItem(
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class FacetQueriesItem(
-    @Json(name = "label") @field:Json(name = "label") val label: Boolean?,
+    @Json(name = "label") @field:Json(name = "label") val label: String?,
     @Json(name = "pageSize") @field:Json(name = "pageSize") val pageSize: Int?,
     @Json(name = "expanded") @field:Json(name = "expanded") val expanded: Boolean?,
     @Json(name = "mincount") @field:Json(name = "mincount") val mincount: Int?,

@@ -139,7 +139,9 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
         viewModelScope.launch {
             try {
-                results.value = service.search(search).list?.entries?.map { it.entry } ?: emptyList()
+                val searchCall = service.search(search)
+                results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
+                val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
                 onError.value = ex.localizedMessage ?: ""
             }
