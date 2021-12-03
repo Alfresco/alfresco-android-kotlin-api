@@ -1,6 +1,11 @@
 package com.alfresco.content.apis
 
 import com.alfresco.content.models.RequestDefaults
+import com.alfresco.content.models.RequestFacetField
+import com.alfresco.content.models.RequestFacetFields
+import com.alfresco.content.models.RequestFacetIntervals
+import com.alfresco.content.models.RequestFacetIntervalsIntervals
+import com.alfresco.content.models.RequestFacetQueriesInner
 import com.alfresco.content.models.RequestFilterQueries
 import com.alfresco.content.models.RequestFilterQueriesInner
 import com.alfresco.content.models.RequestIncludeEnum
@@ -20,6 +25,15 @@ enum class SearchInclude(val value: String) {
  * Mark as AdvanceSearchInclude class
  */
 data class AdvanceSearchInclude(val query: String, val name: String)
+
+/**
+ * Mark as FacetSearchInclude for facets data
+ */
+data class FacetSearchInclude(
+    val fields: List<RequestFacetField>?,
+    val queries: List<RequestFacetQueriesInner>?,
+    val intervals: List<RequestFacetIntervalsIntervals>?
+)
 
 /**
  * Searches for files and folders using the current recommended way.
@@ -95,25 +109,24 @@ suspend fun SearchApi.advanceSearch(
     parentId: String?,
     skipCount: Int,
     maxItems: Int,
-    include: Set<AdvanceSearchInclude>
+    include: Set<AdvanceSearchInclude>,
+    faceData: FacetSearchInclude
 ): ResultSetPaging {
     val reqQuery = RequestQuery(
         "$query*",
         RequestQuery.LanguageEnum.AFTS
     )
 
-    val nameKeywords = "keywords"
-
     val templates =
         listOf(
             RequestTemplatesInner(
-                nameKeywords,
+                "keywords",
                 "%(cm:name cm:title cm:description TEXT TAG)"
             )
         )
 
     val defaults = RequestDefaults(
-        defaultFieldName = nameKeywords,
+        defaultFieldName = "keywords",
         defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
     )
 
@@ -149,7 +162,10 @@ suspend fun SearchApi.advanceSearch(
             sort = sort,
             templates = templates,
             defaults = defaults,
-            filterQueries = filter
+            filterQueries = filter,
+            facetFields = RequestFacetFields(faceData.fields),
+            facetQueries = faceData.queries,
+            facetIntervals = RequestFacetIntervals(intervals = faceData.intervals)
         )
     )
 }

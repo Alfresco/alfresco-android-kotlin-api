@@ -19,7 +19,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GenericBucketBucketInfo(
     @Json(name = "start") @field:Json(name = "start") var start: String? = null,
-    @Json(name = "startInclusive") @field:Json(name = "startInclusive") var startInclusive: Boolean? = null,
+    @Json(name = "startInclusive") @field:Json(name = "startInclusive") var startInclusive: String? = null,
     @Json(name = "end") @field:Json(name = "end") var end: String? = null,
-    @Json(name = "endInclusive") @field:Json(name = "endInclusive") var endInclusive: Boolean? = null
+    @Json(name = "endInclusive") @field:Json(name = "endInclusive") var endInclusive: String? = null
 )
