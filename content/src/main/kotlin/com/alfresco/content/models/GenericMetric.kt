@@ -17,5 +17,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GenericMetric(
     @Json(name = "type") @field:Json(name = "type") var type: String? = null,
-    @Json(name = "value") @field:Json(name = "value") var value: Map<String, Any?>? = null
+    @Json(name = "value") @field:Json(name = "value") var value: GenericValue? = null
 )

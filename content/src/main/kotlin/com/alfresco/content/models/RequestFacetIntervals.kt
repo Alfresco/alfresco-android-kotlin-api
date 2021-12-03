@@ -17,5 +17,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RequestFacetIntervals(
     @Json(name = "sets") @field:Json(name = "sets") var sets: List<RequestFacetSet>? = null,
-    @Json(name = "intervals") @field:Json(name = "intervals") var intervals: List<RequestFacetIntervalsIntervals>? = null
+    @Json(name = "intervals") @field:Json(name = "intervals") var intervals: List<RequestFacetIntervalsInIntervals>? = null
 )

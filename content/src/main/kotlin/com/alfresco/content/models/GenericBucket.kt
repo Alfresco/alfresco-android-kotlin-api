@@ -22,7 +22,7 @@ import com.squareup.moshi.JsonClass
 data class GenericBucket(
     @Json(name = "label") @field:Json(name = "label") var label: String? = null,
     @Json(name = "filterQuery") @field:Json(name = "filterQuery") var filterQuery: String? = null,
-    @Json(name = "display") @field:Json(name = "display") var display: Map<String, Any?>? = null,
+    @Json(name = "display") @field:Json(name = "display") var display: String? = null,
     @Json(name = "metrics") @field:Json(name = "metrics") var metrics: List<GenericMetric>? = null,
     @Json(name = "facets") @field:Json(name = "facets") var facets: List<Map<String, Any?>>? = null,
     @Json(name = "bucketInfo") @field:Json(name = "bucketInfo") var bucketInfo: GenericBucketBucketInfo? = null

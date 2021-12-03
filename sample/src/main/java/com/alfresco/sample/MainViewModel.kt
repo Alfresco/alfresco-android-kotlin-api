@@ -11,6 +11,12 @@ import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.content.apis.AppConfigApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.models.AppConfigModel
+import com.alfresco.content.models.RequestFacetField
+import com.alfresco.content.models.RequestFacetFields
+import com.alfresco.content.models.RequestFacetIntervals
+import com.alfresco.content.models.RequestFacetIntervalsInIntervals
+import com.alfresco.content.models.RequestFacetQueriesInner
+import com.alfresco.content.models.RequestFacetSet
 import com.alfresco.content.models.RequestFilterQueriesInner
 import com.alfresco.content.models.RequestIncludeEnum
 import com.alfresco.content.models.RequestPagination
@@ -87,10 +93,49 @@ class MainViewModel(private val context: Context) : ViewModel() {
             RequestFilterQueriesInner("cm:modified:[NOW/DAY-30DAYS TO NOW/DAY+1DAY]"),
             RequestFilterQueriesInner("TYPE:\"content\"")
         )
+        val facetFields = listOf(
+            RequestFacetField(field = "content.mimetype", label = "SEARCH.FACET_FIELDS.TYPE", mincount = 1),
+            RequestFacetField(field = "content.size", label = "SEARCH.FACET_FIELDS.SIZE", mincount = 1),
+            RequestFacetField(field = "creator", label = "SEARCH.FACET_FIELDS.CREATOR", mincount = 1),
+            RequestFacetField(field = "modifier", label = "SEARCH.FACET_FIELDS.MODIFIER", mincount = 1),
+            RequestFacetField(field = "created", label = "SEARCH.FACET_FIELDS.CREATED", mincount = 1)
+        )
+
+        val facetQueries = listOf(
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2019"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MIMETYPE", query = "content.mimetype:text/html"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRASMALL", query = "content.size:[0 TO 10240]"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.SMALL", query = "content.size:[10240 TO 102400]"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MEDIUM", query = "content.size:[102400 TO 1048576]"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.LARGE", query = "content.size:[1048576 TO 16777216]"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRALARGE", query = "content.size:[16777216 TO 134217728]"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XXTRALARGE", query = "content.size:[134217728 TO MAX]")
+        )
+
+        val facetInterval = listOf(
+            RequestFacetIntervalsInIntervals(
+                label = "The Created", field = "cm:created", sets = listOf(
+                    RequestFacetSet(label = "lastYear", start = "2018", end = "2019", endInclusive = false),
+                    RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
+                    RequestFacetSet(label = "earlier", start = "*", end = "2018", endInclusive = false)
+                )
+            ), RequestFacetIntervalsInIntervals(
+                label = "TheModified", field = "cm:modified", sets = listOf(
+                    RequestFacetSet(label = "2017", start = "2017", end = "2018", endInclusive = false),
+                    RequestFacetSet(label = "2017-2018", start = "2017", end = "2018", endInclusive = true),
+                    RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
+                    RequestFacetSet(label = "earlierThan2017", start = "*", end = "2017", endInclusive = false)
+                )
+            )
+        )
+
         val include = listOf(RequestIncludeEnum.PATH)
         val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "cm:modified", false))
         val pagination = RequestPagination(25, 0)
-        val search = SearchRequest(reqQuery, sort = sort, filterQueries = filter, include = include, paging = pagination)
+        val search = SearchRequest(
+            reqQuery, sort = sort, filterQueries = filter, include = include, paging = pagination,
+            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries, facetIntervals = RequestFacetIntervals(intervals = facetInterval)
+        )
 
         viewModelScope.launch {
             try {

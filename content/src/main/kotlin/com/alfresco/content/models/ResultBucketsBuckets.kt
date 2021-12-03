@@ -20,5 +20,5 @@ data class ResultBucketsBuckets(
     @Json(name = "label") @field:Json(name = "label") var label: String? = null,
     @Json(name = "filterQuery") @field:Json(name = "filterQuery") var filterQuery: String? = null,
     @Json(name = "count") @field:Json(name = "count") var count: Int? = null,
-    @Json(name = "display") @field:Json(name = "display") var display: Map<String, Any?>? = null
+    @Json(name = "display") @field:Json(name = "display") var display: String? = null
 )
