@@ -52,5 +52,6 @@ data class SearchRequest(
     @Json(name = "scope") @field:Json(name = "scope") var scope: RequestScope? = null,
     @Json(name = "limits") @field:Json(name = "limits") var limits: RequestLimits? = null,
     @Json(name = "highlight") @field:Json(name = "highlight") var highlight: RequestHighlight? = null,
-    @Json(name = "ranges") @field:Json(name = "ranges") var ranges: List<RequestRange>? = null
+    @Json(name = "ranges") @field:Json(name = "ranges") var ranges: List<RequestRange>? = null,
+    @Json(name = "facetFormat") @field:Json(name = "facetFormat") var facetFormat: String? = null
 )
