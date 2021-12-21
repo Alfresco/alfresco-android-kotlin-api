@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.onSessionExpired.observe(this, ::onSessionExpired)
         viewModel.onError.observe(this, ::onError)
         viewModel.loadRecents()
-//        viewModel.loadAppConfig()
     }
 
     private fun navigateToLogin() {

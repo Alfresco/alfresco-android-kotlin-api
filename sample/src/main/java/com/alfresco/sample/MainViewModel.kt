@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
-import com.alfresco.content.apis.AppConfigApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.models.AppConfigModel
 import com.alfresco.content.models.RequestFacetField
@@ -90,8 +89,6 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val queryString = "*"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
-//            RequestFilterQueriesInner("cm:modified:[NOW/DAY-30DAYS TO NOW/DAY+1DAY]"),
-//            RequestFilterQueriesInner("TYPE:\"content\"")
             RequestFilterQueriesInner("(TYPE:'cm:folder' OR TYPE:'cm:content') AND (NOT cm:creator:System)"),
             RequestFilterQueriesInner("-TYPE:'st:site'"),
             RequestFilterQueriesInner("-TYPE:'cm:thumbnail' AND -TYPE:'cm:failedThumbnail' AND -TYPE:'cm:rating'"),
@@ -112,18 +109,6 @@ class MainViewModel(private val context: Context) : ViewModel() {
             RequestFacetField(field = "modifier", label = "SEARCH.FACET_FIELDS.MODIFIER", mincount = 1),
             RequestFacetField(field = "created", label = "SEARCH.FACET_FIELDS.CREATED", mincount = 1)
         )
-        /*val facetFields = listOf(
-            RequestFacetField(field = "content.size", label = "SEARCH.FACET_FIELDS.SIZE", mincount = 1),
-            RequestFacetField(field = "creator", label = "SEARCH.FACET_FIELDS.CREATOR", mincount = 1),
-            RequestFacetField(field = "modifier", label = "SEARCH.FACET_FIELDS.MODIFIER", mincount = 1),
-            RequestFacetField(field = "created", label = "SEARCH.FACET_FIELDS.CREATED", mincount = 1)
-        )*/
-        /*val facetFields = listOf(
-            RequestFacetField(field = "content.size", label = "Folder Size", mincount = 1),
-            RequestFacetField(field = "creator", label = "Folder created", mincount = 1),
-            RequestFacetField(field = "modifier", label = "Folder Modifier", mincount = 1),
-            RequestFacetField(field = "created", label = "Folder Created", mincount = 1)
-        )*/
 
         val facetQueries = listOf(
             RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2021"),
@@ -172,18 +157,6 @@ class MainViewModel(private val context: Context) : ViewModel() {
             }
         }
     }
-
-    fun loadAppConfig() {
-        val service = retrofitConfig.create(AppConfigApi::class.java)
-        viewModelScope.launch {
-            try {
-                resultsConfig.value = service.getAppConfig()
-            } catch (ex: Exception) {
-                onError.value = ex.localizedMessage ?: ""
-            }
-        }
-    }
-
     class Factory(private val context: Context) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
