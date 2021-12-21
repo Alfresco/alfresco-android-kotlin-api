@@ -110,7 +110,8 @@ suspend fun SearchApi.advanceSearch(
     skipCount: Int,
     maxItems: Int,
     include: Set<AdvanceSearchInclude>,
-    faceData: FacetSearchInclude
+    faceData: FacetSearchInclude,
+    facetFormat: String
 ): ResultSetPaging {
     val reqQuery = RequestQuery(
         "$query*",
@@ -165,7 +166,8 @@ suspend fun SearchApi.advanceSearch(
             filterQueries = filter,
             facetFields = RequestFacetFields(faceData.fields),
             facetQueries = faceData.queries,
-            facetIntervals = RequestFacetIntervals(intervals = faceData.intervals)
+            facetIntervals = RequestFacetIntervals(intervals = faceData.intervals),
+            facetFormat = facetFormat
         )
     )
 }

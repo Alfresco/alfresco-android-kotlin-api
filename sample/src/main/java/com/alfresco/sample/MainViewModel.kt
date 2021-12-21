@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
-import com.alfresco.content.apis.AppConfigApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.models.AppConfigModel
 import com.alfresco.content.models.RequestFacetField
@@ -90,9 +89,19 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val queryString = "*"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
-            RequestFilterQueriesInner("cm:modified:[NOW/DAY-30DAYS TO NOW/DAY+1DAY]"),
-            RequestFilterQueriesInner("TYPE:\"content\"")
+            RequestFilterQueriesInner("(TYPE:'cm:folder' OR TYPE:'cm:content') AND (NOT cm:creator:System)"),
+            RequestFilterQueriesInner("-TYPE:'st:site'"),
+            RequestFilterQueriesInner("-TYPE:'cm:thumbnail' AND -TYPE:'cm:failedThumbnail' AND -TYPE:'cm:rating'"),
+            RequestFilterQueriesInner("-ASPECT:'st:siteContainer' AND -ASPECT:'sys:hidden'"),
+            RequestFilterQueriesInner("-TYPE:'dl:dataList' AND -TYPE:'dl:todoList'"),
+            RequestFilterQueriesInner("-TYPE:'dl:issue' AND -TYPE:'dl:task' AND -TYPE:'dl:simpletask'"),
+            RequestFilterQueriesInner("-TYPE:'dl:event' AND -TYPE:'dl:eventAgenda' AND -TYPE:'dl:meetingAgenda'"),
+            RequestFilterQueriesInner("-TYPE:'dl:contact' AND -TYPE:'dl:location'"),
+            RequestFilterQueriesInner("-TYPE:'fm:forum' AND -TYPE:'fm:topic' AND -TYPE:'fm:post'"),
+            RequestFilterQueriesInner("-TYPE:'app:filelink' AND -TYPE:'lnk:link' AND -TYPE:'ia:calendarEvent'"),
+            RequestFilterQueriesInner("-QNAME:comment AND -PNAME:'0/wiki'")
         )
+
         val facetFields = listOf(
             RequestFacetField(field = "content.mimetype", label = "SEARCH.FACET_FIELDS.TYPE", mincount = 1),
             RequestFacetField(field = "content.size", label = "SEARCH.FACET_FIELDS.SIZE", mincount = 1),
@@ -102,7 +111,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         )
 
         val facetQueries = listOf(
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2019"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2021"),
             RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MIMETYPE", query = "content.mimetype:text/html"),
             RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRASMALL", query = "content.size:[0 TO 10240]"),
             RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.SMALL", query = "content.size:[10240 TO 102400]"),
@@ -114,7 +123,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
         val facetInterval = listOf(
             RequestFacetIntervalsInIntervals(
-                label = "The Created", field = "cm:created", sets = listOf(
+                label = "The.Created", field = "cm:created", sets = listOf(
                     RequestFacetSet(label = "lastYear", start = "2018", end = "2019", endInclusive = false),
                     RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
                     RequestFacetSet(label = "earlier", start = "*", end = "2018", endInclusive = false)
@@ -134,7 +143,8 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val pagination = RequestPagination(25, 0)
         val search = SearchRequest(
             reqQuery, sort = sort, filterQueries = filter, include = include, paging = pagination,
-            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries, facetIntervals = RequestFacetIntervals(intervals = facetInterval)
+            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries,
+            facetIntervals = RequestFacetIntervals(intervals = facetInterval), facetFormat = "V2"
         )
 
         viewModelScope.launch {
@@ -147,18 +157,6 @@ class MainViewModel(private val context: Context) : ViewModel() {
             }
         }
     }
-
-    fun loadAppConfig() {
-        val service = retrofitConfig.create(AppConfigApi::class.java)
-        viewModelScope.launch {
-            try {
-                resultsConfig.value = service.getAppConfig()
-            } catch (ex: Exception) {
-                onError.value = ex.localizedMessage ?: ""
-            }
-        }
-    }
-
     class Factory(private val context: Context) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
