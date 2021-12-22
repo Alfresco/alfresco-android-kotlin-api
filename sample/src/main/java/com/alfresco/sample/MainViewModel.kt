@@ -111,14 +111,14 @@ class MainViewModel(private val context: Context) : ViewModel() {
         )
 
         val facetQueries = listOf(
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2021"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MIMETYPE", query = "content.mimetype:text/html"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRASMALL", query = "content.size:[0 TO 10240]"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.SMALL", query = "content.size:[10240 TO 102400]"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MEDIUM", query = "content.size:[102400 TO 1048576]"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.LARGE", query = "content.size:[1048576 TO 16777216]"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRALARGE", query = "content.size:[16777216 TO 134217728]"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XXTRALARGE", query = "content.size:[134217728 TO MAX]")
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2019", group = "SEARCH.FACET_QUERIES.MY_FACET_QUERIES"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MIMETYPE", query = "content.mimetype:text/html", group = "Type facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRASMALL", query = "content.size:[0 TO 10240]", group = "Size facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.SMALL", query = "content.size:[10240 TO 102400]", group = "Size facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MEDIUM", query = "content.size:[102400 TO 1048576]", group = "Size facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.LARGE", query = "content.size:[1048576 TO 16777216]", group = "Size facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRALARGE", query = "content.size:[16777216 TO 134217728]", group = "Size facet queries"),
+            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XXTRALARGE", query = "content.size:[134217728 TO MAX]", group = "Size facet queries")
         )
 
         val facetInterval = listOf(
@@ -157,6 +157,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
             }
         }
     }
+
     class Factory(private val context: Context) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
