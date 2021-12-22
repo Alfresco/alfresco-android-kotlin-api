@@ -16,5 +16,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RequestFacetQueriesInner(
     @Json(name = "query") @field:Json(name = "query") var query: String? = null,
-    @Json(name = "label") @field:Json(name = "label") var label: String? = null
+    @Json(name = "label") @field:Json(name = "label") var label: String? = null,
+    @Json(name = "group") @field:Json(name = "group") var group: String? = null
 )
