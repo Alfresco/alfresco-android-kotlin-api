@@ -26,7 +26,11 @@ open class EndSessionViewModel(
     private val authService: PkceAuthService?
 
     init {
-        val state = try { AuthState.jsonDeserialize(authState) } catch (ex: JSONException) { null }
+        val state = try {
+            AuthState.jsonDeserialize(authState)
+        } catch (ex: JSONException) {
+            null
+        }
 
         authService = if (authType == AuthType.PKCE) {
             PkceAuthService(context, state, authConfig)
@@ -65,14 +69,8 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_END_SESSION) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            } else {
-                // TODO: Test result
-                setResult(Activity.RESULT_OK)
-                finish()
-            }
+            setResult(Activity.RESULT_OK)
+            finish()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
