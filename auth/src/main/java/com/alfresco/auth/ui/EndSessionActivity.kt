@@ -73,7 +73,6 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             } else {
-                // TODO: Test result
                 setResult(Activity.RESULT_OK)
                 finish()
             }
