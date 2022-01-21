@@ -69,8 +69,14 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_END_SESSION) {
-            setResult(Activity.RESULT_OK)
-            finish()
+            if (resultCode == Activity.RESULT_CANCELED) {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            } else {
+                // TODO: Test result
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
