@@ -26,11 +26,7 @@ open class EndSessionViewModel(
     private val authService: PkceAuthService?
 
     init {
-        val state = try {
-            AuthState.jsonDeserialize(authState)
-        } catch (ex: JSONException) {
-            null
-        }
+        val state = try { AuthState.jsonDeserialize(authState) } catch (ex: JSONException) { null }
 
         authService = if (authType == AuthType.PKCE) {
             PkceAuthService(context, state, authConfig)
