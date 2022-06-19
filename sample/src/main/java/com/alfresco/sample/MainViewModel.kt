@@ -90,6 +90,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
             RequestFilterQueriesInner("(TYPE:'cm:folder' OR TYPE:'cm:content') AND (NOT cm:creator:System)"),
+//            RequestFilterQueriesInner("(TYPE:'cm:folder') AND (NOT cm:creator:System)"),
             RequestFilterQueriesInner("-TYPE:'st:site'"),
             RequestFilterQueriesInner("-TYPE:'cm:thumbnail' AND -TYPE:'cm:failedThumbnail' AND -TYPE:'cm:rating'"),
             RequestFilterQueriesInner("-ASPECT:'st:siteContainer' AND -ASPECT:'sys:hidden'"),
@@ -124,9 +125,9 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val facetInterval = listOf(
             RequestFacetIntervalsInIntervals(
                 label = "The.Created", field = "cm:created", sets = listOf(
-                    RequestFacetSet(label = "lastYear", start = "2018", end = "2019", endInclusive = false),
+                    RequestFacetSet(label = "lastYear", start = "2020", end = "2021", endInclusive = false),
                     RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
-                    RequestFacetSet(label = "earlier", start = "*", end = "2018", endInclusive = false)
+                    RequestFacetSet(label = "earlier", start = "*", end = "2021", endInclusive = false)
                 )
             ), RequestFacetIntervalsInIntervals(
                 label = "TheModified", field = "cm:modified", sets = listOf(
@@ -161,7 +162,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     class Factory(private val context: Context) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
                 return MainViewModel(context) as T
             }
