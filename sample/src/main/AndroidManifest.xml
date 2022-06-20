@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme"
         tools:targetApi="24">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +26,8 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".LogoutActivity" />
 
-        <activity android:name="com.alfresco.auth.pkce.RedirectUriReceiverActivity">
+        <activity android:name="com.alfresco.auth.pkce.RedirectUriReceiverActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

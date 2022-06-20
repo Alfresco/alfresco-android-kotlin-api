@@ -21,7 +21,7 @@ class LogoutViewModel(context: Context, authType: AuthType?, authState: String, 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LogoutViewModel::class.java)) {
                 return build(context) as T
             }
