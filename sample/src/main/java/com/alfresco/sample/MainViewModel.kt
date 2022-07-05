@@ -24,6 +24,8 @@ import com.alfresco.content.models.RequestSortDefinitionInner
 import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
+import com.alfresco.process.apis.TaskAPI
+import com.alfresco.process.models.RequestTaskFilters
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,6 +35,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
     private val retrofit: Retrofit
     private val retrofitConfig: Retrofit
+    private val retrofitAPS: Retrofit
     private val authInterceptor: AuthInterceptor
     private val loggingInterceptor: HttpLoggingInterceptor
 
@@ -66,6 +69,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val baseUrl = "${account.serverUrl}/api/-default-/public/"
+        val baseUrlAPS = account.serverUrl.replace("/alfresco", "/activiti-app/")
         val okHttpClient: OkHttpClient = OkHttpClient()
             .newBuilder()
             .addInterceptor(authInterceptor)
@@ -77,6 +81,12 @@ class MainViewModel(private val context: Context) : ViewModel() {
             .addConverterFactory(GeneratedCodeConverters.converterFactory())
             .baseUrl(baseUrl)
             .build()
+
+        retrofitAPS = Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(GeneratedCodeConverters.converterFactory())
+            .baseUrl(baseUrlAPS)
+            .build()
         retrofitConfig = Retrofit.Builder()
             .client(okHttpClient)
             .addConverterFactory(GeneratedCodeConverters.converterFactory())
@@ -86,6 +96,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
     fun loadRecents() {
         val service = retrofit.create(SearchApi::class.java)
+        val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
         val queryString = "*"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
@@ -151,6 +162,16 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
+                val taskList = serviceAPS.taskList(
+                    RequestTaskFilters(
+                        assignment = "assignee",
+                        sort = "created-desc",
+                        start = 0,
+                        state = "open",
+                        text = ""
+                    )
+                )
+                println("task list $taskList")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
