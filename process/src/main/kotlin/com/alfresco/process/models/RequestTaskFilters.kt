@@ -3,6 +3,9 @@ package com.alfresco.process.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+/**
+ * Marked as RequestTaskFilters class
+ */
 @JsonClass(generateAdapter = true)
 data class RequestTaskFilters(
     @Json(name = "appDefinitionId") @field:Json(name = "appDefinitionId") var appDefinitionId: String? = null,
