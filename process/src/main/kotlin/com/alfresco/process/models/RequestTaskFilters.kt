@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class RequestTaskFilters(
     @Json(name = "appDefinitionId") @field:Json(name = "appDefinitionId") var appDefinitionId: String? = null,
     @Json(name = "assignment") @field:Json(name = "assignment") var assignment: String? = null,
-    @Json(name = "page") @field:Json(name = "page") var page: String? = null,
+    @Json(name = "page") @field:Json(name = "page") var page: Int? = null,
     @Json(name = "processDefinitionId") @field:Json(name = "processDefinitionId") var processDefinitionId: String? = null,
     @Json(name = "processInstanceId") @field:Json(name = "processInstanceId") var processInstanceId: String? = null,
     @Json(name = "size") @field:Json(name = "size") var size: String? = null,

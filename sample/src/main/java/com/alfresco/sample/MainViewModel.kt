@@ -166,7 +166,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
                     RequestTaskFilters(
                         assignment = "assignee",
                         sort = "created-desc",
-                        start = 0,
+                        page = 0,
                         state = "open",
                         text = ""
                     )

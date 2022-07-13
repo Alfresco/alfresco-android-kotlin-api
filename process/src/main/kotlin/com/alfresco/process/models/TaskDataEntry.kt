@@ -36,8 +36,8 @@ import com.squareup.moshi.JsonClass
  * @property managerOfCandidateGroup
  */
 @JsonClass(generateAdapter = true)
-data class TaskEntry(
-    @Json(name = "id") @field:Json(name = "id") var id: Int? = null,
+data class TaskDataEntry(
+    @Json(name = "id") @field:Json(name = "id") var id: String? = null,
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "description") @field:Json(name = "description") var description: String? = null,
     @Json(name = "category") @field:Json(name = "category") var category: String? = null,
