@@ -7,11 +7,9 @@ plugins {
 }
 
 android {
-    compileSdk 32
 
     defaultConfig {
-        minSdk 26
-        targetSdk 32
+        versionName "0.1.0"
     }
 
     compileOptions {
@@ -36,3 +34,5 @@ dependencies {
 
     coreLibraryDesugaring libs.android.desugar
 }
+
+apply from: "$rootDir/config/publish.gradle"
