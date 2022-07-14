@@ -2,6 +2,7 @@ package com.alfresco.process.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.time.ZonedDateTime
 
 /**
  * @property id
@@ -42,9 +43,9 @@ data class TaskDataEntry(
     @Json(name = "description") @field:Json(name = "description") var description: String? = null,
     @Json(name = "category") @field:Json(name = "category") var category: String? = null,
     @Json(name = "assignee") @field:Json(name = "assignee") var assignee: AssigneeInfo? = null,
-    @Json(name = "created") @field:Json(name = "created") var created: String? = null,
-    @Json(name = "dueDate") @field:Json(name = "dueDate") var dueDate: String? = null,
-    @Json(name = "endDate") @field:Json(name = "endDate") var endDate: String? = null,
+    @Json(name = "created") @field:Json(name = "created") var created: ZonedDateTime? = null,
+    @Json(name = "dueDate") @field:Json(name = "dueDate") var dueDate: ZonedDateTime? = null,
+    @Json(name = "endDate") @field:Json(name = "endDate") var endDate: ZonedDateTime? = null,
     @Json(name = "duration") @field:Json(name = "duration") var duration: String? = null,
     @Json(name = "priority") @field:Json(name = "priority") var priority: String? = null,
     @Json(name = "parentTaskId") @field:Json(name = "parentTaskId") var parentTaskId: String? = null,
