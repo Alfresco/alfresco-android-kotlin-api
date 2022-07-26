@@ -3,7 +3,6 @@ package com.alfresco.auth
 import android.content.Context
 import android.util.Base64
 import com.alfresco.auth.pkce.PkceAuthService
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -105,7 +104,11 @@ class AuthInterceptor(
         private var expirationTime: Long = 0L
 
         init {
-            val state = try { AuthState.jsonDeserialize(stateString) } catch (ex: JSONException) { null }
+            val state = try {
+                AuthState.jsonDeserialize(stateString)
+            } catch (ex: JSONException) {
+                null
+            }
             val config = AuthConfig.jsonDeserialize(configString)
 
             requireNotNull(state)
@@ -114,7 +117,8 @@ class AuthInterceptor(
             pkceAuthService = PkceAuthService(context, state, config)
         }
 
-        @Synchronized override fun finish() {
+        @Synchronized
+        override fun finish() {
             cancelScheduledTokenRefresh()
             localScope.coroutineContext.cancelChildren()
         }
@@ -139,13 +143,14 @@ class AuthInterceptor(
 
             // If still error notify listener of failure
             if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
-                listener?.onAuthFailure(accountId)
+                listener?.onAuthFailure(accountId, response.request.url.toString())
             }
 
             return response
         }
 
-        @Synchronized private fun refreshTokenNow(): AuthState? {
+        @Synchronized
+        private fun refreshTokenNow(): AuthState? {
             val state = pkceAuthService.getAuthState() ?: return null
 
             // Another thread might've refreshed the token already
@@ -166,7 +171,8 @@ class AuthInterceptor(
             return result
         }
 
-        @Synchronized private fun refreshTokenIfNeeded(state: AuthState): AuthState? {
+        @Synchronized
+        private fun refreshTokenIfNeeded(state: AuthState): AuthState? {
             val expiration = state.accessTokenExpirationTime ?: return null
             val delta = expiration - System.currentTimeMillis()
 
@@ -179,7 +185,8 @@ class AuthInterceptor(
             return null
         }
 
-        @Synchronized fun scheduleTokenRefresh(state: AuthState) {
+        @Synchronized
+        fun scheduleTokenRefresh(state: AuthState) {
             val expiration = state.accessTokenExpirationTime ?: return
 
             val delta = expiration - System.currentTimeMillis() - REFRESH_DELTA_BEFORE_EXPIRY
@@ -243,7 +250,8 @@ class AuthInterceptor(
         /**
          * Returns compatible state representation for basic authorization
          */
-        @JvmStatic fun basicState(username: String, password: String): String {
+        @JvmStatic
+        fun basicState(username: String, password: String): String {
             val credentials = "$username:$password"
             return Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         }
@@ -252,7 +260,8 @@ class AuthInterceptor(
          * Returns a <username, password> [Pair] from provided basic [state]
          * Please try to avoid using this function if possible.
          */
-        @JvmStatic fun decodeBasicState(state: String): Pair<String, String>? {
+        @JvmStatic
+        fun decodeBasicState(state: String): Pair<String, String>? {
             return try {
                 val decoded = String(Base64.decode(state, Base64.NO_WRAP))
                 val split = decoded.split(":")
@@ -275,6 +284,6 @@ class AuthInterceptor(
         /**
          * Called when a non-recoverable authentication failure occurs.
          */
-        fun onAuthFailure(accountId: String)
+        fun onAuthFailure(accountId: String, url: String = "")
     }
 }
