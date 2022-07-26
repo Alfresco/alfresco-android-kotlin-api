@@ -60,7 +60,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
                 Account.update(context, authState)
             }
 
-            override fun onAuthFailure(accountId: String) {
+            override fun onAuthFailure(accountId: String, url: String) {
                 onSessionExpired.postValue(true)
             }
         })
