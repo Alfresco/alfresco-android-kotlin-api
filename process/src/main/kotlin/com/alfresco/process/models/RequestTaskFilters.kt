@@ -17,5 +17,7 @@ data class RequestTaskFilters(
     @Json(name = "sort") @field:Json(name = "sort") var sort: String? = null,
     @Json(name = "start") @field:Json(name = "sort") var start: Int? = null,
     @Json(name = "state") @field:Json(name = "state") var state: String? = null,
-    @Json(name = "text") @field:Json(name = "text") var text: String? = null
+    @Json(name = "text") @field:Json(name = "text") var text: String? = null,
+    @Json(name = "dueBefore") @field:Json(name = "dueBefore") var dueBefore: String? = null,
+    @Json(name = "dueAfter") @field:Json(name = "dueAfter") var dueAfter: String? = null
 )
