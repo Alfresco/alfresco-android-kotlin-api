@@ -46,7 +46,7 @@ data class TaskDataEntry(
     @Json(name = "created") @field:Json(name = "created") var created: ZonedDateTime? = null,
     @Json(name = "dueDate") @field:Json(name = "dueDate") var dueDate: ZonedDateTime? = null,
     @Json(name = "endDate") @field:Json(name = "endDate") var endDate: ZonedDateTime? = null,
-    @Json(name = "duration") @field:Json(name = "duration") var duration: String? = null,
+    @Json(name = "duration") @field:Json(name = "duration") var duration: Long? = null,
     @Json(name = "priority") @field:Json(name = "priority") var priority: String? = null,
     @Json(name = "parentTaskId") @field:Json(name = "parentTaskId") var parentTaskId: String? = null,
     @Json(name = "parentTaskName") @field:Json(name = "parentTaskName") var parentTaskName: String? = null,
