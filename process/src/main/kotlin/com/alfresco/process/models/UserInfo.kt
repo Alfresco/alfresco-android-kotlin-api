@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * @property email
  */
 @JsonClass(generateAdapter = true)
-data class AssigneeInfo(
+data class UserInfo(
     @Json(name = "id") @field:Json(name = "id") var id: Int? = null,
     @Json(name = "firstName") @field:Json(name = "firstName") var firstName: String? = null,
     @Json(name = "lastName") @field:Json(name = "lastName") var lastName: String? = null,
