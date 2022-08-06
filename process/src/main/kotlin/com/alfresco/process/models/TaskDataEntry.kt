@@ -42,7 +42,7 @@ data class TaskDataEntry(
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "description") @field:Json(name = "description") var description: String? = null,
     @Json(name = "category") @field:Json(name = "category") var category: String? = null,
-    @Json(name = "assignee") @field:Json(name = "assignee") var assignee: AssigneeInfo? = null,
+    @Json(name = "assignee") @field:Json(name = "assignee") var assignee: UserInfo? = null,
     @Json(name = "created") @field:Json(name = "created") var created: ZonedDateTime? = null,
     @Json(name = "dueDate") @field:Json(name = "dueDate") var dueDate: ZonedDateTime? = null,
     @Json(name = "endDate") @field:Json(name = "endDate") var endDate: ZonedDateTime? = null,
