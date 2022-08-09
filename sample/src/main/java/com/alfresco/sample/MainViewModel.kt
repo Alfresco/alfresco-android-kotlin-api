@@ -25,7 +25,6 @@ import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
 import com.alfresco.process.apis.TaskAPI
-import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestTaskFilters
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -172,7 +171,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
                         text = ""
                     )
                 )
-                val taskDetail = serviceAPS.addComment("40", RequestComment(message = "testing"))
+                val taskDetail = serviceAPS.getContents("125")
                 println("task list ==> $taskList")
                 println("task detail ==> $taskDetail")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
