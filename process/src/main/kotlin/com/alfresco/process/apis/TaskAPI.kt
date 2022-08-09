@@ -4,6 +4,7 @@ import com.alfresco.process.models.CommentDataEntry
 import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestTaskFilters
 import com.alfresco.process.models.ResultComments
+import com.alfresco.process.models.ResultContents
 import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.TaskDataEntry
 import retrofit2.http.Body
@@ -11,6 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Marked as TaskAPI interface
@@ -45,4 +47,11 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @POST("api/enterprise/tasks/{task_id}/comments")
     suspend fun addComment(@Path("task_id") taskID: String, @Body requestComment: RequestComment): CommentDataEntry
+
+    /**
+     * Api to fetch the contents by taskID
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/tasks/{task_id}/content")
+    suspend fun getContents(@Path("task_id") taskID: String, @Query("isRelatedContent") isRelatedContent: Boolean = true): ResultContents
 }
