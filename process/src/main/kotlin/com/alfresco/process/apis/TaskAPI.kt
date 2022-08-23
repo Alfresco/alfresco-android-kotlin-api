@@ -63,4 +63,11 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @PUT("api/enterprise/tasks/{task_id}/action/complete")
     suspend fun completeTask(@Path("task_id") taskID: String): Response<Unit>
+
+    /**
+     * Api to get the raw contents
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/content/{task_id}/raw")
+    suspend fun getRawContent(@Path("task_id") taskID: String): Response<Unit>
 }
