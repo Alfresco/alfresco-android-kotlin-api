@@ -7,10 +7,12 @@ import com.alfresco.process.models.ResultComments
 import com.alfresco.process.models.ResultContents
 import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.TaskDataEntry
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -54,4 +56,18 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @GET("api/enterprise/tasks/{task_id}/content")
     suspend fun getContents(@Path("task_id") taskID: String, @Query("isRelatedContent") isRelatedContent: Boolean = true): ResultContents
+
+    /**
+     * Api to complete the task
+     */
+    @Headers("Content-type: application/json")
+    @PUT("api/enterprise/tasks/{task_id}/action/complete")
+    suspend fun completeTask(@Path("task_id") taskID: String): Response<Unit>
+
+    /**
+     * Api to get the raw contents
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/content/{task_id}/raw")
+    suspend fun getRawContent(@Path("task_id") taskID: String): Response<Unit>
 }

@@ -171,9 +171,9 @@ class MainViewModel(private val context: Context) : ViewModel() {
                         text = ""
                     )
                 )
-                val taskDetail = serviceAPS.getContents("125")
+                val taskDetail = serviceAPS.getRawContent("9")
                 println("task list ==> $taskList")
-                println("task detail ==> $taskDetail")
+                println("task detail ==> ${taskDetail.code()}")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
