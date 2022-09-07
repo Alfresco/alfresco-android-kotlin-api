@@ -250,7 +250,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        requireNotNull(authConfig.port.toIntOrNull()) { "Invalid port or empty" }
         require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
         require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
         require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
@@ -305,7 +304,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
 
             if (uri.port == -1 && ((config.https && config.port != "443") || (!config.https && config.port != "80"))) {
-                uriBuilder = uriBuilder.encodedAuthority(uri.authority + ":${config.port}")
+                uriBuilder = uriBuilder.encodedAuthority(uri.authority + if (config.port.isNotEmpty()) ":${config.port}" else "")
             }
 
             return uriBuilder.build()
