@@ -65,6 +65,7 @@ data class TaskDataEntry(
     @Json(name = "adhocTaskCanBeReassigned") @field:Json(name = "adhocTaskCanBeReassigned") var adhocTaskCanBeReassigned: Boolean? = null,
     @Json(name = "taskDefinitionKey") @field:Json(name = "taskDefinitionKey") var taskDefinitionKey: String? = null,
     @Json(name = "executionId") @field:Json(name = "executionId") var executionId: String? = null,
+    @Json(name = "involvedPeople") @field:Json(name = "involvedPeople") var involvedPeople: List<UserInfo>? = null,
     @Json(name = "memberOfCandidateGroup") @field:Json(name = "memberOfCandidateGroup") var memberOfCandidateGroup: Boolean? = null,
     @Json(name = "memberOfCandidateUsers") @field:Json(name = "memberOfCandidateUsers") var memberOfCandidateUsers: Boolean? = null,
     @Json(name = "managerOfCandidateGroup") @field:Json(name = "managerOfCandidateGroup") var managerOfCandidateGroup: Boolean? = null
