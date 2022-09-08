@@ -42,6 +42,7 @@ android {
 dependencies {
     implementation project(path: ':auth')
     implementation project(path: ':content')
+    implementation project(path: ':content-ktx')
     implementation project(':process')
 
     implementation 'androidx.appcompat:appcompat:1.4.2'

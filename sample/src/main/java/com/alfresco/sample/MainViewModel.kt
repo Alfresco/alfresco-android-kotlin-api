@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
+import com.alfresco.content.apis.AlfrescoApi
 import com.alfresco.content.apis.SearchApi
+import com.alfresco.content.apis.TrashcanApi
 import com.alfresco.content.models.AppConfigModel
 import com.alfresco.content.models.RequestFacetField
 import com.alfresco.content.models.RequestFacetFields
@@ -96,6 +98,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
     fun loadRecents() {
         val service = retrofit.create(SearchApi::class.java)
+        val trashApi = retrofit.create(TrashcanApi::class.java)
         val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
         val queryString = "*"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
@@ -162,6 +165,8 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
+                /*listOf("path,properties,allowableOperations,permissions,aspectNames"))*/
+                val trashCall = trashApi.listDeletedNodes(0, 25, AlfrescoApi.csvQueryParam("path"))
                 val taskList = serviceAPS.taskList(
                     RequestTaskFilters(
                         assignment = "assignee",
