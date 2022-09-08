@@ -304,7 +304,8 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
 
             if (uri.port == -1 && ((config.https && config.port != "443") || (!config.https && config.port != "80"))) {
-                uriBuilder = uriBuilder.encodedAuthority(uri.authority + if (config.port.isNotEmpty()) ":${config.port}" else "")
+                val port = config.port.takeIf { it.isEmpty() } ?: ":${config.port}"
+                uriBuilder = uriBuilder.encodedAuthority(uri.authority + port)
             }
 
             return uriBuilder.build()
