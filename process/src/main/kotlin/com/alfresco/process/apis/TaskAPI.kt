@@ -3,6 +3,7 @@ package com.alfresco.process.apis
 import com.alfresco.process.models.AssignUserBody
 import com.alfresco.process.models.CommentDataEntry
 import com.alfresco.process.models.ContentDataEntry
+import com.alfresco.process.models.ProfileData
 import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestTaskFilters
 import com.alfresco.process.models.ResultComments
@@ -104,7 +105,7 @@ interface TaskAPI {
      */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/users")
-    suspend fun searchUser(@Query("filter") filter: String): ResultUserList
+    suspend fun searchUser(@Query("filter") filter: String, @Query("email") email: String): ResultUserList
 
     /**
      * Api to upload the content for the give task id
@@ -116,4 +117,8 @@ interface TaskAPI {
         @Part("file\"; filename=\"file") file: RequestBody,
         @Query("isRelatedContent") isRelatedContent: Boolean = true
     ): ContentDataEntry
+
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/profile")
+    suspend fun getProfile(): ProfileData
 }

@@ -26,7 +26,6 @@ import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
 import com.alfresco.process.apis.TaskAPI
-import com.alfresco.process.models.TaskBodyCreate
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -164,7 +163,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
-                val taskList = serviceAPS.createTask(TaskBodyCreate("Testing task update"))
+                val taskList = serviceAPS.getProfile()
                 println("task list ==> $taskList")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
