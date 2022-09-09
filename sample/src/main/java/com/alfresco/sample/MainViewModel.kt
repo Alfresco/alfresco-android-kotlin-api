@@ -163,7 +163,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
-                val taskList = serviceAPS.getProfile()
+                val taskList = serviceAPS.deleteRawContent("5")
                 println("task list ==> $taskList")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
