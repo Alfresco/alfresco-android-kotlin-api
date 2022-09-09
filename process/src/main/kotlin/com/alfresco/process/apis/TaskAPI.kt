@@ -118,6 +118,9 @@ interface TaskAPI {
         @Query("isRelatedContent") isRelatedContent: Boolean = true
     ): ContentDataEntry
 
+    /**
+     * Api to get the user profile
+     */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/profile")
     suspend fun getProfile(): ProfileData
