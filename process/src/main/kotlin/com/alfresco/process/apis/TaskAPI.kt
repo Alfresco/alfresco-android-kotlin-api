@@ -1,18 +1,26 @@
 package com.alfresco.process.apis
 
+import com.alfresco.process.models.AssignUserBody
 import com.alfresco.process.models.CommentDataEntry
+import com.alfresco.process.models.ContentDataEntry
+import com.alfresco.process.models.ProfileData
 import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestTaskFilters
 import com.alfresco.process.models.ResultComments
 import com.alfresco.process.models.ResultContents
 import com.alfresco.process.models.ResultList
+import com.alfresco.process.models.ResultUserList
+import com.alfresco.process.models.TaskBodyCreate
 import com.alfresco.process.models.TaskDataEntry
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -70,4 +78,50 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @GET("api/enterprise/content/{task_id}/raw")
     suspend fun getRawContent(@Path("task_id") taskID: String): Response<Unit>
+
+    /**
+     * Api to get the create task
+     */
+    @Headers("Content-type: application/json")
+    @POST("api/enterprise/tasks")
+    suspend fun createTask(@Body taskBodyCreate: TaskBodyCreate): TaskDataEntry
+
+    /**
+     * Api to update the task
+     */
+    @Headers("Content-type: application/json")
+    @PUT("api/enterprise/tasks/{task_id}")
+    suspend fun updateTask(@Path("task_id") taskID: String, @Body taskBodyCreate: TaskBodyCreate): TaskDataEntry
+
+    /**
+     * Api to assign task to other user
+     */
+    @Headers("Content-type: application/json")
+    @PUT("api/enterprise/tasks/{task_id}/action/assign")
+    suspend fun assignUser(@Path("task_id") taskID: String, @Body assignUserBody: AssignUserBody): TaskDataEntry
+
+    /**
+     * Api to search user on the process services
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/users")
+    suspend fun searchUser(@Query("filter") filter: String, @Query("email") email: String): ResultUserList
+
+    /**
+     * Api to upload the content for the give task id
+     */
+    @Multipart
+    @POST("api/enterprise/tasks/{task_id}/raw-content")
+    suspend fun uploadRawContent(
+        @Path("task_id") taskID: String,
+        @Part("file\"; filename=\"file") file: RequestBody,
+        @Query("isRelatedContent") isRelatedContent: Boolean = true
+    ): ContentDataEntry
+
+    /**
+     * Api to get the user profile
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/profile")
+    suspend fun getProfile(): ProfileData
 }

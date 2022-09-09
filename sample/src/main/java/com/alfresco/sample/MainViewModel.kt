@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
-import com.alfresco.content.apis.AlfrescoApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.apis.TrashcanApi
 import com.alfresco.content.models.AppConfigModel
@@ -27,7 +26,6 @@ import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
 import com.alfresco.process.apis.TaskAPI
-import com.alfresco.process.models.RequestTaskFilters
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -165,23 +163,12 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
-                /*listOf("path,properties,allowableOperations,permissions,aspectNames"))*/
-                val trashCall = trashApi.listDeletedNodes(0, 25, AlfrescoApi.csvQueryParam("path"))
-                val taskList = serviceAPS.taskList(
-                    RequestTaskFilters(
-                        assignment = "assignee",
-                        sort = "created-desc",
-                        page = 0,
-                        state = "open",
-                        text = ""
-                    )
-                )
-                val taskDetail = serviceAPS.getRawContent("9")
+                val taskList = serviceAPS.getProfile()
                 println("task list ==> $taskList")
-                println("task detail ==> ${taskDetail.code()}")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 onError.value = ex.localizedMessage ?: ""
             }
         }
