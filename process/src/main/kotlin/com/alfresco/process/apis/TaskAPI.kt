@@ -15,6 +15,7 @@ import com.alfresco.process.models.TaskDataEntry
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
@@ -124,4 +125,11 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @GET("api/enterprise/profile")
     suspend fun getProfile(): ProfileData
+
+    /**
+     * Api to delete the content
+     */
+    @Headers("Content-type: application/json")
+    @DELETE("api/enterprise/content/{content_id}")
+    suspend fun deleteRawContent(@Path("content_id") contentId: String): Response<Unit>
 }
