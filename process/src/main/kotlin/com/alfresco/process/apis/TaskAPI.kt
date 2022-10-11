@@ -12,7 +12,7 @@ import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.ResultUserList
 import com.alfresco.process.models.TaskBodyCreate
 import com.alfresco.process.models.TaskDataEntry
-import okhttp3.RequestBody
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -115,7 +115,7 @@ interface TaskAPI {
     @POST("api/enterprise/tasks/{task_id}/raw-content")
     suspend fun uploadRawContent(
         @Path("task_id") taskID: String,
-        @Part("file\"; filename=\"file") file: RequestBody,
+        @Part multipartBody: MultipartBody.Part,
         @Query("isRelatedContent") isRelatedContent: Boolean = true
     ): ContentDataEntry
 
