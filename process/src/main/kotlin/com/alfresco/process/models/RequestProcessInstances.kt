@@ -2,7 +2,9 @@ package com.alfresco.process.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-
+/**
+ * Marked as RequestProcessInstances
+ */
 @JsonClass(generateAdapter = true)
 data class RequestProcessInstances(
     @Json(name = "sort") @field:Json(name = "sort") var sort: String? = null,
