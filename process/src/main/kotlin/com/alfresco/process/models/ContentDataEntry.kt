@@ -27,6 +27,8 @@ data class ContentDataEntry(
     @Json(name = "contentAvailable") @field:Json(name = "contentAvailable") var contentAvailable: Boolean? = null,
     @Json(name = "link") @field:Json(name = "link") var link: Boolean? = null,
     @Json(name = "mimeType") @field:Json(name = "mimeType") var mimeType: String? = null,
+    @Json(name = "source") @field:Json(name = "source") var source: String? = null,
+    @Json(name = "sourceId") @field:Json(name = "sourceId") var sourceId: String? = null,
     @Json(name = "simpleType") @field:Json(name = "simpleType") var simpleType: String? = null,
     @Json(name = "previewStatus") @field:Json(name = "previewStatus") var previewStatus: String? = null,
     @Json(name = "thumbnailStatus") @field:Json(name = "thumbnailStatus") var thumbnailStatus: String? = null
