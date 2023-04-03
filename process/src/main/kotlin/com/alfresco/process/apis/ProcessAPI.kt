@@ -5,6 +5,7 @@ import com.alfresco.process.models.RequestLinkContent
 import com.alfresco.process.models.RequestProcessInstances
 import com.alfresco.process.models.ResultListProcessDefinitions
 import com.alfresco.process.models.ResultListProcessInstances
+import com.alfresco.process.models.SystemProperties
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -45,4 +46,11 @@ interface ProcessAPI {
     @Headers("Content-type: application/json")
     @POST("api/enterprise/process-instances/query")
     suspend fun processInstances(@Body requestProcessInstances: RequestProcessInstances): ResultListProcessInstances
+
+    /**
+     * Api to fetch system properties
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/system/properties")
+    suspend fun getSystemProperties(): SystemProperties
 }
