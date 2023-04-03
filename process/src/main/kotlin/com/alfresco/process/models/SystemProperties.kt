@@ -3,6 +3,9 @@ package com.alfresco.process.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+/**
+ * Marked as SystemProperties
+ */
 @JsonClass(generateAdapter = true)
 data class SystemProperties(
     @Json(name = "allowInvolveByEmail") @field:Json(name = "allowInvolveByEmail") var allowInvolveByEmail: Boolean? = null,
