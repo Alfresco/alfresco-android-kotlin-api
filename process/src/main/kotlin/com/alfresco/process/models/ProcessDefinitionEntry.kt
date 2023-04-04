@@ -20,7 +20,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class ProcessDefinitionEntry(
-    @Json(name = "id") @field:Json(name = "id") var id: String? = null,
+    @Json(name = "id") @field:Json(name = "id") var id: Int? = null,
     @Json(name = "defaultAppId") @field:Json(name = "defaultAppId") var defaultAppId: String? = null,
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "description") @field:Json(name = "description") var description: String? = null,
