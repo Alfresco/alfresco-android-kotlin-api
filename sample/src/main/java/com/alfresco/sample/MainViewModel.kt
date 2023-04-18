@@ -25,6 +25,7 @@ import com.alfresco.content.models.RequestSortDefinitionInner
 import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
+import com.alfresco.process.apis.ProcessAPI
 import com.alfresco.process.apis.TaskAPI
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -98,6 +99,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val service = retrofit.create(SearchApi::class.java)
         val trashApi = retrofit.create(TrashcanApi::class.java)
         val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
+        val serviceAPS1 = retrofitAPS.create(ProcessAPI::class.java)
         val queryString = "*"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
@@ -163,8 +165,8 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
-                val taskList = serviceAPS.deleteRawContent("5")
-                println("task list ==> $taskList")
+                val taskList = serviceAPS1.singleProcessDefinition(true, "3")
+                println("data 11 ==> ${taskList.data?.get(0)?.id}")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
