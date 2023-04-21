@@ -13,6 +13,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
@@ -76,7 +77,7 @@ interface ProcessAPI {
     /**
      * Api to upload the content on process
      */
-    @Headers("Content-type: application/json")
+    @Multipart
     @POST("api/enterprise/content/raw")
     suspend fun uploadRawContent(@Part multipartBody: MultipartBody.Part): ContentDataEntry
 }
