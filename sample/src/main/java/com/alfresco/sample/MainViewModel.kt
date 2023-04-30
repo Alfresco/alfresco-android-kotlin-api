@@ -164,11 +164,9 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val searchCall = service.search(search)
-                val taskList = serviceAPS1.singleProcessDefinition(true, "3")
+//                val searchCall = service.search(search)
+                val taskList = serviceAPS1.singleProcessDefinition(true, "53")
                 println("data 11 ==> ${taskList.data?.get(0)?.id}")
-                results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
-                val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 onError.value = ex.localizedMessage ?: ""
