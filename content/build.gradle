@@ -5,13 +5,12 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jetbrains.dokka'
 
 android {
+    defaultConfig {
+        versionName "0.3.0"
+    }
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-    }
-    namespace 'com.alfresco.content'
-    defaultConfig {
-        versionName "0.3.0"
     }
 }
 

@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.dokka'
 
 android {
-    namespace 'com.alfresco.content.ktx'
     defaultConfig {
         versionName "0.3.0"
     }
