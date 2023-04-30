@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE_LOGOUT)
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_LOGOUT) {
             if (resultCode == Activity.RESULT_OK) {
