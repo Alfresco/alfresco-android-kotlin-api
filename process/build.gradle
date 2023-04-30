@@ -8,9 +8,6 @@ plugins {
 
 android {
 
-    defaultConfig {
-        versionName "0.1.0"
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -19,6 +16,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.alfresco.process'
 }
 
 dependencies {

@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath libs.android.gradlePlugin
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath libs.kotlin.gradlePlugin
         classpath libs.kotlin.serialization.plugin
 
