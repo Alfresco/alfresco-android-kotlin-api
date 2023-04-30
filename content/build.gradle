@@ -10,6 +10,9 @@ android {
         coreLibraryDesugaringEnabled true
     }
     namespace 'com.alfresco.content'
+    defaultConfig {
+        versionName "0.3.0"
+    }
 }
 
 apply plugin: 'com.yelp.codegen.plugin'

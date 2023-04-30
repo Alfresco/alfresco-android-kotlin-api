@@ -5,6 +5,9 @@ apply plugin: 'org.jetbrains.dokka'
 
 android {
     namespace 'com.alfresco.auth'
+    defaultConfig {
+        versionName "0.8.0"
+    }
 }
 
 dependencies {
