@@ -8,12 +8,12 @@ group = GROUP
 project.afterEvaluate {
     task sourcesJar(type: Jar) {
         from android.sourceSets.main.java.srcDirs
-//        classifier "sources"
+        archiveClassifier.set("sources")
     }
 
     task javadocJar(type: Jar, dependsOn: 'dokkaJavadoc') {
         from "$buildDir/dokka/javadoc"
-//        classifier = 'javadoc'
+        archiveClassifier.set('javadoc')
     }
 
     publishing {

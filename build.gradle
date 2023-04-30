@@ -54,7 +54,7 @@ subprojects {
         }
     }
 
-    tasks.withType(DokkaTask).configureEach {
+    tasks.withType(org.jetbrains.dokka.gradle.DokkaTask).configureEach {
         dokkaSourceSets.configureEach {
             reportUndocumented.set(true)
             skipEmptyPackages.set(true)
