@@ -165,8 +165,8 @@ class MainViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 val searchCall = service.search(search)
-                val taskList = serviceAPS1.singleProcessDefinition(true, "3")
-                println("data 11 ==> ${taskList.data?.get(0)?.id}")
+                val taskList = serviceAPS1.startForm("singlereviewer7-2-23:1:36")
+                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()?.size}")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
