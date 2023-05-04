@@ -83,6 +83,9 @@ interface ProcessAPI {
     @POST("api/enterprise/content/raw")
     suspend fun uploadRawContent(@Part multipartBody: MultipartBody.Part): ContentDataEntry
 
+    /**
+     * Api to fetch the start form representation
+     */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/process-definitions/{processDefinitionId}/start-form")
     suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultStartForm
