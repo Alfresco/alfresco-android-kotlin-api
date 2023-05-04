@@ -1,7 +1,9 @@
 package com.alfresco.process.models
 
+import com.google.gson.Gson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import org.json.JSONObject
 
 @JsonClass(generateAdapter = true)
 data class Fields(
@@ -16,5 +18,5 @@ data class Fields(
     @Json(name = "overrideId") @field:Json(name = "overrideId") var overrideId: Boolean? = null,
     @Json(name = "fields") @field:Json(name = "fields") var fields: Map<String, Any>? = null
 ) {
-    fun getFieldMapAsList() = fields?.values?.map { (it as List<Fields>) }?.flatten()
+    fun getFieldMapAsList() = fields?.values?.map { it as List<*> }?.flatten()?.map { Gson().fromJson(JSONObject(it as Map<String, Fields>).toString(), Fields::class.java) }
 }
