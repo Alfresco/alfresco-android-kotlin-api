@@ -3,6 +3,13 @@ package com.alfresco.process.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+/**
+ * @property id
+ * @property processDefinitionId
+ * @property processDefinitionName
+ * @property processDefinitionKey
+ * @property fields
+ */
 @JsonClass(generateAdapter = true)
 data class ResultStartForm(
     @Json(name = "id") @field:Json(name = "id") var id: Int? = null,
