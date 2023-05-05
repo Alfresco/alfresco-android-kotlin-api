@@ -8,6 +8,7 @@ import com.alfresco.process.models.ResultGroupsList
 import com.alfresco.process.models.ResultListProcessDefinitions
 import com.alfresco.process.models.ResultListProcessInstances
 import com.alfresco.process.models.ResultListRuntimeProcessDefinitions
+import com.alfresco.process.models.ResultStartForm
 import com.alfresco.process.models.SystemProperties
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -16,6 +17,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -80,4 +82,11 @@ interface ProcessAPI {
     @Multipart
     @POST("api/enterprise/content/raw")
     suspend fun uploadRawContent(@Part multipartBody: MultipartBody.Part): ContentDataEntry
+
+    /**
+     * Api to fetch the start form representation
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/process-definitions/{processDefinitionId}/start-form")
+    suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultStartForm
 }
