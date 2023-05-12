@@ -18,5 +18,6 @@ data class ValuesModel(
     @Json(name = "items") @field:Json(name = "items") var items: String? = null,
     @Json(name = "priority") @field:Json(name = "priority") var priority: PriorityModel? = null,
     @Json(name = "reviewer") @field:Json(name = "reviewer") var reviewer: UserInfo? = null,
+    @Json(name = "reviewgroups") @field:Json(name = "reviewgroups") var reviewGroups: GroupInfo? = null,
     @Json(name = "sendemailnotifications") @field:Json(name = "sendemailnotifications") var sendEmailNotifications: Boolean? = null
 )
