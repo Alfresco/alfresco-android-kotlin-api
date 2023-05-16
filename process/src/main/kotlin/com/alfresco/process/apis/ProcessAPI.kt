@@ -4,6 +4,7 @@ import com.alfresco.process.models.ContentDataEntry
 import com.alfresco.process.models.ProcessInstanceEntry
 import com.alfresco.process.models.RequestLinkContent
 import com.alfresco.process.models.RequestProcessInstances
+import com.alfresco.process.models.RequestProcessInstancesQuery
 import com.alfresco.process.models.ResultGroupsList
 import com.alfresco.process.models.ResultListProcessDefinitions
 import com.alfresco.process.models.ResultListProcessInstances
@@ -53,7 +54,7 @@ interface ProcessAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/process-instances/query")
-    suspend fun processInstances(@Body requestProcessInstances: RequestProcessInstances): ResultListProcessInstances
+    suspend fun processInstancesQuery(@Body requestProcessInstancesQuery: RequestProcessInstancesQuery): ResultListProcessInstances
 
     /**
      * Api to fetch system properties
@@ -74,7 +75,7 @@ interface ProcessAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/process-instances")
-    suspend fun createProcessInstance(): ProcessInstanceEntry
+    suspend fun createProcessInstance(@Body requestProcessInstances: RequestProcessInstances): ProcessInstanceEntry
 
     /**
      * Api to upload the content on process
