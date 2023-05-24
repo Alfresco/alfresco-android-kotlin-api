@@ -92,6 +92,9 @@ interface ProcessAPI {
     @GET("api/enterprise/process-definitions/{processDefinitionId}/start-form")
     suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultStartForm
 
+    /**
+     * Api to fetch the account profile info
+     */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/profile/accounts/alfresco")
     suspend fun accountInfo(): ResultAccountInfo
