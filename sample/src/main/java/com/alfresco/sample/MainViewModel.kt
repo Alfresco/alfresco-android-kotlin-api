@@ -164,9 +164,8 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
         viewModelScope.launch {
             try {
-//                val searchCall = service.search(search)
-                val taskList = serviceAPS1.singleProcessDefinition(true, "53")
-                println("data 11 ==> ${taskList.data?.get(0)?.id}")
+                val searchCall = service.search(search)
+//                val taskList = serviceAPS1.singleProcessDefinition(true, "53")
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 onError.value = ex.localizedMessage ?: ""

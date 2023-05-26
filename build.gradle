@@ -16,7 +16,7 @@ buildscript {
         classpath libs.dokka
         classpath libs.spotless
         classpath libs.gradleVersionsPlugin
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0'
+//        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0'
     }
 }
 
