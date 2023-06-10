@@ -24,10 +24,11 @@ data class Fields(
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "message") @field:Json(name = "message") var message: String? = null,
     @Json(name = "type") @field:Json(name = "type") var type: String? = null,
-    @Json(name = "value") @field:Json(name = "value") var value: String? = null,
+    @Json(name = "value") @field:Json(name = "value") var value: Any? = null,
     @Json(name = "required") @field:Json(name = "required") var required: Boolean? = null,
     @Json(name = "readOnly") @field:Json(name = "readOnly") var readOnly: Boolean? = null,
     @Json(name = "overrideId") @field:Json(name = "overrideId") var overrideId: Boolean? = null,
+    @Json(name = "options") @field:Json(name = "overrideId") var options: List<Options>? = null,
     @Json(name = "fields") @field:Json(name = "fields") var fields: Map<String, Any>? = null
 ) {
     /**
