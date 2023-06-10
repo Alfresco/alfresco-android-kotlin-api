@@ -6,11 +6,11 @@ import com.alfresco.process.models.RequestLinkContent
 import com.alfresco.process.models.RequestProcessInstances
 import com.alfresco.process.models.RequestProcessInstancesQuery
 import com.alfresco.process.models.ResultAccountInfo
+import com.alfresco.process.models.ResultForm
 import com.alfresco.process.models.ResultGroupsList
 import com.alfresco.process.models.ResultListProcessDefinitions
 import com.alfresco.process.models.ResultListProcessInstances
 import com.alfresco.process.models.ResultListRuntimeProcessDefinitions
-import com.alfresco.process.models.ResultStartForm
 import com.alfresco.process.models.SystemProperties
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -90,7 +90,7 @@ interface ProcessAPI {
      */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/process-definitions/{processDefinitionId}/start-form")
-    suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultStartForm
+    suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultForm
 
     /**
      * Api to fetch the account profile info

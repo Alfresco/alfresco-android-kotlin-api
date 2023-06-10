@@ -8,6 +8,7 @@ import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestTaskFilters
 import com.alfresco.process.models.ResultComments
 import com.alfresco.process.models.ResultContents
+import com.alfresco.process.models.ResultForm
 import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.ResultUserList
 import com.alfresco.process.models.TaskBodyCreate
@@ -132,4 +133,8 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @DELETE("api/enterprise/content/{content_id}")
     suspend fun deleteRawContent(@Path("content_id") contentId: String): Response<Unit>
+
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/task-forms/{task_id}")
+    suspend fun taskForm(@Path("task_id") taskID: String): ResultForm
 }
