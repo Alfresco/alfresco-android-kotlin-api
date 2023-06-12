@@ -149,7 +149,7 @@ interface TaskAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/task-forms/{task_id}}/save-form")
-    suspend fun saveForm(@Path("task_id") taskId: String, @Body valuesModel: ValuesModel): ResultAccountInfo
+    suspend fun saveForm(@Path("task_id") taskId: String, @Body valuesModel: ValuesModel): Response<Unit>
 
     /**
      * Api to perform the action on outcomes
