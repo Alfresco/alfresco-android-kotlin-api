@@ -28,7 +28,7 @@ data class Fields(
     @Json(name = "required") @field:Json(name = "required") var required: Boolean? = null,
     @Json(name = "readOnly") @field:Json(name = "readOnly") var readOnly: Boolean? = null,
     @Json(name = "overrideId") @field:Json(name = "overrideId") var overrideId: Boolean? = null,
-    @Json(name = "options") @field:Json(name = "overrideId") var options: List<Options>? = null,
+    @Json(name = "options") @field:Json(name = "options") var options: List<Options>? = null,
     @Json(name = "fields") @field:Json(name = "fields") var fields: Map<String, Any>? = null
 ) {
     /**

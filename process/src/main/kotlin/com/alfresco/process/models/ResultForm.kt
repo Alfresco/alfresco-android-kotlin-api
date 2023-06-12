@@ -24,5 +24,7 @@ data class ResultForm(
     @Json(name = "taskId") @field:Json(name = "taskId") var taskId: String? = null,
     @Json(name = "taskName") @field:Json(name = "taskName") var taskName: String? = null,
     @Json(name = "taskDefinitionKey") @field:Json(name = "taskDefinitionKey") var taskDefinitionKey: String? = null,
-    @Json(name = "fields") @field:Json(name = "fields") var fields: List<Fields>? = null
+    @Json(name = "fields") @field:Json(name = "fields") var fields: List<Fields>? = null,
+    @Json(name = "outcomes") @field:Json(name = "outcomes") var outcomes: List<CommonOptionModel>? = null
+
 )
