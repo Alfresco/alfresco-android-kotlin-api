@@ -134,6 +134,10 @@ interface TaskAPI {
     @DELETE("api/enterprise/content/{content_id}")
     suspend fun deleteRawContent(@Path("content_id") contentId: String): Response<Unit>
 
+
+    /**
+     * Api to get the task-form detail
+     */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/task-forms/{task_id}")
     suspend fun taskForm(@Path("task_id") taskID: String): ResultForm
