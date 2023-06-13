@@ -147,7 +147,7 @@ interface TaskAPI {
      * Api to save the form
      */
     @Headers("Content-type: application/json")
-    @POST("api/enterprise/task-forms/{task_id}}/save-form")
+    @POST("api/enterprise/task-forms/{task_id}/save-form")
     suspend fun saveForm(@Path("task_id") taskId: String, @Body saveFrom: RequestSaveForm): Response<Unit>
 
     /**
