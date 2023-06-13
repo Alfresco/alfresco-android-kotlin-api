@@ -6,8 +6,8 @@ import com.alfresco.process.models.ContentDataEntry
 import com.alfresco.process.models.ProfileData
 import com.alfresco.process.models.RequestComment
 import com.alfresco.process.models.RequestOutcomes
+import com.alfresco.process.models.RequestSaveForm
 import com.alfresco.process.models.RequestTaskFilters
-import com.alfresco.process.models.ResultAccountInfo
 import com.alfresco.process.models.ResultComments
 import com.alfresco.process.models.ResultContents
 import com.alfresco.process.models.ResultForm
@@ -15,7 +15,6 @@ import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.ResultUserList
 import com.alfresco.process.models.TaskBodyCreate
 import com.alfresco.process.models.TaskDataEntry
-import com.alfresco.process.models.ValuesModel
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -149,12 +148,12 @@ interface TaskAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/task-forms/{task_id}}/save-form")
-    suspend fun saveForm(@Path("task_id") taskId: String, @Body valuesModel: ValuesModel): Response<Unit>
+    suspend fun saveForm(@Path("task_id") taskId: String, @Body saveFrom: RequestSaveForm): Response<Unit>
 
     /**
      * Api to perform the action on outcomes
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/task-forms/{task_id}")
-    suspend fun taskFormAction(@Path("task_id") taskId: String, @Body valuesModel: RequestOutcomes): Response<Unit>
+    suspend fun taskFormAction(@Path("task_id") taskId: String, @Body requestOutcome: RequestOutcomes): Response<Unit>
 }
