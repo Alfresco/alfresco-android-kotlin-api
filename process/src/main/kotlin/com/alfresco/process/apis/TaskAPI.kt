@@ -11,6 +11,7 @@ import com.alfresco.process.models.RequestTaskFilters
 import com.alfresco.process.models.ResultComments
 import com.alfresco.process.models.ResultContents
 import com.alfresco.process.models.ResultForm
+import com.alfresco.process.models.ResultFormVariables
 import com.alfresco.process.models.ResultList
 import com.alfresco.process.models.ResultUserList
 import com.alfresco.process.models.TaskBodyCreate
@@ -156,4 +157,25 @@ interface TaskAPI {
     @Headers("Content-type: application/json")
     @POST("api/enterprise/task-forms/{task_id}")
     suspend fun taskFormAction(@Path("task_id") taskId: String, @Body requestOutcome: RequestOutcomes): Response<Unit>
+
+    /**
+     * Api to perform the claim task
+     */
+    @Headers("Content-type: application/json")
+    @PUT("api/enterprise/tasks/{task_id}/action/claim")
+    suspend fun claimTask(@Path("task_id") taskId: String): Response<Unit>
+
+    /**
+     * Api to perform the un-claim task
+     */
+    @Headers("Content-type: application/json")
+    @PUT("api/enterprise/tasks/{task_id}/action/unclaim")
+    suspend fun unclaimTask(@Path("task_id") taskId: String): Response<Unit>
+
+    /**
+     * Api to perform the un-claim task
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/task-forms/{task_id}/variables")
+    suspend fun taskFormVariables(@Path("task_id") taskId: String): List<ResultFormVariables>
 }
