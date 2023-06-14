@@ -173,7 +173,7 @@ interface TaskAPI {
     suspend fun unclaimTask(@Path("task_id") taskId: String): Response<Unit>
 
     /**
-     * Api to perform the un-claim task
+     * Api to get the task-form variables
      */
     @Headers("Content-type: application/json")
     @GET("api/enterprise/task-forms/{task_id}/variables")
