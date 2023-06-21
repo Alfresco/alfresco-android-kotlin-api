@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath libs.android.gradlePlugin
         classpath libs.kotlin.gradlePlugin
         classpath libs.kotlin.serialization.plugin
 
@@ -16,7 +16,6 @@ buildscript {
         classpath libs.dokka
         classpath libs.spotless
         classpath libs.gradleVersionsPlugin
-//        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0'
     }
 }
 
