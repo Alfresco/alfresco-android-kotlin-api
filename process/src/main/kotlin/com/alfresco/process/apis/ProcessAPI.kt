@@ -4,6 +4,9 @@ import com.alfresco.process.models.ContentDataEntry
 import com.alfresco.process.models.ProcessInstanceEntry
 import com.alfresco.process.models.RequestLinkContent
 import com.alfresco.process.models.RequestProcessInstances
+import com.alfresco.process.models.RequestProcessInstancesQuery
+import com.alfresco.process.models.ResultAccountInfo
+import com.alfresco.process.models.ResultForm
 import com.alfresco.process.models.ResultGroupsList
 import com.alfresco.process.models.ResultListProcessDefinitions
 import com.alfresco.process.models.ResultListProcessInstances
@@ -16,6 +19,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -51,7 +55,7 @@ interface ProcessAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/process-instances/query")
-    suspend fun processInstances(@Body requestProcessInstances: RequestProcessInstances): ResultListProcessInstances
+    suspend fun processInstancesQuery(@Body requestProcessInstancesQuery: RequestProcessInstancesQuery): ResultListProcessInstances
 
     /**
      * Api to fetch system properties
@@ -72,7 +76,7 @@ interface ProcessAPI {
      */
     @Headers("Content-type: application/json")
     @POST("api/enterprise/process-instances")
-    suspend fun createProcessInstance(): ProcessInstanceEntry
+    suspend fun createProcessInstance(@Body requestProcessInstances: RequestProcessInstances): ProcessInstanceEntry
 
     /**
      * Api to upload the content on process
@@ -80,4 +84,18 @@ interface ProcessAPI {
     @Multipart
     @POST("api/enterprise/content/raw")
     suspend fun uploadRawContent(@Part multipartBody: MultipartBody.Part): ContentDataEntry
+
+    /**
+     * Api to fetch the start form representation
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/process-definitions/{processDefinitionId}/start-form")
+    suspend fun startForm(@Path("processDefinitionId") processDefinitionId: String): ResultForm
+
+    /**
+     * Api to fetch the account profile info
+     */
+    @Headers("Content-type: application/json")
+    @GET("api/enterprise/profile/accounts/alfresco")
+    suspend fun accountInfo(): ResultAccountInfo
 }

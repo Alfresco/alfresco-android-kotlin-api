@@ -44,7 +44,7 @@ data class ProfileData(
     @Json(name = "lastUpdate") @field:Json(name = "lastUpdate") var lastUpdate: ZonedDateTime? = null,
     @Json(name = "tenantId") @field:Json(name = "tenantId") var tenantId: Int? = null,
     @Json(name = "latestSyncTimeStamp") @field:Json(name = "latestSyncTimeStamp") var latestSyncTimeStamp: String? = null,
-    @Json(name = "groups") @field:Json(name = "groups") var groups: List<GroupUserInfo>? = null,
+    @Json(name = "groups") @field:Json(name = "groups") var groups: List<GroupInfo>? = null,
     @Json(name = "capabilities") @field:Json(name = "capabilities") var capabilities: String? = null,
     @Json(name = "apps") @field:Json(name = "apps") var apps: List<String>? = null,
     @Json(name = "primaryGroup") @field:Json(name = "primaryGroup") var primaryGroup: String? = null,

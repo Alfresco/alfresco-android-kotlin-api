@@ -19,7 +19,7 @@ import com.squareup.moshi.JsonClass
  * @property manager
  */
 @JsonClass(generateAdapter = true)
-data class GroupUserInfo(
+data class GroupInfo(
     @Json(name = "id") @field:Json(name = "id") var id: Int? = null,
     @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "externalId") @field:Json(name = "externalId") var externalId: Int? = null,
