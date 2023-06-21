@@ -67,6 +67,7 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
         viewModel.logout(this, REQUEST_CODE_END_SESSION)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_END_SESSION) {
             if (resultCode == Activity.RESULT_CANCELED) {

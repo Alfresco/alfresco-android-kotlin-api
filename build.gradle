@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
 buildscript {
     repositories {
         google()
@@ -14,7 +16,6 @@ buildscript {
         classpath libs.dokka
         classpath libs.spotless
         classpath libs.gradleVersionsPlugin
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0'
     }
 }
 
@@ -29,16 +30,16 @@ subprojects {
     afterEvaluate {
         if(it.hasProperty('android')) {
             android {
-                compileSdkVersion 32
+                compileSdkVersion 33
 
                 defaultConfig {
                     minSdkVersion 21
-                    targetSdkVersion 32
+                    targetSdkVersion 33
                 }
 
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_11
-                    targetCompatibility JavaVersion.VERSION_11
+                    sourceCompatibility JavaVersion.VERSION_18
+                    targetCompatibility JavaVersion.VERSION_18
                 }
 
                 sourceSets['main'].java.srcDir('src/main/kotlin')
@@ -48,7 +49,7 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
+            jvmTarget = JavaVersion.VERSION_18.toString()
         }
     }
 
@@ -57,7 +58,7 @@ subprojects {
             reportUndocumented.set(true)
             skipEmptyPackages.set(true)
             skipDeprecated.set(true)
-            jdkVersion.set(8)
+            jdkVersion.set(18)
 
             // Add Android SDK packages
             noAndroidSdkLink.set(false)

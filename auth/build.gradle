@@ -4,8 +4,9 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'org.jetbrains.dokka'
 
 android {
+    namespace 'com.alfresco.auth'
     defaultConfig {
-        versionName "0.8.0"
+        versionName "0.8.1"
     }
 }
 

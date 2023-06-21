@@ -26,6 +26,7 @@ enum class AuthType(val value: String) {
         /**
          * Convert string representation to enum.
          */
-        @JvmStatic fun fromValue(value: String) = map[value]
+        @JvmStatic
+        fun fromValue(value: String) = map[value]
     }
 }
