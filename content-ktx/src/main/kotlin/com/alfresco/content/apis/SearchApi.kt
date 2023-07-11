@@ -65,10 +65,8 @@ suspend fun SearchApi.simpleSearch(
         defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
     )
 
-    val typeFilter = (if (include.isEmpty()) {
+    val typeFilter = (include.ifEmpty {
         setOf(SearchInclude.Files, SearchInclude.Folders)
-    } else {
-        include
     }).joinToString(separator = " OR ") { "+TYPE:'${it.value}'" }
 
     val filter =
@@ -126,11 +124,6 @@ suspend fun SearchApi.advanceSearch(
             )
         )
 
-    val defaults = RequestDefaults(
-        defaultFieldName = "keywords",
-        defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
-    )
-
     val typeFilter: String = if (include.isEmpty()) {
         setOf(SearchInclude.Files, SearchInclude.Folders)
             .joinToString(separator = " OR ") { "+TYPE:'$it'" }
@@ -162,7 +155,6 @@ suspend fun SearchApi.advanceSearch(
             reqInclude,
             sort = sort,
             templates = templates,
-            defaults = defaults,
             filterQueries = filter,
             facetFields = RequestFacetFields(faceData.fields),
             facetQueries = faceData.queries,
@@ -219,7 +211,7 @@ internal fun SearchApi.excludeUnsupportedTypes() =
         "-TYPE:'dl:contact' AND -TYPE:'dl:location'",
         "-TYPE:'fm:forum' AND -TYPE:'fm:topic' AND -TYPE:'fm:post'",
         "-TYPE:'app:filelink' AND -TYPE:'lnk:link' AND -TYPE:'ia:calendarEvent'",
-        "-QNAME:comment AND -PNAME:'0/wiki'"
+        "-PNAME:'0/wiki'"
     )
 
 fun SearchApi.makeFilterQueries(vararg filters: String): RequestFilterQueries {
