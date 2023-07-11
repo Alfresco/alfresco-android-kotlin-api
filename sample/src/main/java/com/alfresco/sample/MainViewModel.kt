@@ -8,9 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
+import com.alfresco.content.apis.AdvanceSearchInclude
+import com.alfresco.content.apis.FacetSearchInclude
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.apis.TrashcanApi
+import com.alfresco.content.apis.advanceSearch
 import com.alfresco.content.models.AppConfigModel
+import com.alfresco.content.models.RequestDefaults
 import com.alfresco.content.models.RequestFacetField
 import com.alfresco.content.models.RequestFacetFields
 import com.alfresco.content.models.RequestFacetIntervals
@@ -22,6 +26,7 @@ import com.alfresco.content.models.RequestIncludeEnum
 import com.alfresco.content.models.RequestPagination
 import com.alfresco.content.models.RequestQuery
 import com.alfresco.content.models.RequestSortDefinitionInner
+import com.alfresco.content.models.RequestTemplatesInner
 import com.alfresco.content.models.ResultNode
 import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
@@ -100,11 +105,28 @@ class MainViewModel(private val context: Context) : ViewModel() {
         val trashApi = retrofit.create(TrashcanApi::class.java)
         val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
         val serviceAPS1 = retrofitAPS.create(ProcessAPI::class.java)
-        val queryString = "*"
+
+        val templates =
+            listOf(
+                RequestTemplatesInner(
+                    "keywords",
+                    "%(cm:name cm:title cm:description TEXT TAG)"
+                )
+            )
+
+        val defaults = RequestDefaults(
+            defaultFieldName = "keywords",
+            defaultFTSOperator = RequestDefaults.DefaultFTSOperatorEnum.AND
+        )
+
+        val reqInclude = listOf(RequestIncludeEnum.PATH)
+
+        val queryString = "file"
+//        val queryString = "((cm:name:\"istock*\" OR cm:title:\"istock*\" OR cm:description:\"istock*\" OR TEXT:\"istock*\" OR TAG:\"istock*\" OR schema:textLines:\"istock*\" OR schema:transcription:\"istock*\" OR schema:label:\"istock*\" OR schema:product:\"istock*\" OR schema:date:\"istock*\" OR schema:place:\"istock*\" OR schema:event:\"istock*\" OR schema:organization:\"istock*\" OR schema:thing:\"istock*\" OR schema:quantity:\"istock*\" OR schema:creativeWork:\"istock*\" OR schema:piiEntityTypes:\"istock*\" OR schema:person:\"istock*\"))"
         val reqQuery = RequestQuery(queryString, RequestQuery.LanguageEnum.AFTS)
         val filter = listOf(
             RequestFilterQueriesInner("(TYPE:'cm:folder' OR TYPE:'cm:content') AND (NOT cm:creator:System)"),
-//            RequestFilterQueriesInner("(TYPE:'cm:folder') AND (NOT cm:creator:System)"),
+            RequestFilterQueriesInner("(TYPE:'cm:folder') AND (NOT cm:creator:System)"),
             RequestFilterQueriesInner("-TYPE:'st:site'"),
             RequestFilterQueriesInner("-TYPE:'cm:thumbnail' AND -TYPE:'cm:failedThumbnail' AND -TYPE:'cm:rating'"),
             RequestFilterQueriesInner("-ASPECT:'st:siteContainer' AND -ASPECT:'sys:hidden'"),
@@ -154,19 +176,39 @@ class MainViewModel(private val context: Context) : ViewModel() {
         )
 
         val include = listOf(RequestIncludeEnum.PATH)
-        val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "cm:modified", false))
+        val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "score", false))
+//        val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "cm:modified", false))
         val pagination = RequestPagination(25, 0)
         val search = SearchRequest(
             reqQuery, sort = sort, filterQueries = filter, include = include, paging = pagination,
-            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries,
+            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries, defaults = defaults,
+            templates = templates,
             facetIntervals = RequestFacetIntervals(intervals = facetInterval), facetFormat = "V2"
         )
 
         viewModelScope.launch {
             try {
-                val searchCall = service.search(search)
-                val taskList = serviceAPS1.startForm("singlereviewer7-2-23:1:36")
-                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
+
+                val searchCall = service.advanceSearch("file",
+                null,
+                    skipCount = 0,
+                    maxItems = 25,
+                    setOf(AdvanceSearchInclude(
+                        query = "TYPE:'cm:folder' OR TYPE:'cm:content'",
+                        name = "TYPE:'cm:folder' OR TYPE:'cm:content'"
+                    ), AdvanceSearchInclude(
+                        query = "NOT cm:creator:System",
+                        name = "NOT cm:creator:System"
+                    )),
+                    FacetSearchInclude(
+                        fields = facetFields,
+                        queries = facetQueries,
+                        intervals = facetInterval
+                    ),
+                    facetFormat = "V2"
+                )
+//                val taskList = serviceAPS1.startForm("singlereviewer7-2-23:1:36")
+//                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
                 results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
