@@ -17,6 +17,7 @@ import com.alfresco.content.tools.CSV
 import java.io.File
 import java.time.ZonedDateTime
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -36,7 +37,7 @@ interface TrashcanApi {
     @DELETE("alfresco/versions/1/deleted-nodes/{nodeId}")
     suspend fun deleteDeletedNode(
         @retrofit2.http.Path("nodeId") nodeId: String
-    ): Unit
+    ): Response<Unit>
     /**
      * Get rendition information for a deleted node
      * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Gets the rendition information for **renditionId** of file **nodeId**. 
