@@ -179,7 +179,7 @@ suspend fun SearchApi.recentFiles(
         "cm:modifier:$userId OR cm:creator:$userId",
         "TYPE:'content'"
     ) + excludeUnsupportedTypes()
-    val include = listOf(RequestIncludeEnum.PATH)
+    val include = listOf(RequestIncludeEnum.PATH,RequestIncludeEnum.ALLOWABLEOPERATIONS)
     val sort = listOf(
         RequestSortDefinitionInner(
             RequestSortDefinitionInner.TypeEnum.FIELD,
