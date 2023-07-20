@@ -10,6 +10,7 @@ import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.content.apis.AdvanceSearchInclude
 import com.alfresco.content.apis.FacetSearchInclude
+import com.alfresco.content.apis.NodesApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.apis.TrashcanApi
 import com.alfresco.content.apis.advanceSearch
@@ -103,6 +104,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     fun loadRecents() {
         val service = retrofit.create(SearchApi::class.java)
         val trashApi = retrofit.create(TrashcanApi::class.java)
+        val serviceApi1 = retrofit.create(NodesApi::class.java)
         val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
         val serviceAPS1 = retrofitAPS.create(ProcessAPI::class.java)
 
@@ -207,9 +209,18 @@ class MainViewModel(private val context: Context) : ViewModel() {
                     ),
                     facetFormat = "V2"
                 )
+
 //                val taskList = serviceAPS1.startForm("singlereviewer7-2-23:1:36")
 //                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
-                results.value = searchCall.list?.entries?.map { it.entry } ?: emptyList()
+
+                val list = searchCall.list?.entries?.map { it.entry } ?: emptyList()
+                results.value = list
+
+
+                /*val response = serviceApi1.deleteNode("ea7ccff4-3b8c-48f7-ae75-3b5fbba1e00d")
+
+                println("MainViewModel.loadRecents delete ${response.code()}")*/
+
                 val queries = searchCall.list?.context?.facetQueries
             } catch (ex: Exception) {
                 ex.printStackTrace()

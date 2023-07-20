@@ -23,6 +23,7 @@ import com.alfresco.content.tools.CSV
 import java.io.File
 import java.time.ZonedDateTime
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -140,7 +141,7 @@ interface NodesApi {
     suspend fun deleteNode(
         @retrofit2.http.Path("nodeId") nodeId: String,
         @retrofit2.http.Query("permanent") permanent: Boolean? = null
-    ): Unit
+    ): Response<Unit>
     /**
      * Delete secondary child or children
      * **Note:** this endpoint is available in Alfresco 5.2 and newer versions.  Delete secondary child associations between the parent **nodeId** and child nodes for the given association type.  If the association type is **not** specified, then all secondary child associations, of any type in the direction from parent to secondary child, will be deleted. The child will still have a primary parent and may still be associated as a secondary child with other secondary parents. 
