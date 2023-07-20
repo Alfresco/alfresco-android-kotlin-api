@@ -138,7 +138,7 @@ suspend fun SearchApi.advanceSearch(
         filter.add(RequestFilterQueriesInner("ANCESTOR:'workspace://SpacesStore/$parentId'"))
     }
 
-    val reqInclude = listOf(RequestIncludeEnum.PATH)
+    val reqInclude = listOf(RequestIncludeEnum.PATH,RequestIncludeEnum.ALLOWABLEOPERATIONS)
     val sort = listOf(
         RequestSortDefinitionInner(
             RequestSortDefinitionInner.TypeEnum.FIELD,
