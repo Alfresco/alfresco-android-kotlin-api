@@ -15,6 +15,7 @@ import com.alfresco.content.models.FavoriteSiteEntry
 import com.alfresco.content.models.SiteEntry
 import com.alfresco.content.models.SitePaging
 import com.alfresco.content.tools.CSV
+import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -73,7 +74,7 @@ interface FavoritesApi {
     suspend fun deleteFavorite(
         @retrofit2.http.Path("personId") personId: String,
         @retrofit2.http.Path("favoriteId") favoriteId: String
-    ): Unit
+    ): Response<Unit>
     /**
      * Delete a site favorite
      * **Note:** this endpoint is deprecated as of Alfresco 4.2, and will be removed in the future. Use `/people/{personId}/favorites/{favoriteId}` instead.  Deletes site **siteId** from the favorite site list of person **personId**.  You can use the `-me-` string in place of `<personId>` to specify the currently authenticated user. 
