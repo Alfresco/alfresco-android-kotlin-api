@@ -9,7 +9,9 @@ import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.content.apis.AdvanceSearchInclude
+import com.alfresco.content.apis.AlfrescoApi
 import com.alfresco.content.apis.FacetSearchInclude
+import com.alfresco.content.apis.FavoritesApi
 import com.alfresco.content.apis.NodesApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.apis.TrashcanApi
@@ -104,6 +106,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     fun loadRecents() {
         val service = retrofit.create(SearchApi::class.java)
         val trashApi = retrofit.create(TrashcanApi::class.java)
+        val favoritesApi = retrofit.create(FavoritesApi::class.java)
         val serviceApi1 = retrofit.create(NodesApi::class.java)
         val serviceAPS = retrofitAPS.create(TaskAPI::class.java)
         val serviceAPS1 = retrofitAPS.create(ProcessAPI::class.java)
@@ -210,12 +213,34 @@ class MainViewModel(private val context: Context) : ViewModel() {
                     facetFormat = "V2"
                 )
 
+                /*
+                *  val where = "(EXISTS(target/file) OR EXISTS(target/folder))"
+        val include = AlfrescoApi.csvQueryParam("path", "allowableOperations")
+        val orderBy = listOf("title ASC")
+                *
+                */
+
+                val where = "(EXISTS(target/file) OR EXISTS(target/folder))"
+                val include = AlfrescoApi.csvQueryParam("path", "allowableOperations")
+                val orderBy = listOf("title ASC")
+
+                val responseFavorite  = favoritesApi.listFavorites(
+                    AlfrescoApi.CURRENT_USER,
+                    0,
+                    25,
+                    orderBy,
+                    where,
+                    include,
+                    null,
+                )
+
 //                val taskList = serviceAPS1.startForm("singlereviewer7-2-23:1:36")
 //                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
 
                 val list = searchCall.list?.entries?.map { it.entry } ?: emptyList()
                 results.value = list
 
+                println("Response favorite $responseFavorite")
 
                 /*val response = serviceApi1.deleteNode("ea7ccff4-3b8c-48f7-ae75-3b5fbba1e00d")
 
