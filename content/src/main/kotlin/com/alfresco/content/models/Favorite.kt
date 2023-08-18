@@ -15,11 +15,13 @@ import java.time.ZonedDateTime
  * @property targetGuid The guid of the object that is a favorite.
  * @property createdAt The time the object was made a favorite.
  * @property target
+ * @property allowableOperations
  * @property properties A subset of the target favorite properties, system properties and properties already available in the target are excluded.
  */
 @JsonClass(generateAdapter = true)
 data class Favorite(
     @Json(name = "targetGuid") @field:Json(name = "targetGuid") var targetGuid: String,
+    @Json(name = "allowableOperations") @field:Json(name = "allowableOperations") var allowableOperations: List<String>? = null,
     @Json(name = "target") @field:Json(name = "target") var target: FavoriteTarget,
     @Json(name = "createdAt") @field:Json(name = "createdAt") var createdAt: ZonedDateTime? = null,
     @Json(name = "properties") @field:Json(name = "properties") var properties: Map<String, Any?>? = null
