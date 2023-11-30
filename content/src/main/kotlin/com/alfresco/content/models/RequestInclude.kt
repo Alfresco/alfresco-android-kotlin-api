@@ -9,15 +9,29 @@ package com.alfresco.content.models
 import com.squareup.moshi.Json
 
 /**
- * Returns additional information about the node. The following optional fields can be requested:  * properties  * aspectNames  * path  * isLink  * allowableOperations  * association 
+ * Returns additional information about the node. The following optional fields can be requested:  * properties  * aspectNames  * path  * isLink  * allowableOperations  * association
  */
 typealias RequestInclude = List<RequestIncludeEnum>
 
 /**
-  * 
-  * Values: ALLOWABLEOPERATIONS, ASPECTNAMES, ISLINK, ISLOCKED, PATH, PROPERTIES
-  */
+ *
+ * Values: ALLOWABLEOPERATIONS, ASPECTNAMES, ISLINK, ISLOCKED, PATH, PROPERTIES
+ */
 enum class RequestIncludeEnum(val value: String) {
-    @Json(name = "allowableOperations") ALLOWABLEOPERATIONS("allowableOperations"),@Json(name = "aspectNames") ASPECTNAMES("aspectNames"),@Json(name = "isLink") ISLINK("isLink"),@Json(name = "isLocked") ISLOCKED("isLocked"),@Json(name = "path") PATH("path"),@Json(name = "properties") PROPERTIES("properties")
+    @Json(name = "allowableOperations")
+    ALLOWABLEOPERATIONS("allowableOperations"),
+    @Json(name = "aspectNames")
+    ASPECTNAMES("aspectNames"),
+    @Json(name = "isLink")
+    ISLINK("isLink"),
+    @Json(name = "isLocked")
+    ISLOCKED("isLocked"),
+    @Json(name = "path")
+    PATH("path"),
+    @Json(name = "properties")
+    PROPERTIES("properties"),
+    @Json(name = "isFavorite")
+    IS_FAVORITE("isFavorite")
+
 }
 
