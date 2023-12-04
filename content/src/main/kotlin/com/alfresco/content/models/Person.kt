@@ -38,7 +38,7 @@ import java.time.ZonedDateTime
 data class Person(
     @Json(name = "id") @field:Json(name = "id") var id: String,
     @Json(name = "firstName") @field:Json(name = "firstName") var firstName: String,
-    @Json(name = "email") @field:Json(name = "email") var email: String? = null,
+    @Json(name = "email") @field:Json(name = "email") var email: String,
     @Json(name = "enabled") @field:Json(name = "enabled") var enabled: Boolean,
     @Json(name = "lastName") @field:Json(name = "lastName") var lastName: String? = null,
     @Json(name = "displayName") @field:Json(name = "displayName") var displayName: String? = null,

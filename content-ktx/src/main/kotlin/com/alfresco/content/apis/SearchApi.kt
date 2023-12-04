@@ -171,7 +171,8 @@ suspend fun SearchApi.recentFiles(
     userId: String,
     days: Int = 30,
     skipCount: Int,
-    maxItems: Int
+    maxItems: Int,
+    isFavoriteEnabled: Boolean = false,
 ): ResultSetPaging {
     val query = RequestQuery("*", RequestQuery.LanguageEnum.AFTS)
     val filter = makeFilterQueries(
@@ -179,7 +180,11 @@ suspend fun SearchApi.recentFiles(
         "cm:modifier:$userId OR cm:creator:$userId",
         "TYPE:'content'"
     ) + excludeUnsupportedTypes()
-    val include = listOf(RequestIncludeEnum.PATH, RequestIncludeEnum.ALLOWABLEOPERATIONS, RequestIncludeEnum.IS_FAVORITE)
+    val include = if (isFavoriteEnabled) {
+        listOf(RequestIncludeEnum.PATH, RequestIncludeEnum.ALLOWABLEOPERATIONS, RequestIncludeEnum.IS_FAVORITE)
+    } else {
+        listOf(RequestIncludeEnum.PATH, RequestIncludeEnum.ALLOWABLEOPERATIONS)
+    }
     val sort = listOf(
         RequestSortDefinitionInner(
             RequestSortDefinitionInner.TypeEnum.FIELD,
