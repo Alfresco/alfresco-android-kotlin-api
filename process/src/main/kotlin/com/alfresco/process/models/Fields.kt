@@ -35,6 +35,10 @@ data class Fields(
     @Json(name = "readOnly") @field:Json(name = "readOnly") var readOnly: Boolean? = null,
     @Json(name = "overrideId") @field:Json(name = "overrideId") var overrideId: Boolean? = null,
     @Json(name = "options") @field:Json(name = "options") var options: List<Options>? = null,
+    @Json(name = "enableFractions") @field:Json(name = "enableFractions") var enableFractions: Boolean? = null,
+    @Json(name = "enablePeriodSeparator") @field:Json(name = "enablePeriodSeparator") var enablePeriodSeparator: Boolean? = null,
+    @Json(name = "currency") @field:Json(name = "currency") var currency: String? = null,
+    @Json(name = "params") @field:Json(name = "params") var params: FieldParams? = null,
     @Json(name = "fields") @field:Json(name = "fields") var fields: Map<String, Any>? = null
 ) {
     /**
