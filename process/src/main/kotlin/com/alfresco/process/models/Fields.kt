@@ -39,6 +39,8 @@ data class Fields(
     @Json(name = "enablePeriodSeparator") @field:Json(name = "enablePeriodSeparator") var enablePeriodSeparator: Boolean? = null,
     @Json(name = "currency") @field:Json(name = "currency") var currency: String? = null,
     @Json(name = "dateDisplayFormat") @field:Json(name = "dateDisplayFormat") var dateDisplayFormat: String? = null,
+    @Json(name = "hyperlinkUrl") @field:Json(name = "hyperlinkUrl") var hyperlinkUrl: String? = null,
+    @Json(name = "displayText") @field:Json(name = "displayText") var displayText: String? = null,
     @Json(name = "params") @field:Json(name = "params") var params: FieldParams? = null,
     @Json(name = "fields") @field:Json(name = "fields") var fields: Map<String, Any>? = null
 ) {
