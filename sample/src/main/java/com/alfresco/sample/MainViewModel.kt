@@ -35,6 +35,7 @@ import com.alfresco.content.models.SearchRequest
 import com.alfresco.content.tools.GeneratedCodeConverters
 import com.alfresco.process.apis.ProcessAPI
 import com.alfresco.process.apis.TaskAPI
+import com.alfresco.process.models.RequestProcessInstances
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -145,66 +146,167 @@ class MainViewModel(private val context: Context) : ViewModel() {
         )
 
         val facetFields = listOf(
-            RequestFacetField(field = "content.mimetype", label = "SEARCH.FACET_FIELDS.TYPE", mincount = 1),
-            RequestFacetField(field = "content.size", label = "SEARCH.FACET_FIELDS.SIZE", mincount = 1),
-            RequestFacetField(field = "creator", label = "SEARCH.FACET_FIELDS.CREATOR", mincount = 1),
-            RequestFacetField(field = "modifier", label = "SEARCH.FACET_FIELDS.MODIFIER", mincount = 1),
-            RequestFacetField(field = "created", label = "SEARCH.FACET_FIELDS.CREATED", mincount = 1)
+            RequestFacetField(
+                field = "content.mimetype",
+                label = "SEARCH.FACET_FIELDS.TYPE",
+                mincount = 1
+            ),
+            RequestFacetField(
+                field = "content.size",
+                label = "SEARCH.FACET_FIELDS.SIZE",
+                mincount = 1
+            ),
+            RequestFacetField(
+                field = "creator",
+                label = "SEARCH.FACET_FIELDS.CREATOR",
+                mincount = 1
+            ),
+            RequestFacetField(
+                field = "modifier",
+                label = "SEARCH.FACET_FIELDS.MODIFIER",
+                mincount = 1
+            ),
+            RequestFacetField(
+                field = "created",
+                label = "SEARCH.FACET_FIELDS.CREATED",
+                mincount = 1
+            )
         )
 
         val facetQueries = listOf(
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR", query = "created:2019", group = "SEARCH.FACET_QUERIES.MY_FACET_QUERIES"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MIMETYPE", query = "content.mimetype:text/html", group = "Type facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRASMALL", query = "content.size:[0 TO 10240]", group = "Size facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.SMALL", query = "content.size:[10240 TO 102400]", group = "Size facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.MEDIUM", query = "content.size:[102400 TO 1048576]", group = "Size facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.LARGE", query = "content.size:[1048576 TO 16777216]", group = "Size facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XTRALARGE", query = "content.size:[16777216 TO 134217728]", group = "Size facet queries"),
-            RequestFacetQueriesInner(label = "SEARCH.FACET_QUERIES.XXTRALARGE", query = "content.size:[134217728 TO MAX]", group = "Size facet queries")
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.CREATED_THIS_YEAR",
+                query = "created:2019",
+                group = "SEARCH.FACET_QUERIES.MY_FACET_QUERIES"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.MIMETYPE",
+                query = "content.mimetype:text/html",
+                group = "Type facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.XTRASMALL",
+                query = "content.size:[0 TO 10240]",
+                group = "Size facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.SMALL",
+                query = "content.size:[10240 TO 102400]",
+                group = "Size facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.MEDIUM",
+                query = "content.size:[102400 TO 1048576]",
+                group = "Size facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.LARGE",
+                query = "content.size:[1048576 TO 16777216]",
+                group = "Size facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.XTRALARGE",
+                query = "content.size:[16777216 TO 134217728]",
+                group = "Size facet queries"
+            ),
+            RequestFacetQueriesInner(
+                label = "SEARCH.FACET_QUERIES.XXTRALARGE",
+                query = "content.size:[134217728 TO MAX]",
+                group = "Size facet queries"
+            )
         )
 
         val facetInterval = listOf(
             RequestFacetIntervalsInIntervals(
                 label = "The.Created", field = "cm:created", sets = listOf(
-                    RequestFacetSet(label = "lastYear", start = "2020", end = "2021", endInclusive = false),
-                    RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
-                    RequestFacetSet(label = "earlier", start = "*", end = "2021", endInclusive = false)
+                    RequestFacetSet(
+                        label = "lastYear",
+                        start = "2020",
+                        end = "2021",
+                        endInclusive = false
+                    ),
+                    RequestFacetSet(
+                        label = "currentYear",
+                        start = "NOW/YEAR",
+                        end = "NOW/YEAR+1YEAR"
+                    ),
+                    RequestFacetSet(
+                        label = "earlier",
+                        start = "*",
+                        end = "2021",
+                        endInclusive = false
+                    )
                 )
             ), RequestFacetIntervalsInIntervals(
                 label = "TheModified", field = "cm:modified", sets = listOf(
-                    RequestFacetSet(label = "2017", start = "2017", end = "2018", endInclusive = false),
-                    RequestFacetSet(label = "2017-2018", start = "2017", end = "2018", endInclusive = true),
-                    RequestFacetSet(label = "currentYear", start = "NOW/YEAR", end = "NOW/YEAR+1YEAR"),
-                    RequestFacetSet(label = "earlierThan2017", start = "*", end = "2017", endInclusive = false)
+                    RequestFacetSet(
+                        label = "2017",
+                        start = "2017",
+                        end = "2018",
+                        endInclusive = false
+                    ),
+                    RequestFacetSet(
+                        label = "2017-2018",
+                        start = "2017",
+                        end = "2018",
+                        endInclusive = true
+                    ),
+                    RequestFacetSet(
+                        label = "currentYear",
+                        start = "NOW/YEAR",
+                        end = "NOW/YEAR+1YEAR"
+                    ),
+                    RequestFacetSet(
+                        label = "earlierThan2017",
+                        start = "*",
+                        end = "2017",
+                        endInclusive = false
+                    )
                 )
             )
         )
 
         val include = listOf(RequestIncludeEnum.PATH)
-        val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "score", false))
+        val sort = listOf(
+            RequestSortDefinitionInner(
+                RequestSortDefinitionInner.TypeEnum.FIELD,
+                "score",
+                false
+            )
+        )
 //        val sort = listOf(RequestSortDefinitionInner(RequestSortDefinitionInner.TypeEnum.FIELD, "cm:modified", false))
         val pagination = RequestPagination(25, 0)
         val search = SearchRequest(
-            reqQuery, sort = sort, filterQueries = filter, include = include, paging = pagination,
-            facetFields = RequestFacetFields(facetFields), facetQueries = facetQueries, defaults = defaults,
+            reqQuery,
+            sort = sort,
+            filterQueries = filter,
+            include = include,
+            paging = pagination,
+            facetFields = RequestFacetFields(facetFields),
+            facetQueries = facetQueries,
+            defaults = defaults,
             templates = templates,
-            facetIntervals = RequestFacetIntervals(intervals = facetInterval), facetFormat = "V2"
+            facetIntervals = RequestFacetIntervals(intervals = facetInterval),
+            facetFormat = "V2"
         )
 
         viewModelScope.launch {
             try {
 
-                val searchCall = service.advanceSearch("file",
-                null,
+                val searchCall = service.advanceSearch(
+                    "file",
+                    null,
                     skipCount = 0,
                     maxItems = 25,
-                    setOf(AdvanceSearchInclude(
-                        query = "TYPE:'cm:folder' OR TYPE:'cm:content'",
-                        name = "TYPE:'cm:folder' OR TYPE:'cm:content'"
-                    ), AdvanceSearchInclude(
-                        query = "NOT cm:creator:System",
-                        name = "NOT cm:creator:System"
-                    )),
+                    setOf(
+                        AdvanceSearchInclude(
+                            query = "TYPE:'cm:folder' OR TYPE:'cm:content'",
+                            name = "TYPE:'cm:folder' OR TYPE:'cm:content'"
+                        ), AdvanceSearchInclude(
+                            query = "NOT cm:creator:System",
+                            name = "NOT cm:creator:System"
+                        )
+                    ),
                     FacetSearchInclude(
                         fields = facetFields,
                         queries = facetQueries,
@@ -224,7 +326,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
                 val include = AlfrescoApi.csvQueryParam("path", "allowableOperations")
                 val orderBy = listOf("title ASC")
 
-                val responseFavorite  = favoritesApi.listFavorites(
+                val responseFavorite = favoritesApi.listFavorites(
                     AlfrescoApi.CURRENT_USER,
                     0,
                     25,
@@ -234,13 +336,24 @@ class MainViewModel(private val context: Context) : ViewModel() {
                     null,
                 )
 
-                val taskList = serviceAPS1.startForm("Complex-Forms-1:1:36")
-                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
+//                val taskList = serviceAPS1.startForm("Testprocessaman:2:51")
+                val taskList = serviceAPS1.createProcessInstance(
+                    RequestProcessInstances(
+                        name = "Test process aman",
+                        processDefinitionId = "Testprocessaman:2:51",
+                        values = mapOf(Pair("firstname", "Amanpal"), Pair("lastname", "Singh"))
 
-                val list = searchCall.list?.entries?.map { it.entry } ?: emptyList()
-                results.value = list
+                    )
+                )
 
-                println("Response favorite $responseFavorite")
+
+                /*{"name":"Test process aman - Mar 15, 2024, 8:15:45 PM","processDefinitionId":"Testprocessaman:2:51","values":{"firstname":"Amanpal","lastname":"Singh"}}*/
+//                println("data task 11 ==> ${taskList.fields?.first()?.getFieldMapAsList()}")
+
+                /*val list = searchCall.list?.entries?.map { it.entry } ?: emptyList()
+                results.value = list*/
+
+                println("Response start workflow = $taskList")
 
                 /*val response = serviceApi1.deleteNode("ea7ccff4-3b8c-48f7-ae75-3b5fbba1e00d")
 
