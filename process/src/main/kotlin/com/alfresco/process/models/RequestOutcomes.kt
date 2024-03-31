@@ -9,6 +9,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class RequestOutcomes(
-    @Json(name = "values") @field:Json(name = "values") var values: ValuesModel? = null,
+    @Json(name = "values") @field:Json(name = "values") var values: Map<String, Any?>? = null,
     @Json(name = "outcome") @field:Json(name = "outcome") var outcome: String? = null
 )
