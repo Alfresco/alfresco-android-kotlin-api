@@ -8,5 +8,5 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class RequestSaveForm(
-    @Json(name = "values") @field:Json(name = "values") var values: ValuesModel? = null
+    @Json(name = "values") @field:Json(name = "values") var values: Map<String, Any?>? = null
 )
