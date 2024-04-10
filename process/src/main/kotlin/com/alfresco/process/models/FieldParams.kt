@@ -15,6 +15,6 @@ data class FieldParams(
     @Json(name = "fractionLength") @field:Json(name = "fractionLength") var fractionLength: Int = 0,
     @Json(name = "multiple") @field:Json(name = "multiple") var multiple: Boolean? = null,
     @Json(name = "fileSource") @field:Json(name = "fileSource") var fileSource: FieldSource? = null,
-    @Json(name = "field") @field:Json(name = "field") var field: FieldSource? = null,
+    @Json(name = "field") @field:Json(name = "field") var field: Fields? = null,
     @Json(name = "dateDisplayFormat") @field:Json(name = "dateDisplayFormat") var dateDisplayFormat: FieldSource? = null,
 )
