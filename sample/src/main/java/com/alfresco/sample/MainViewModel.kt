@@ -16,7 +16,7 @@ import com.alfresco.content.apis.NodesApi
 import com.alfresco.content.apis.SearchApi
 import com.alfresco.content.apis.TrashcanApi
 import com.alfresco.content.apis.advanceSearch
-import com.alfresco.content.models.AppConfigModel
+import com.alfreco.common.models.AppConfigModel
 import com.alfresco.content.models.RequestDefaults
 import com.alfresco.content.models.RequestFacetField
 import com.alfresco.content.models.RequestFacetFields
@@ -50,7 +50,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     private val loggingInterceptor: HttpLoggingInterceptor
 
     val results = MutableLiveData<List<ResultNode>>()
-    val resultsConfig = MutableLiveData<AppConfigModel?>()
+    val resultsConfig = MutableLiveData<com.alfreco.common.models.AppConfigModel?>()
     val onError = MutableLiveEvent<String>()
     val onSessionExpired = MutableLiveEvent<Boolean>()
 

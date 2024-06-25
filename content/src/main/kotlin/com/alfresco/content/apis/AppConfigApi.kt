@@ -16,6 +16,6 @@ interface AppConfigApi {
         "Content-Type: application/json"
     )
     @GET("app.config.json")
-    suspend fun getAppConfig() :AppConfigModel
+    suspend fun getAppConfig(): AppConfigModel
 
 }
