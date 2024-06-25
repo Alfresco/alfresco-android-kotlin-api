@@ -5,12 +5,12 @@ import android.net.Uri
 import com.alfresco.auth.data.ContentServerDetails
 import com.alfresco.auth.data.ContentServerDetailsData
 import com.alfresco.auth.pkce.PkceAuthService
-import java.net.URL
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 /**
  * Class that facilitates service discovery process.
@@ -27,6 +27,8 @@ class DiscoveryService(
         return when {
 
             isPkceType(endpoint) -> AuthType.PKCE
+
+            isOIDC(endpoint) -> AuthType.OIDC
 
             isBasicType(endpoint) -> AuthType.BASIC
 
@@ -97,8 +99,14 @@ class DiscoveryService(
         val result = try {
             val authService = PkceAuthService(context, null, authConfig)
             authService.fetchDiscoveryFromUrl(uri)
-        } catch (exception: Exception) { null }
+        } catch (exception: Exception) {
+            null
+        }
         return result != null
+    }
+
+    private fun isOIDC(endpoint: String): Boolean {
+        return authConfig.realm.isBlank()
     }
 
     /**

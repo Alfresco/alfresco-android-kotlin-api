@@ -86,6 +86,7 @@ abstract class AuthenticationViewModel : ViewModel() {
     open fun onPkceAuthCancelled() {}
 
     internal val pkceAuth = PkceAuth()
+
     internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
@@ -121,6 +122,18 @@ abstract class AuthenticationViewModel : ViewModel() {
                 try {
                     val result = authService.getAuthResponse(intent)
                     val userEmail = authService.getUserEmail() ?: ""
+                    _onCredentials.value = Credentials(userEmail, result, AuthType.PKCE.value)
+                } catch (ex: Exception) {
+                    _onError.value = ex.message ?: ""
+                }
+            }
+        }
+
+        fun handleActivityResult(credentials: com.auth0.android.result.Credentials) {
+            viewModelScope.launch {
+                try {
+                    val result = credentials.accessToken
+                    val userEmail = credentials.user.email ?: ""
                     _onCredentials.value = Credentials(userEmail, result, AuthType.PKCE.value)
                 } catch (ex: Exception) {
                     _onError.value = ex.message ?: ""
@@ -164,6 +177,10 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun handleResult(data: com.auth0.android.result.Credentials?, authConfig: AuthConfig) {
+        data?.let { viewModel.pkceAuth.handleActivityResult(it) }
     }
 
     /**

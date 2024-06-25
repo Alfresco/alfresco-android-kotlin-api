@@ -38,7 +38,12 @@ data class AuthConfig(
     /**
      * Path to content service
      */
-    var contentServicePath: String
+    var contentServicePath: String,
+
+    /**
+     * Path to content service
+     */
+    var scheme: String = ""
 ) {
     /**
      * Convenience method for JSON serialization.
