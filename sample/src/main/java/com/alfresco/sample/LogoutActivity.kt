@@ -9,12 +9,26 @@ import com.alfresco.auth.AuthType
 import com.alfresco.auth.ui.EndSessionActivity
 import com.alfresco.auth.ui.EndSessionViewModel
 
-class LogoutViewModel(context: Context, authType: AuthType?, authState: String, authConfig: AuthConfig) : EndSessionViewModel(context, authType, authState, authConfig) {
+class LogoutViewModel(
+    context: Context,
+    authType: AuthType?,
+    authState: String,
+    authConfig: AuthConfig,
+    hostName: String,
+    clientId: String
+) : EndSessionViewModel(context, authType, authState, authConfig, hostName, clientId) {
 
     companion object {
         fun build(context: Context): LogoutViewModel {
             val acc = requireNotNull(Account.getAccount(context))
-            return LogoutViewModel(context, AuthType.PKCE, acc.authState, AuthConfig.defaultConfig)
+            return LogoutViewModel(
+                context,
+                AuthType.PKCE,
+                acc.authState,
+                AuthConfig.defaultConfig,
+                "",
+                ""
+            )
         }
     }
 
@@ -32,5 +46,9 @@ class LogoutViewModel(context: Context, authType: AuthType?, authState: String, 
 
 class LogoutActivity : EndSessionActivity<LogoutViewModel>() {
 
-    override val viewModel: LogoutViewModel by viewModels { LogoutViewModel.Factory(applicationContext) }
+    override val viewModel: LogoutViewModel by viewModels {
+        LogoutViewModel.Factory(
+            applicationContext
+        )
+    }
 }

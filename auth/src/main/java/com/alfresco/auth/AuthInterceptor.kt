@@ -227,7 +227,23 @@ class AuthInterceptor(
 
     private inner class OIDCProvider (val accessToken : String) : Provider{
         override fun intercept(chain: Interceptor.Chain): Response {
-            return chain.proceed(AuthType.OIDC, accessToken)
+            val response = chain.proceed(AuthType.OIDC, accessToken)
+
+            // When unauthorized try to refresh
+//            if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
+//                val newState = refreshTokenNow()
+//
+//                if (newState != null) {
+//                    response.close()
+//                    response = chain.proceed(AuthType.PKCE, newState.accessToken)
+//                }
+//            }
+
+            // If still error notify listener of failure
+            if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
+                listener?.onAuthFailure(accountId, response.request.url.toString())
+            }
+            return response
         }
 
         override fun finish() {

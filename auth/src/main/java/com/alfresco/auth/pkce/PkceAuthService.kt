@@ -10,9 +10,9 @@ import com.alfresco.auth.R
 import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.OAuth2Data
 import com.alfresco.auth.ui.AuthenticationActivity
+import com.alfresco.auth.ui.EndSessionActivity
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationException
-import com.auth0.android.callback.Callback
 import com.auth0.android.jwt.JWT
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
@@ -134,7 +134,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                     println("PkceAuthService.initiateLogin $authDetails")
 
                     val credentials = webAuthAsync(
-                        authConfig,
                         oauth2,
                         activity
                     )
@@ -142,13 +141,12 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                     withContext(Dispatchers.Main) {
                         (activity as AuthenticationActivity<*>).handleResult(
                             credentials,
-                            authConfig
+                            authDetails
                         )
                     }
                 }
 
             }
-//            discoveryUriWithAuth0()
         } else {
             val discoveryUri = discoveryUriWith(endpoint, authConfig)
 
@@ -168,49 +166,49 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         }
     }
 
-    private suspend fun loginWithBrowser(
-        account: Auth0,
-        authConfig: AuthConfig,
-        endpoint: String,
-        activity: Activity
-    ) {
-        // Setup the WebAuthProvider, using the custom scheme and scope.
-        WebAuthProvider.login(account)
-            .withScheme(authConfig.scheme)
-            .withScope("openid profile email read:current_user update:current_user_metadata")
-            .withAudience("https://${endpoint}/api/v2/")
-
-            // Launch the authentication passing the callback where the results will be received
-            .start(activity, object : Callback<Credentials, AuthenticationException> {
-                override fun onFailure(exception: AuthenticationException) {
-                    Log.d("Test OIDC 3 :: ", "Failure: ${exception.getCode()}")
-                }
-
-                override fun onSuccess(credentials: Credentials) {
-                    Log.d("Test OIDC 4 :: ", "Success: ${credentials.accessToken}")
-                }
-            })
-    }
-
     private suspend fun webAuthAsync(
-        authConfig: AuthConfig,
         oauth2: OAuth2Data,
         activity: Activity
     ): Credentials? {
         return try {
-            val account = Auth0(oauth2.clientId, oauth2.host)
+            val host = URL(oauth2.host).host
+            Log.d("Test OIDC -1 :: ", oauth2.clientId)
+            Log.d("Test OIDC 0 :: ", host)
+            Log.d("Test OIDC 1 :: ", activity.getString(R.string.com_auth0_scheme))
+            Log.d("Test OIDC 2 :: ", oauth2.audience)
+            Log.d("Test OIDC 3 :: ", oauth2.scope)
+
+            val account = Auth0(oauth2.clientId, host)
             val credentials = WebAuthProvider.login(account)
-                .withScheme(authConfig.scheme)
+                .withTrustedWebActivity()
+                .withScheme(activity.getString(R.string.com_auth0_scheme))
+                .withScope(oauth2.scope)
                 .withAudience(oauth2.audience)
-                .withScope("openid profile email")
                 .await(activity)
             Log.d("Test OIDC 4 :: ", "Success: ${credentials.accessToken}")
             credentials
         } catch (error: AuthenticationException) {
             val message =
                 if (error.isCanceled) "Browser was closed" else error.getDescription()
-            Log.d("Test OIDC 3 :: ", "Failure: $message")
+            Log.d("Test OIDC 5 :: ", "Failure: $message")
             null
+        }
+    }
+
+
+    suspend fun logoutAuth0(hostName: String, clientId: String, activity: Activity, requestCode: Int) {
+        withContext(Dispatchers.IO) {
+
+            val account = Auth0(clientId, hostName)
+            WebAuthProvider.logout(account)
+                .withScheme(activity.getString(R.string.com_auth0_scheme))
+                .await(activity)
+
+            withContext(Dispatchers.Main) {
+                (activity as EndSessionActivity<*>).handleResult(requestCode)
+            }
+
+
         }
     }
 
@@ -370,10 +368,12 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-//        require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
-        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-        require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
+        if (authConfig.scheme.isBlank()) {
+            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
+            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
+            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
+        }
     }
 
     companion object {
