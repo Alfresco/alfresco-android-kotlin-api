@@ -16,6 +16,11 @@ enum class AuthType(val value: String) {
     PKCE("pkce"),
 
     /**
+     * Used to specify the need of SSO auth
+     */
+    OIDC("oidc"),
+
+    /**
      * Used to specify that the auth type is unknown
      */
     UNKNOWN("");

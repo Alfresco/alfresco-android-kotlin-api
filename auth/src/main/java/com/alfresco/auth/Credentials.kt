@@ -17,5 +17,9 @@ data class Credentials(
     /**
      * String representation of authentication type.
      */
-    val authType: String
+    val authType: String,
+
+    val hostName: String = "",
+
+    val clientId: String = ""
 )

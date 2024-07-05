@@ -14,6 +14,7 @@ import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
+import com.alfresco.auth.data.OAuth2Data
 import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,9 +46,7 @@ abstract class AuthenticationViewModel : ViewModel() {
      * Check which [AuthType] is supported by the [endpoint] based on the provided [authConfig].
      */
     fun checkAuthType(
-        endpoint: String,
-        authConfig: AuthConfig,
-        onResult: (authType: AuthType) -> Unit
+        endpoint: String, authConfig: AuthConfig, onResult: (authType: AuthType) -> Unit
     ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
         val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
@@ -86,6 +85,7 @@ abstract class AuthenticationViewModel : ViewModel() {
     open fun onPkceAuthCancelled() {}
 
     internal val pkceAuth = PkceAuth()
+
     internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
@@ -122,6 +122,18 @@ abstract class AuthenticationViewModel : ViewModel() {
                     val result = authService.getAuthResponse(intent)
                     val userEmail = authService.getUserEmail() ?: ""
                     _onCredentials.value = Credentials(userEmail, result, AuthType.PKCE.value)
+                } catch (ex: Exception) {
+                    _onError.value = ex.message ?: ""
+                }
+            }
+        }
+
+        fun handleActivityResult(credentials: com.auth0.android.result.Credentials, oauth2: OAuth2Data) {
+            viewModelScope.launch {
+                try {
+                    val result = credentials.accessToken
+                    val userEmail = credentials.user.email ?: ""
+                    _onCredentials.value = Credentials(userEmail, result, AuthType.OIDC.value, oauth2.host, oauth2.clientId)
                 } catch (ex: Exception) {
                     _onError.value = ex.message ?: ""
                 }
@@ -164,6 +176,10 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun handleResult(data: com.auth0.android.result.Credentials?, oauth2: OAuth2Data) {
+        data?.let { viewModel.pkceAuth.handleActivityResult(it, oauth2) }
     }
 
     /**
