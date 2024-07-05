@@ -131,7 +131,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 val authDetails = getAppConfigOAuth2Details(uri)
 
                 authDetails?.let { oauth2 ->
-                    println("PkceAuthService.initiateLogin $authDetails")
 
                     val credentials = webAuthAsync(
                         oauth2,
@@ -172,11 +171,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     ): Credentials? {
         return try {
             val host = URL(oauth2.host).host
-            Log.d("Test OIDC -1 :: ", oauth2.clientId)
-            Log.d("Test OIDC 0 :: ", host)
-            Log.d("Test OIDC 1 :: ", activity.getString(R.string.com_auth0_scheme))
-            Log.d("Test OIDC 2 :: ", oauth2.audience)
-            Log.d("Test OIDC 3 :: ", oauth2.scope)
+
 
             val account = Auth0(oauth2.clientId, host)
             val credentials = WebAuthProvider.login(account)
@@ -185,12 +180,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 .withScope(oauth2.scope)
                 .withAudience(oauth2.audience)
                 .await(activity)
-            Log.d("Test OIDC 4 :: ", "Success: ${credentials.accessToken}")
-            credentials
+           credentials
         } catch (error: AuthenticationException) {
             val message =
                 if (error.isCanceled) "Browser was closed" else error.getDescription()
-            Log.d("Test OIDC 5 :: ", "Failure: $message")
             null
         }
     }

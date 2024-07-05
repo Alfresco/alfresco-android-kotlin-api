@@ -28,12 +28,13 @@ class DiscoveryService(
 
         when (authConfig.authType.lowercase()) {
             AuthType.OIDC.value -> {
-                if (isOIDC(endpoint)){
+                if (isOIDC(endpoint)) {
                     return AuthType.OIDC
                 }
             }
+
             AuthType.PKCE.value -> {
-                if (isPkceType(endpoint)){
+                if (isPkceType(endpoint)) {
                     return AuthType.PKCE
                 }
             }
@@ -145,7 +146,8 @@ class DiscoveryService(
         return result != null
     }
 
-    private suspend fun isOIDC(endpoint: String): Boolean = isOIDCInstalled(endpoint) && authConfig.realm.isBlank()
+    private suspend fun isOIDC(endpoint: String): Boolean =
+        isOIDCInstalled(endpoint) && authConfig.realm.isBlank()
 
     /**
      * Return content service url based on [endpoint].
