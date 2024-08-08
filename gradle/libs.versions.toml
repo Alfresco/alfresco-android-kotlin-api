@@ -39,4 +39,5 @@ retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "ret
 
 spotless = "com.diffplug.spotless:spotless-plugin-gradle:6.18.0"
 
-swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
+swaggerCodegen = "com.yelp.codegen:plugin:1.4.1"
+#swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
