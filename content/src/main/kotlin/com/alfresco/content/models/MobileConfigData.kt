@@ -28,6 +28,5 @@ data class Features(
 @JsonClass(generateAdapter = true)
 data class DynamicMenu(
     @Json(name = "id") @field:Json(name = "id") var id: String? = null,
-    @Json(name = "name") @field:Json(name = "name") var name: String? = null,
     @Json(name = "enabled") @field:Json(name = "enabled") var enabled: Boolean? = null,
 )
