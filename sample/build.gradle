@@ -23,7 +23,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "@string/com_auth0_scheme"]
     }
 
     buildFeatures {
@@ -48,19 +47,19 @@ dependencies {
     implementation project(path: ':content-ktx')
     implementation project(':process')
 
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.preference.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.fragment.ktx
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation libs.kotlin.serialization.json
 
     implementation libs.retrofit.core
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation libs.logging.interceptor
 
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation libs.material
 
     coreLibraryDesugaring libs.android.desugar
 }
