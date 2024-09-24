@@ -4,18 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.R
-import com.alfresco.auth.data.AppConfigDetails
-import com.alfresco.auth.data.OAuth2Data
-import com.alfresco.auth.ui.AuthenticationActivity
-import com.alfresco.auth.ui.EndSessionActivity
-import com.auth0.android.Auth0
-import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.jwt.JWT
-import com.auth0.android.provider.WebAuthProvider
-import com.auth0.android.result.Credentials
+import java.util.Locale
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -31,13 +24,6 @@ import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.net.URL
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.resumeWithException
 
 internal class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
@@ -78,42 +64,15 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         serviceConfiguration != null -> {
                             it.resumeWith(Result.success(serviceConfiguration))
                         }
-
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
-
                         else -> it.resumeWithException(Exception())
                     }
                 },
                 connectionBuilder
             )
         }
-
-    suspend fun getAppConfigOAuth2Details(appConfigURL: String): OAuth2Data? {
-
-        return withContext(Dispatchers.IO) {
-            try {
-                val client = OkHttpClient.Builder()
-                    .connectTimeout(30, TimeUnit.SECONDS)
-                    .build()
-                val request = Request.Builder()
-                    .url(URL(appConfigURL))
-                    .get()
-                    .build()
-                val response = client.newCall(request).execute()
-
-                if (response.code != 200) return@withContext null
-
-                val body = response.body?.string() ?: ""
-                val data = AppConfigDetails.jsonDeserialize(body)
-                data?.oauth2
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
 
     /**
      * Initiates the login in [activity] with activity result [requestCode]
@@ -123,93 +82,27 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         checkConfig(authConfig)
 
         // build discovery url using auth configuration
+        val discoveryUri = discoveryUriWith(endpoint, authConfig)
 
-        if (authConfig.realm.isBlank()) {
-            val uri = discoveryUriWithAuth0(endpoint).toString()
-            withContext(Dispatchers.IO) {
-
-                val authDetails = getAppConfigOAuth2Details(uri)
-
-                authDetails?.let { oauth2 ->
-
-                    val credentials = webAuthAsync(
-                        oauth2,
-                        activity
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        (activity as AuthenticationActivity<*>).handleResult(
-                            credentials,
-                            authDetails
-                        )
-                    }
-                }
-
-            }
-        } else {
-            val discoveryUri = discoveryUriWith(endpoint, authConfig)
-
-            withContext(Dispatchers.IO) {
-                val config = fetchDiscoveryFromUrl(discoveryUri)
-
-                // save the authorization configuration
-                authState.set(AuthState(config))
-
-                val authRequest = generateAuthorizationRequest(config)
-                val authIntent = generateAuthIntent(authRequest)
-
-                withContext(Dispatchers.Main) {
-                    activity.startActivityForResult(authIntent, requestCode)
-                }
-            }
-        }
-    }
-
-    private suspend fun webAuthAsync(
-        oauth2: OAuth2Data,
-        activity: Activity
-    ): Credentials? {
-        return try {
-            val host = URL(oauth2.host).host
-
-
-            val account = Auth0(oauth2.clientId, host)
-            val credentials = WebAuthProvider.login(account)
-                .withTrustedWebActivity()
-                .withScheme(activity.getString(R.string.com_auth0_scheme))
-                .withScope(oauth2.scope)
-                .withAudience(oauth2.audience)
-                .await(activity)
-           credentials
-        } catch (error: AuthenticationException) {
-            val message =
-                if (error.isCanceled) "Browser was closed" else error.getDescription()
-            null
-        }
-    }
-
-
-    suspend fun logoutAuth0(hostName: String, clientId: String, activity: Activity, requestCode: Int) {
         withContext(Dispatchers.IO) {
+            val config = fetchDiscoveryFromUrl(discoveryUri)
 
-            val account = Auth0(clientId, hostName)
-            WebAuthProvider.logout(account)
-                .withScheme(activity.getString(R.string.com_auth0_scheme))
-                .await(activity)
+            // save the authorization configuration
+            authState.set(AuthState(config))
+
+            val authRequest = generateAuthorizationRequest(config)
+            val authIntent = generateAuthIntent(authRequest)
 
             withContext(Dispatchers.Main) {
-                (activity as EndSessionActivity<*>).handleResult(requestCode)
+                activity.startActivityForResult(authIntent, requestCode)
             }
-
-
         }
     }
 
     fun initiateReLogin(activity: Activity, requestCode: Int) {
         requireNotNull(authState.get())
 
-        val authRequest =
-            generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+        val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
         val authIntent = generateAuthIntent(authRequest)
 
         activity.startActivityForResult(authIntent, requestCode)
@@ -261,11 +154,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         response != null -> {
                             it.resumeWith(Result.success(authState.get().jsonSerializeString()))
                         }
-
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
-
                         else -> it.resumeWithException(Exception())
                     }
                 }
@@ -286,11 +177,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         response != null -> {
                             it.resumeWith(Result.success(response))
                         }
-
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
-
                         else -> it.resumeWithException(Exception())
                     }
                 }
@@ -361,12 +250,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        if (authConfig.scheme.isBlank()) {
-            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
-            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
-        }
+        require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
+        require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
+        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+        require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
     }
 
     companion object {
@@ -401,7 +288,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
          * If the [endpoint] contains either schema or port that will override [config] information.
          */
         fun endpointWith(endpoint: String, config: AuthConfig): Uri {
-            val src = endpoint.trim().lowercase(Locale.ROOT)
+            val src = endpoint.trim().toLowerCase(Locale.ROOT)
 
             var uri = Uri.parse(src)
             var uriBuilder = uri.buildUpon()
@@ -432,12 +319,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 .appendPath(config.realm)
                 .appendPath(WELL_KNOWN_PATH)
                 .appendPath(OPENID_CONFIGURATION_RESOURCE)
-                .build()
-        }
-
-        fun discoveryUriWithAuth0(endpoint: String): Uri {
-            return Uri.parse("https://${endpoint}/app.config.json")
-                .buildUpon()
                 .build()
         }
     }
