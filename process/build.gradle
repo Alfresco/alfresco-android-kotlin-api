@@ -1,16 +1,13 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'org.jetbrains.dokka'
+    id 'com.google.devtools.ksp' version '2.0.20-1.0.25'
 }
 
 android {
 
-    defaultConfig {
-        versionName "0.1.3"
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -20,13 +17,16 @@ android {
         jvmTarget = '17'
     }
     namespace 'com.alfresco.process'
+    defaultConfig {
+        versionName "0.1.4"
+    }
 }
 
 dependencies {
 
     implementation libs.moshi.core
     implementation libs.moshi.adapters
-    kapt libs.moshi.codegen
+    ksp libs.moshi.codegen
 
     implementation libs.retrofit.core
     implementation libs.retrofit.converter.moshi
