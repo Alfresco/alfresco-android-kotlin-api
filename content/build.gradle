@@ -11,7 +11,7 @@ android {
     }
     namespace 'com.alfresco.content'
     defaultConfig {
-        versionName "0.3.4"
+        versionName "0.3.5"
     }
 }
 
@@ -23,7 +23,7 @@ generateSwagger {
     inputFile = file("$projectDir/definitions/merged.yaml")
     outputDir = file("$projectDir/src/main/kotlin/")
     features {
-        headersToRemove.add("X-Operation-ID")
+        headersToRemove = ["X-Operation-ID"]
     }
 }
 
