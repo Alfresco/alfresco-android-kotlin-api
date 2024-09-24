@@ -44,3 +44,5 @@ retrofit-converter-scalars = { module = "com.squareup.retrofit2:converter-scalar
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 spotless = "com.diffplug.spotless:spotless-plugin-gradle:6.18.0"
+
+swaggerCodegen = "com.yelp.codegen:plugin:1.4.1"
