@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-//apply plugin: 'kotlin-kapt'
+    id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'org.jetbrains.dokka'
     id 'com.google.devtools.ksp' version '2.0.20-1.0.25'
