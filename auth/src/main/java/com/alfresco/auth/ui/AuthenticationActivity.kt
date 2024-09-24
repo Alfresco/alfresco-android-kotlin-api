@@ -179,11 +179,7 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
     }
 
     fun handleResult(data: com.auth0.android.result.Credentials?, oauth2: OAuth2Data) {
-        if (data == null){
-            viewModel.onPkceAuthCancelled()
-        }else{
-            viewModel.pkceAuth.handleActivityResult(data, oauth2)
-        }
+        data?.let { viewModel.pkceAuth.handleActivityResult(it, oauth2) }
     }
 
     /**
