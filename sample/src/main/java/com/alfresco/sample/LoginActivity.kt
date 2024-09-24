@@ -33,7 +33,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
     }
 
     private fun onAuthType(authType: AuthType) {
-        if (authType == AuthType.PKCE || authType == AuthType.OIDC) {
+        if (authType == AuthType.PKCE) {
             pkceLogin(server, AuthConfig.defaultConfig)
         } else {
             _onError.value = context.getString(R.string.auth_error_check_connect_url)
@@ -76,7 +76,7 @@ class LoginActivity : AuthenticationActivity<LoginViewModel>() {
             this,
             credentials.username,
             credentials.authState,
-            AuthType.OIDC.value,
+            credentials.authType,
             viewModel.applicationUrl
         )
         navigateToMain()

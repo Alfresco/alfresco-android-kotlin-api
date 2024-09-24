@@ -16,7 +16,7 @@ class LogoutViewModel(
     authConfig: AuthConfig,
     hostName: String,
     clientId: String
-) : EndSessionViewModel(context, authType, authState, authConfig, hostName, clientId) {
+) : EndSessionViewModel(context, authType, authState, authConfig) {
 
     companion object {
         fun build(context: Context): LogoutViewModel {
