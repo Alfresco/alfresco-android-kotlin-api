@@ -40,6 +40,7 @@ class AuthInterceptor(
         provider = when (authType) {
             AuthType.BASIC -> BasicProvider(stateString)
             AuthType.PKCE -> PkceProvider(stateString, config)
+            AuthType.OIDC -> OIDCProvider(stateString)
             AuthType.UNKNOWN -> PlainProvider()
         }
     }
@@ -224,10 +225,27 @@ class AuthInterceptor(
         }
     }
 
+    private inner class OIDCProvider (val accessToken : String) : Provider{
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val response = chain.proceed(AuthType.OIDC, accessToken)
+
+            // If still error notify listener of failure
+            if (response.code == HTTP_RESPONSE_401_UNAUTHORIZED) {
+                listener?.onAuthFailure(accountId, response.request.url.toString())
+            }
+            return response
+        }
+
+        override fun finish() {
+            localScope.coroutineContext.cancelChildren()
+        }
+    }
+
     private fun Interceptor.Chain.proceed(type: AuthType, token: String?): Response {
         val headerValue = when (type) {
             AuthType.BASIC -> "Basic $token"
             AuthType.PKCE -> "Bearer $token"
+            AuthType.OIDC -> "bearer $token"
             AuthType.UNKNOWN -> null
         }
         return proceedWithAuthorization(headerValue)

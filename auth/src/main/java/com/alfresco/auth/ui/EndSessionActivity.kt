@@ -12,6 +12,7 @@ import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthState
 import org.json.JSONException
+import java.net.URL
 
 /**
  * Companion [ViewModel] to [EndSessionActivity] for invoking the logout procedure.
@@ -20,7 +21,9 @@ open class EndSessionViewModel(
     context: Context,
     authType: AuthType?,
     authState: String,
-    authConfig: AuthConfig
+    authConfig: AuthConfig,
+    val hostName: String,
+    val clientId: String
 ) : ViewModel() {
     private val authType = authType
     private val authService: PkceAuthService?
@@ -32,7 +35,7 @@ open class EndSessionViewModel(
             null
         }
 
-        authService = if (authType == AuthType.PKCE) {
+        authService = if (authType == AuthType.PKCE || authType == AuthType.OIDC) {
             PkceAuthService(context, state, authConfig)
         } else {
             null
@@ -44,11 +47,17 @@ open class EndSessionViewModel(
      */
     fun logout(activity: Activity, requestCode: Int) {
         viewModelScope.launch {
-            if (authType == AuthType.PKCE) {
-                authService?.endSession(activity, requestCode)
-            } else {
-                activity.setResult(Activity.RESULT_OK)
-                activity.finish()
+            when (authType) {
+                AuthType.PKCE -> {
+                    authService?.endSession(activity, requestCode)
+                }
+                AuthType.OIDC -> {
+                    authService?.logoutAuth0(URL(hostName).host,clientId, activity, requestCode)
+                }
+                else -> {
+                    activity.setResult(Activity.RESULT_OK)
+                    activity.finish()
+                }
             }
         }
     }
@@ -79,6 +88,13 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    fun handleResult(requestCode: Int) {
+        if (requestCode == REQUEST_CODE_END_SESSION) {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 
