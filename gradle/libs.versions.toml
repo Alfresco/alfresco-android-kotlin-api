@@ -44,9 +44,3 @@ retrofit-converter-scalars = { module = "com.squareup.retrofit2:converter-scalar
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 spotless = "com.diffplug.spotless:spotless-plugin-gradle:6.18.0"
-
-swaggerCodegen = "com.agologan:swagger-gradle-codegen:1.4.1-67-gfbda3ab"
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
