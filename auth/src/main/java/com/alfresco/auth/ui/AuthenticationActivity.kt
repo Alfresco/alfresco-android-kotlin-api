@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -102,18 +104,18 @@ abstract class AuthenticationViewModel : ViewModel() {
             authService = PkceAuthService(context, state, authConfig)
         }
 
-        fun login(endpoint: String, activity: Activity, requestCode: Int) {
+        fun login(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
             viewModelScope.launch {
                 try {
-                    authService.initiateLogin(endpoint, activity, requestCode)
+                    authService.initiateLogin(endpoint,launcher)
                 } catch (ex: Exception) {
                     _onError.value = ex.message
                 }
             }
         }
 
-        fun reLogin(activity: Activity, requestCode: Int) {
-            authService.initiateReLogin(activity, requestCode)
+        fun reLogin(launcher : ActivityResultLauncher<Intent>) {
+            authService.initiateReLogin(launcher)
         }
 
         fun handleActivityResult(intent: Intent) {
@@ -136,9 +138,19 @@ abstract class AuthenticationViewModel : ViewModel() {
 abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatActivity() {
 
     protected abstract val viewModel: T
+    private lateinit var authenticateActivityLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // In onCreate(), register the launcher
+        authenticateActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_CANCELED) {
+                viewModel.onPkceAuthCancelled()
+            } else {
+                result.data?.let { viewModel.pkceAuth.handleActivityResult(it) }
+            }
+        }
 
         observe(viewModel.onPkceLogin, ::onPkceLogin)
         observe(viewModel.onCredentials, ::onCredentials)
@@ -147,23 +159,10 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
 
     protected fun onPkceLogin(endpoint: String) {
         if (viewModel.isReLogin) {
-            viewModel.pkceAuth.reLogin(this, REQUEST_CODE_AUTHENTICATE)
+            viewModel.pkceAuth.reLogin(authenticateActivityLauncher)
         } else {
-            viewModel.pkceAuth.login(endpoint, this, REQUEST_CODE_AUTHENTICATE)
+            viewModel.pkceAuth.login(endpoint, authenticateActivityLauncher)
         }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_AUTHENTICATE) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                viewModel.onPkceAuthCancelled()
-            } else {
-                data?.let { viewModel.pkceAuth.handleActivityResult(it) }
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     /**
@@ -175,8 +174,4 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
      * Called on [error] during the authentication process.
      */
     abstract fun onError(error: String)
-
-    private companion object {
-        const val REQUEST_CODE_AUTHENTICATE = 20
-    }
 }

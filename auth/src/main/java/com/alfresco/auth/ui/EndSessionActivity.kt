@@ -3,6 +3,9 @@ package com.alfresco.auth.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,10 +45,10 @@ open class EndSessionViewModel(
     /**
      * Invoke logout procedure, presenting extra activities if necessary.
      */
-    fun logout(activity: Activity, requestCode: Int) {
+    fun logout(activity: Activity, launcher: ActivityResultLauncher<Intent>) {
         viewModelScope.launch {
             if (authType == AuthType.PKCE) {
-                authService?.endSession(activity, requestCode)
+                authService?.endSession(launcher)
             } else {
                 activity.setResult(Activity.RESULT_OK)
                 activity.finish()
@@ -60,29 +63,25 @@ open class EndSessionViewModel(
  */
 abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivity() {
     protected abstract val viewModel: T
+    private lateinit var endSessionActivityLauncher: ActivityResultLauncher<Intent>
 
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.logout(this, REQUEST_CODE_END_SESSION)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_END_SESSION) {
-            if (resultCode == Activity.RESULT_CANCELED) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Register the launcher to handle the session end result
+        endSessionActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_CANCELED) {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             } else {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
-    private companion object {
-        const val REQUEST_CODE_END_SESSION = 1
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.logout(this, endSessionActivityLauncher)
     }
 }
