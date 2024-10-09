@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
 import com.alfresco.auth.AuthConfig
 import com.auth0.android.jwt.JWT
 import java.util.Locale
@@ -77,7 +78,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     /**
      * Initiates the login in [activity] with activity result [requestCode]
      */
-    suspend fun initiateLogin(endpoint: String, activity: Activity, requestCode: Int) {
+    suspend fun initiateLogin(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
@@ -94,18 +95,18 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             val authIntent = generateAuthIntent(authRequest)
 
             withContext(Dispatchers.Main) {
-                activity.startActivityForResult(authIntent, requestCode)
+               launcher.launch(authIntent)
             }
         }
     }
 
-    fun initiateReLogin(activity: Activity, requestCode: Int) {
+    fun initiateReLogin(launcher : ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
         val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
         val authIntent = generateAuthIntent(authRequest)
 
-        activity.startActivityForResult(authIntent, requestCode)
+        launcher.launch(authIntent)
     }
 
     /**
@@ -186,12 +187,12 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
         }
 
-    suspend fun endSession(activity: Activity, requestCode: Int) {
+    suspend fun endSession(launcher : ActivityResultLauncher<Intent>) {
         withContext(Dispatchers.IO) {
             val request = makeEndSessionRequest(authState.get().authorizationServiceConfiguration!!)
             val intent = authService.getEndSessionRequestIntent(request)
             withContext(Dispatchers.Main) {
-                activity.startActivityForResult(intent, requestCode)
+                launcher.launch(intent)
             }
         }
     }
@@ -288,7 +289,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
          * If the [endpoint] contains either schema or port that will override [config] information.
          */
         fun endpointWith(endpoint: String, config: AuthConfig): Uri {
-            val src = endpoint.trim().toLowerCase(Locale.ROOT)
+            val src = endpoint.trim().lowercase(Locale.ROOT)
 
             var uri = Uri.parse(src)
             var uriBuilder = uri.buildUpon()

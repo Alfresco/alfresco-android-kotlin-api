@@ -12,7 +12,7 @@ moshi = "1.15.1"
 
 [libraries]
 android-desugar = "com.android.tools:desugar_jdk_libs:2.1.2"
-android-gradlePlugin = "com.android.tools.build:gradle:8.6.1"
+android-gradlePlugin = "com.android.tools.build:gradle:8.7.0"
 
 androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 androidx-browser = "androidx.browser:browser:1.8.0"

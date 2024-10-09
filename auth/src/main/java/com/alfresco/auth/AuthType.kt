@@ -21,7 +21,7 @@ enum class AuthType(val value: String) {
     UNKNOWN("");
 
     companion object {
-        private val map = values().associateBy(AuthType::value)
+        private val map = entries.associateBy(AuthType::value)
 
         /**
          * Convert string representation to enum.
