@@ -135,7 +135,10 @@ class DiscoveryService(
     /**
      * Return content service url based on [endpoint].
      */
-    fun contentServiceUrl(endpoint: String, authType: AuthTypeProvider): Uri =
+    fun contentServiceUrl(
+        endpoint: String,
+        authType: AuthTypeProvider = AuthTypeProvider.NONE
+    ): Uri =
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
             .appendPath(if (authType == AuthTypeProvider.NEW_IDP) "alfresco" else authConfig.contentServicePath)

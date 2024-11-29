@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthType
+import com.alfresco.auth.AuthTypeProvider
 import com.alfresco.auth.Credentials
+import com.alfresco.auth.data.OAuth2Data
 import com.alfresco.auth.ui.AuthenticationActivity
 import com.alfresco.auth.ui.AuthenticationViewModel
 import com.alfresco.sample.databinding.ActivityLoginBinding
@@ -32,7 +34,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
         }
     }
 
-    private fun onAuthType(authType: AuthType) {
+    private fun onAuthType(authType: AuthType, oAuth2Data: OAuth2Data?) {
         if (authType == AuthType.PKCE) {
             pkceLogin(server, AuthConfig.defaultConfig)
         } else {
