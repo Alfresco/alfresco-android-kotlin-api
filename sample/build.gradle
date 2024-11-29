@@ -2,27 +2,27 @@ buildscript {
     repositories { mavenCentral() }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-serialization:1.8.0"
+        classpath libs.kotlin.serialization.plugin
     }
 }
 
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlinx-serialization'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlinx-serialization'
+    id 'com.google.devtools.ksp' version '2.0.20-1.0.25'
+}
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 34
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.alfresco.sample"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "@string/com_auth0_scheme"]
     }
 
     buildFeatures {
@@ -47,19 +47,19 @@ dependencies {
     implementation project(path: ':content-ktx')
     implementation project(':process')
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.10.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.preference.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.fragment.ktx
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation libs.kotlin.serialization.json
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
+    implementation libs.retrofit.core
+    implementation libs.logging.interceptor
 
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation libs.material
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring libs.android.desugar
 }

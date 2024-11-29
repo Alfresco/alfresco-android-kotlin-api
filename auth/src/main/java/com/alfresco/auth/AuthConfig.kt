@@ -38,7 +38,16 @@ data class AuthConfig(
     /**
      * Path to content service
      */
-    var contentServicePath: String
+    var contentServicePath: String,
+
+    /**
+     * scheme for Auth0
+     */
+    var scheme: String = "",
+    /**
+     * selected AuthType
+     */
+    var authType: String = ""
 ) {
     /**
      * Convenience method for JSON serialization.
@@ -51,7 +60,8 @@ data class AuthConfig(
         /**
          * Convenience method for deserializing a JSON string representation.
          */
-        @JvmStatic fun jsonDeserialize(str: String): AuthConfig? {
+        @JvmStatic
+        fun jsonDeserialize(str: String): AuthConfig? {
             return try {
                 Json.decodeFromString(serializer(), str)
             } catch (ex: SerializationException) {

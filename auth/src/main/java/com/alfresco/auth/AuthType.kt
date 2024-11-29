@@ -16,12 +16,17 @@ enum class AuthType(val value: String) {
     PKCE("pkce"),
 
     /**
+     * Used to specify the need of SSO auth
+     */
+    OIDC("oidc"),
+
+    /**
      * Used to specify that the auth type is unknown
      */
     UNKNOWN("");
 
     companion object {
-        private val map = values().associateBy(AuthType::value)
+        private val map = entries.associateBy(AuthType::value)
 
         /**
          * Convert string representation to enum.

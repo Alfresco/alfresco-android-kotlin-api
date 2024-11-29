@@ -3,6 +3,9 @@ package com.alfresco.auth.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +15,7 @@ import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthState
 import org.json.JSONException
+import java.net.URL
 
 /**
  * Companion [ViewModel] to [EndSessionActivity] for invoking the logout procedure.
@@ -20,7 +24,9 @@ open class EndSessionViewModel(
     context: Context,
     authType: AuthType?,
     authState: String,
-    authConfig: AuthConfig
+    authConfig: AuthConfig,
+    val hostName: String,
+    val clientId: String
 ) : ViewModel() {
     private val authType = authType
     private val authService: PkceAuthService?
@@ -32,7 +38,7 @@ open class EndSessionViewModel(
             null
         }
 
-        authService = if (authType == AuthType.PKCE) {
+        authService = if (authType == AuthType.PKCE || authType == AuthType.OIDC) {
             PkceAuthService(context, state, authConfig)
         } else {
             null
@@ -42,13 +48,16 @@ open class EndSessionViewModel(
     /**
      * Invoke logout procedure, presenting extra activities if necessary.
      */
-    fun logout(activity: Activity, requestCode: Int) {
+    fun logout(activity: Activity, launcher: ActivityResultLauncher<Intent>, requestCode: Int) {
         viewModelScope.launch {
-            if (authType == AuthType.PKCE) {
-                authService?.endSession(activity, requestCode)
-            } else {
-                activity.setResult(Activity.RESULT_OK)
-                activity.finish()
+            when (authType) {
+                AuthType.PKCE -> {
+                    authService?.endSession(launcher)
+                }
+                else -> {
+                    activity.setResult(Activity.RESULT_OK)
+                    activity.finish()
+                }
             }
         }
     }
@@ -60,26 +69,33 @@ open class EndSessionViewModel(
  */
 abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivity() {
     protected abstract val viewModel: T
+    private lateinit var endSessionActivityLauncher: ActivityResultLauncher<Intent>
 
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.logout(this, REQUEST_CODE_END_SESSION)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_END_SESSION) {
-            if (resultCode == Activity.RESULT_CANCELED) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Register the launcher to handle the session end result
+        endSessionActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_CANCELED) {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             } else {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    fun handleResult(requestCode: Int) {
+        if (requestCode == REQUEST_CODE_END_SESSION) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.logout(this, endSessionActivityLauncher,REQUEST_CODE_END_SESSION)
     }
 
     private companion object {
