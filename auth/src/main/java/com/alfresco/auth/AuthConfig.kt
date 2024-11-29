@@ -1,5 +1,6 @@
 package com.alfresco.auth
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -7,6 +8,7 @@ import kotlinx.serialization.json.Json
 /**
  * Data class holding authentication configuration.
  */
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class AuthConfig(
     /**
@@ -38,7 +40,13 @@ data class AuthConfig(
     /**
      * Path to content service
      */
-    var contentServicePath: String
+    var contentServicePath: String,
+
+    var secret: String = "",
+    var scope: String = "",
+    var host: String = "",
+    var authType: AuthTypeProvider = AuthTypeProvider.NONE,
+    var additionalParams: Map<String, String> = mapOf<String, String>()
 ) {
     /**
      * Convenience method for JSON serialization.
@@ -51,7 +59,8 @@ data class AuthConfig(
         /**
          * Convenience method for deserializing a JSON string representation.
          */
-        @JvmStatic fun jsonDeserialize(str: String): AuthConfig? {
+        @JvmStatic
+        fun jsonDeserialize(str: String): AuthConfig? {
             return try {
                 Json.decodeFromString(serializer(), str)
             } catch (ex: SerializationException) {
@@ -59,4 +68,10 @@ data class AuthConfig(
             }
         }
     }
+}
+
+
+enum class AuthTypeProvider {
+    NEW_IDP,
+    NONE;
 }

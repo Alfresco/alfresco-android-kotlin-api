@@ -1,15 +1,12 @@
 package com.alfresco.auth.pkce
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import com.alfresco.auth.AuthConfig
+import com.alfresco.auth.AuthTypeProvider
 import com.auth0.android.jwt.JWT
-import java.util.Locale
-import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -20,11 +17,15 @@ import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.ClientSecretPost
 import net.openid.appauth.EndSessionRequest
 import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.AnyBrowserMatcher
 import net.openid.appauth.connectivity.ConnectionBuilder
+import java.util.Locale
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.resumeWithException
 
 internal class PkceAuthService(context: Context, authState: AuthState?, authConfig: AuthConfig) {
 
@@ -65,9 +66,11 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         serviceConfiguration != null -> {
                             it.resumeWith(Result.success(serviceConfiguration))
                         }
+
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
+
                         else -> it.resumeWithException(Exception())
                     }
                 },
@@ -78,12 +81,22 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     /**
      * Initiates the login in [activity] with activity result [requestCode]
      */
-    suspend fun initiateLogin(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
+    suspend fun initiateLogin(endpoint: String, launcher: ActivityResultLauncher<Intent>) {
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
         // build discovery url using auth configuration
-        val discoveryUri = discoveryUriWith(endpoint, authConfig)
+        var discoveryUri: Uri = when (authConfig.authType) {
+            AuthTypeProvider.NEW_IDP -> {
+                discoveryUriWith(authConfig)
+            }
+
+            else -> {
+                discoveryUriWith(endpoint, authConfig)
+            }
+        }
+
+        println("discover URI -> $discoveryUri")
 
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
@@ -95,12 +108,12 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             val authIntent = generateAuthIntent(authRequest)
 
             withContext(Dispatchers.Main) {
-               launcher.launch(authIntent)
+                launcher.launch(authIntent)
             }
         }
     }
 
-    fun initiateReLogin(launcher : ActivityResultLauncher<Intent>) {
+    fun initiateReLogin(launcher: ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
         val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
@@ -144,10 +157,18 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      */
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
         withContext(Dispatchers.IO) {
+
+            var clientAuth = if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
+                ClientSecretPost(authConfig.secret)
+            } else {
+                authState.get().clientAuthentication
+            }
+
+
             suspendCancellableCoroutine<String> {
                 authService.performTokenRequest(
                     authorizationResponse.createTokenExchangeRequest(),
-                    authState.get().clientAuthentication
+                    clientAuth
                 ) { response: TokenResponse?, ex: AuthorizationException? ->
                     authState.get().update(response, ex)
 
@@ -155,9 +176,11 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         response != null -> {
                             it.resumeWith(Result.success(authState.get().jsonSerializeString()))
                         }
+
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
+
                         else -> it.resumeWithException(Exception())
                     }
                 }
@@ -178,16 +201,18 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                         response != null -> {
                             it.resumeWith(Result.success(response))
                         }
+
                         ex != null -> {
                             it.resumeWithException(ex)
                         }
+
                         else -> it.resumeWithException(Exception())
                     }
                 }
             }
         }
 
-    suspend fun endSession(launcher : ActivityResultLauncher<Intent>) {
+    suspend fun endSession(launcher: ActivityResultLauncher<Intent>) {
         withContext(Dispatchers.IO) {
             val request = makeEndSessionRequest(authState.get().authorizationServiceConfiguration!!)
             val intent = authService.getEndSessionRequestIntent(request)
@@ -230,7 +255,11 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             Uri.parse(authConfig.redirectUrl)
         )
 
-        builder.setScope("openid")
+        builder.setScope(authConfig.scope)
+
+        if (authConfig.additionalParams.isNotEmpty()) {
+            builder.setAdditionalParameters(authConfig.additionalParams)
+        }
 
         return builder.build()
     }
@@ -251,10 +280,17 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-        require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
-        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-        require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
+        if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
+            require(authConfig.host.isNotBlank()) { "Host is blank or empty" }
+            require(authConfig.secret.isNotBlank()) { "Secret is blank or empty" }
+            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+        } else {
+            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
+            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
+            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
+        }
+
     }
 
     companion object {
@@ -318,6 +354,14 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 .appendPath(AUTH)
                 .appendPath(REALMS)
                 .appendPath(config.realm)
+                .appendPath(WELL_KNOWN_PATH)
+                .appendPath(OPENID_CONFIGURATION_RESOURCE)
+                .build()
+        }
+
+        fun discoveryUriWith(config: AuthConfig): Uri {
+            return Uri.parse("https://" + config.host)
+                .buildUpon()
                 .appendPath(WELL_KNOWN_PATH)
                 .appendPath(OPENID_CONFIGURATION_RESOURCE)
                 .build()

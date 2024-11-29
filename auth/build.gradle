@@ -8,7 +8,7 @@ plugins {
 android {
     namespace 'com.alfresco.auth'
     defaultConfig {
-        versionName "0.8.3"
+        versionName "0.8.4"
     }
 }
 
