@@ -104,10 +104,10 @@ abstract class AuthenticationViewModel : ViewModel() {
             authService = PkceAuthService(context, state, authConfig)
         }
 
-        fun login(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
+        fun login(activity: Activity,endpoint: String, launcher : ActivityResultLauncher<Intent>) {
             viewModelScope.launch {
                 try {
-                    authService.initiateLogin(endpoint,launcher)
+                    authService.initiateLogin(activity,endpoint,launcher)
                 } catch (ex: Exception) {
                     _onError.value = ex.message
                 }
@@ -124,18 +124,6 @@ abstract class AuthenticationViewModel : ViewModel() {
                     val result = authService.getAuthResponse(intent)
                     val userEmail = authService.getUserEmail() ?: ""
                     _onCredentials.value = Credentials(userEmail, result, AuthType.PKCE.value)
-                } catch (ex: Exception) {
-                    _onError.value = ex.message ?: ""
-                }
-            }
-        }
-
-        fun handleActivityResult(credentials: com.auth0.android.result.Credentials, oauth2: OAuth2Data) {
-            viewModelScope.launch {
-                try {
-                    val result = credentials.accessToken
-                    val userEmail = credentials.user.email ?: ""
-                    _onCredentials.value = Credentials(userEmail, result, AuthType.OIDC.value, oauth2.host, oauth2.clientId)
                 } catch (ex: Exception) {
                     _onError.value = ex.message ?: ""
                 }
@@ -173,15 +161,7 @@ abstract class AuthenticationActivity<T : AuthenticationViewModel> : AppCompatAc
         if (viewModel.isReLogin) {
             viewModel.pkceAuth.reLogin(authenticateActivityLauncher)
         } else {
-            viewModel.pkceAuth.login(endpoint, authenticateActivityLauncher)
-        }
-    }
-
-    fun handleResult(data: com.auth0.android.result.Credentials?, oauth2: OAuth2Data) {
-        if (data == null){
-            viewModel.onPkceAuthCancelled()
-        }else{
-            viewModel.pkceAuth.handleActivityResult(data, oauth2)
+            viewModel.pkceAuth.login(this,endpoint, authenticateActivityLauncher)
         }
     }
 

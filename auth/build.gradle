@@ -8,14 +8,13 @@ plugins {
 android {
     namespace 'com.alfresco.auth'
     defaultConfig {
-        versionName "0.8.2"
+        versionName "0.8.4"
     }
 }
 
 dependencies {
     implementation libs.appauth
     implementation libs.jwtdecode
-    implementation libs.auth0
     implementation libs.kotlin.serialization.json
 
     implementation libs.androidx.appcompat

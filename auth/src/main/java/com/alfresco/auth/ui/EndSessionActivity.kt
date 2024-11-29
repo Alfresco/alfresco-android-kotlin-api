@@ -48,14 +48,11 @@ open class EndSessionViewModel(
     /**
      * Invoke logout procedure, presenting extra activities if necessary.
      */
-    fun logout(activity: Activity, launcher: ActivityResultLauncher<Intent>) {
+    fun logout(activity: Activity, launcher: ActivityResultLauncher<Intent>, requestCode: Int) {
         viewModelScope.launch {
             when (authType) {
                 AuthType.PKCE -> {
                     authService?.endSession(launcher)
-                }
-                AuthType.OIDC -> {
-                    authService?.logoutAuth0(URL(hostName).host,clientId, activity, requestCode)
                 }
                 else -> {
                     activity.setResult(Activity.RESULT_OK)
@@ -98,7 +95,7 @@ abstract class EndSessionActivity<out T : EndSessionViewModel> : AppCompatActivi
     override fun onResume() {
         super.onResume()
 
-        viewModel.logout(this, endSessionActivityLauncher)
+        viewModel.logout(this, endSessionActivityLauncher,REQUEST_CODE_END_SESSION)
     }
 
     private companion object {

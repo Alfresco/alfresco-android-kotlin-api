@@ -5,18 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
-import android.util.Log
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.R
 import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.OAuth2Data
-import com.alfresco.auth.ui.AuthenticationActivity
-import com.alfresco.auth.ui.EndSessionActivity
-import com.auth0.android.Auth0
-import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.jwt.JWT
-import com.auth0.android.provider.WebAuthProvider
-import com.auth0.android.result.Credentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -119,94 +111,35 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     /**
      * Initiates the login in [activity] with activity result [requestCode]
      */
-    suspend fun initiateLogin(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
+    suspend fun initiateLogin(
+        activity: Activity,
+        endpoint: String,
+        launcher: ActivityResultLauncher<Intent>
+    ) {
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
         // build discovery url using auth configuration
 
-        if (authConfig.realm.isBlank()) {
-            val uri = discoveryUriWithAuth0(endpoint).toString()
-            withContext(Dispatchers.IO) {
+        val discoveryUri = discoveryUriWith(endpoint, authConfig)
 
-                val authDetails = getAppConfigOAuth2Details(uri)
-
-                authDetails?.let { oauth2 ->
-
-                    val credentials = webAuthAsync(
-                        oauth2,
-                        activity
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        (activity as AuthenticationActivity<*>).handleResult(
-                            credentials,
-                            authDetails
-                        )
-                    }
-                }
-
-            }
-        } else {
-            val discoveryUri = discoveryUriWith(endpoint, authConfig)
-
-            withContext(Dispatchers.IO) {
-                val config = fetchDiscoveryFromUrl(discoveryUri)
-
-                // save the authorization configuration
-                authState.set(AuthState(config))
-
-                val authRequest = generateAuthorizationRequest(config)
-                val authIntent = generateAuthIntent(authRequest)
-
-                withContext(Dispatchers.Main) {
-                    launcher.launch(authIntent)
-                }
-            }
-        }
-    }
-
-    private suspend fun webAuthAsync(
-        oauth2: OAuth2Data,
-        activity: Activity
-    ): Credentials? {
-        return try {
-            val host = URL(oauth2.host).host
-
-
-            val account = Auth0(oauth2.clientId, host)
-            val credentials = WebAuthProvider.login(account)
-                .withTrustedWebActivity()
-                .withScheme(activity.getString(R.string.com_auth0_scheme))
-                .withScope(oauth2.scope)
-                .withAudience(oauth2.audience)
-                .await(activity)
-           credentials
-        } catch (error: AuthenticationException) {
-            val message =
-                if (error.isCanceled) "Browser was closed" else error.getDescription()
-            null
-        }
-    }
-
-
-    suspend fun logoutAuth0(hostName: String, clientId: String, activity: Activity, requestCode: Int) {
         withContext(Dispatchers.IO) {
+            val config = fetchDiscoveryFromUrl(discoveryUri)
 
-            val account = Auth0(clientId, hostName)
-            WebAuthProvider.logout(account)
-                .withScheme(activity.getString(R.string.com_auth0_scheme))
-                .await(activity)
+            // save the authorization configuration
+            authState.set(AuthState(config))
+
+            val authRequest = generateAuthorizationRequest(config)
+            val authIntent = generateAuthIntent(authRequest)
 
             withContext(Dispatchers.Main) {
-                (activity as EndSessionActivity<*>).handleResult(requestCode)
+                launcher.launch(authIntent)
             }
-
-
         }
+
     }
 
-    fun initiateReLogin(launcher : ActivityResultLauncher<Intent>) {
+    fun initiateReLogin(launcher: ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
         val authRequest =
@@ -298,7 +231,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
         }
 
-    suspend fun endSession(launcher : ActivityResultLauncher<Intent>) {
+    suspend fun endSession(launcher: ActivityResultLauncher<Intent>) {
         withContext(Dispatchers.IO) {
             val request = makeEndSessionRequest(authState.get().authorizationServiceConfiguration!!)
             val intent = authService.getEndSessionRequestIntent(request)
