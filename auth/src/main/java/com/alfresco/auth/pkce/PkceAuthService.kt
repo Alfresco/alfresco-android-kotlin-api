@@ -114,7 +114,8 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     fun initiateReLogin(launcher: ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
-        val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+        val authRequest =
+            generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
         val authIntent = generateAuthIntent(authRequest)
 
         launcher.launch(authIntent)
@@ -253,7 +254,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             Uri.parse(authConfig.redirectUrl)
         )
 
-        builder.setScope(authConfig.scope)
+        if (authConfig.scope.isNotEmpty()) {
+            builder.setScope(authConfig.scope)
+        }
 
         if (authConfig.additionalParams.isNotEmpty()) {
             builder.setAdditionalParameters(authConfig.additionalParams)
