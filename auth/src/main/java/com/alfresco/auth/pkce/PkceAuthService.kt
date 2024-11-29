@@ -96,8 +96,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
         }
 
-        println("discover URI -> $discoveryUri")
-
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
 

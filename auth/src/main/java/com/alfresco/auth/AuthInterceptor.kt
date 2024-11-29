@@ -226,8 +226,6 @@ class AuthInterceptor(
 
     private fun Interceptor.Chain.proceed(type: AuthType, token: String?): Response {
 
-        println("TOKEN ==> $token")
-
         val headerValue = when (type) {
             AuthType.BASIC -> "Basic $token"
             AuthType.PKCE -> "Bearer $token"

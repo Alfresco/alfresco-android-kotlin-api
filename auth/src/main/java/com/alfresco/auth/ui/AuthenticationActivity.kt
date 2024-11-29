@@ -58,8 +58,6 @@ abstract class AuthenticationViewModel : ViewModel() {
         val clientID = oAuth2Data?.clientId
         val secret = oAuth2Data?.secret
 
-        println("config data: clientId ==> $clientID && secret ==> $secret")
-
         if (clientID == "alfresco" && secret.isNullOrEmpty()) {
             val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
             onResult(authType, oAuth2Data)
