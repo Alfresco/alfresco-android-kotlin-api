@@ -1,10 +1,12 @@
 package com.alfresco.auth.data
 
-import java.lang.NumberFormatException
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
+import java.lang.NumberFormatException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class ContentServerDetailsData(
     val edition: String,
@@ -12,6 +14,7 @@ data class ContentServerDetailsData(
     val schema: String
 )
 
+@OptIn(InternalSerializationApi::class)
 @Serializable
 internal data class ContentServerDetails(
     val data: ContentServerDetailsData

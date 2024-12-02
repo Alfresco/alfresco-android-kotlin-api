@@ -106,8 +106,6 @@ class MainViewModel(private val context: Context) : ViewModel() {
                     maxItems = 25,
                 )
 
-                println("Response recent data = $searchCall")
-
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 onError.value = ex.localizedMessage ?: ""

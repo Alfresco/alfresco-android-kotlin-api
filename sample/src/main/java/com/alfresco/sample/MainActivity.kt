@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
         viewModel.resultsConfig.observe(this) {
-            println("config class $it")
+
         }
 
         viewModel.onSessionExpired.observe(this, ::onSessionExpired)

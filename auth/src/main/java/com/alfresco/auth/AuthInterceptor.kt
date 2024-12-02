@@ -3,7 +3,6 @@ package com.alfresco.auth
 import android.content.Context
 import android.util.Base64
 import com.alfresco.auth.pkce.PkceAuthService
-import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,6 +16,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONException
+import java.lang.ref.WeakReference
 
 /**
  * OkHttp [Interceptor] which deals with managing session information and attaching authentication headers.
@@ -225,6 +225,7 @@ class AuthInterceptor(
     }
 
     private fun Interceptor.Chain.proceed(type: AuthType, token: String?): Response {
+
         val headerValue = when (type) {
             AuthType.BASIC -> "Basic $token"
             AuthType.PKCE -> "Bearer $token"

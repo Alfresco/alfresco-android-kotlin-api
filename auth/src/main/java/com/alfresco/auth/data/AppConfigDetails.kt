@@ -1,9 +1,11 @@
 package com.alfresco.auth.data
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class OAuth2Data(
     val host: String,
@@ -21,9 +23,11 @@ data class OAuth2Data(
     val redirectUriLogout: String,
     val audience: String,
     val skipIssuerCheck: Boolean,
-    val strictDiscoveryDocumentValidation: Boolean
+    val strictDiscoveryDocumentValidation: Boolean,
+    val authType: String? = ""
 )
 
+@OptIn(InternalSerializationApi::class)
 @Serializable
 internal data class AppConfigDetails(
     val oauth2: OAuth2Data

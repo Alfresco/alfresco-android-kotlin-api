@@ -16,6 +16,7 @@ import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
+import com.alfresco.auth.data.OAuth2Data
 import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,12 +50,27 @@ abstract class AuthenticationViewModel : ViewModel() {
     fun checkAuthType(
         endpoint: String,
         authConfig: AuthConfig,
-        onResult: (authType: AuthType) -> Unit
+        onResult: (authType: AuthType, oauth2Data: OAuth2Data?) -> Unit
     ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
-        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
-        onResult(authType)
+
+        val oAuth2Data = checkAppConfigOAuthType(discoveryService, endpoint)
+        val clientID = oAuth2Data?.clientId
+        val secret = oAuth2Data?.secret
+
+        if (clientID == "alfresco" && secret.isNullOrEmpty()) {
+            val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
+            onResult(authType, oAuth2Data)
+        } else {
+            onResult(AuthType.PKCE, oAuth2Data)
+        }
     }
+
+    suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String): OAuth2Data? =
+        withContext(Dispatchers.IO) {
+            discoveryService.getAppConfigOAuthType(endpoint)?.oauth2
+        }
+
 
     /**
      * Function takes [username] and [password] and returns result via [onCredentials].
@@ -88,6 +104,7 @@ abstract class AuthenticationViewModel : ViewModel() {
     open fun onPkceAuthCancelled() {}
 
     internal val pkceAuth = PkceAuth()
+
     internal inner class PkceAuth {
         private lateinit var authService: PkceAuthService
 
@@ -104,17 +121,17 @@ abstract class AuthenticationViewModel : ViewModel() {
             authService = PkceAuthService(context, state, authConfig)
         }
 
-        fun login(endpoint: String, launcher : ActivityResultLauncher<Intent>) {
+        fun login(endpoint: String, launcher: ActivityResultLauncher<Intent>) {
             viewModelScope.launch {
                 try {
-                    authService.initiateLogin(endpoint,launcher)
+                    authService.initiateLogin(endpoint, launcher)
                 } catch (ex: Exception) {
                     _onError.value = ex.message
                 }
             }
         }
 
-        fun reLogin(launcher : ActivityResultLauncher<Intent>) {
+        fun reLogin(launcher: ActivityResultLauncher<Intent>) {
             authService.initiateReLogin(launcher)
         }
 
