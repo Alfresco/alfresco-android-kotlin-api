@@ -56,9 +56,9 @@ abstract class AuthenticationViewModel : ViewModel() {
         discoveryService = DiscoveryService(context, authConfig)
 
         val oAuth2Data = checkAppConfigOAuthType(discoveryService, endpoint)
-        val authType = oAuth2Data?.authType
+        val configAuthType = oAuth2Data?.authType
 
-        if (authType.isNullOrEmpty() || authType.lowercase() == IdentityProvider.KEYCLOAK.value()) {
+        if (configAuthType.isNullOrEmpty() || configAuthType.lowercase() == IdentityProvider.KEYCLOAK.value()) {
             val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
             onResult(authType, oAuth2Data)
         } else {
