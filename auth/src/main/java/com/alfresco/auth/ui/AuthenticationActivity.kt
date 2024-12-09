@@ -14,6 +14,7 @@ import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
+import com.alfresco.auth.IdentityProvider
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
 import com.alfresco.auth.data.OAuth2Data
@@ -55,10 +56,9 @@ abstract class AuthenticationViewModel : ViewModel() {
         discoveryService = DiscoveryService(context, authConfig)
 
         val oAuth2Data = checkAppConfigOAuthType(discoveryService, endpoint)
-        val clientID = oAuth2Data?.clientId
-        val secret = oAuth2Data?.secret
+        val authType = oAuth2Data?.authType
 
-        if (clientID == "alfresco" && secret.isNullOrEmpty()) {
+        if (authType.isNullOrEmpty() || authType.lowercase() == IdentityProvider.KEYCLOAK.value()) {
             val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
             onResult(authType, oAuth2Data)
         } else {
