@@ -75,3 +75,10 @@ enum class AuthTypeProvider {
     NEW_IDP,
     NONE;
 }
+
+enum class IdentityProvider {
+    KEYCLOAK,
+    AUTH0;
+
+    fun value() = name.lowercase()
+}
