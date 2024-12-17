@@ -137,7 +137,7 @@ class DiscoveryService(
      */
     fun contentServiceUrl(
         endpoint: String,
-        authType: AuthTypeProvider = AuthTypeProvider.NONE
+        authType: AuthTypeProvider = AuthTypeProvider.NONE,
     ): Uri =
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
