@@ -253,10 +253,12 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             Uri.parse(authConfig.redirectUrl)
         )
 
+        authConfig.scope.takeIf { it.isNotEmpty() }?.let { builder.setScope(it) }
+
         if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-            authConfig.scope.takeIf { it.isNotEmpty() }?.let { builder.setScope(it) }
-            authConfig.additionalParams.takeIf { it.isNotEmpty() }?.let { builder.setAdditionalParameters(it) }
-            }
+            authConfig.additionalParams.takeIf { it.isNotEmpty() }
+                ?.let { builder.setAdditionalParameters(it) }
+        }
 
         return builder.build()
     }
