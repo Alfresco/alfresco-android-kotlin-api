@@ -258,7 +258,9 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
             authConfig.additionalParams.takeIf { it.isNotEmpty() }
                 ?.let { builder.setAdditionalParameters(it) }
-        }        return builder.build()
+        }
+
+        return builder.build()
     }
 
     private fun makeEndSessionRequest(serviceAuthorization: AuthorizationServiceConfiguration): EndSessionRequest {
