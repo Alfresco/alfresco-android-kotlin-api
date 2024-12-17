@@ -163,11 +163,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 authState.get().clientAuthentication
             }
 
-
             suspendCancellableCoroutine<String> {
                 authService.performTokenRequest(
                     authorizationResponse.createTokenExchangeRequest(),
-                    clientAuth
+                    clientAuth,
                 ) { response: TokenResponse?, ex: AuthorizationException? ->
                     authState.get().update(response, ex)
 
@@ -257,8 +256,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
             authConfig.scope.takeIf { it.isNotEmpty() }?.let { builder.setScope(it) }
             authConfig.additionalParams.takeIf { it.isNotEmpty() }?.let { builder.setAdditionalParameters(it) }
-        }
-
+            }
 
         return builder.build()
     }
