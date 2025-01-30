@@ -92,7 +92,8 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             }
 
             else -> {
-                discoveryUriWith(endpoint, authConfig)
+                discoveryUriWith(authConfig.host)
+//                discoveryUriWith(endpoint, authConfig)
             }
         }
 
@@ -114,8 +115,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     fun initiateReLogin(launcher: ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
-        val authRequest =
-            generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+        val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
         val authIntent = generateAuthIntent(authRequest)
 
         launcher.launch(authIntent)
@@ -246,6 +246,10 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     private fun generateAuthorizationRequest(serviceAuthorization: AuthorizationServiceConfiguration):
             AuthorizationRequest {
 
+        println("generateAuthorizationRequestclient ID ${authConfig.clientId}")
+        println("generateAuthorizationRequest redirectUrl ${authConfig.redirectUrl}")
+        println("generateAuthorizationRequest scope ${authConfig.scope}")
+
         val builder = AuthorizationRequest.Builder(
             serviceAuthorization,
             authConfig.clientId,
@@ -253,11 +257,13 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             Uri.parse(authConfig.redirectUrl)
         )
 
-        authConfig.scope.takeIf { it.isNotEmpty() }?.let { builder.setScope(it) }
+        if (authConfig.scope.isNotEmpty()) {
 
-        if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-            authConfig.additionalParams.takeIf { it.isNotEmpty() }
-                ?.let { builder.setAdditionalParameters(it) }
+            builder.setScope(authConfig.scope)
+        }
+
+        if (authConfig.additionalParams.isNotEmpty()) {
+            builder.setAdditionalParameters(authConfig.additionalParams)
         }
 
         return builder.build()
@@ -285,7 +291,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
         } else {
             require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
+//            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
             require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
             require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
         }
@@ -353,6 +359,14 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
                 .appendPath(AUTH)
                 .appendPath(REALMS)
                 .appendPath(config.realm)
+                .appendPath(WELL_KNOWN_PATH)
+                .appendPath(OPENID_CONFIGURATION_RESOURCE)
+                .build()
+        }
+        fun discoveryUriWith(hostName : String?): Uri {
+            println("hostname : $hostName")
+            return Uri.parse(hostName)
+                .buildUpon()
                 .appendPath(WELL_KNOWN_PATH)
                 .appendPath(OPENID_CONFIGURATION_RESOURCE)
                 .build()
