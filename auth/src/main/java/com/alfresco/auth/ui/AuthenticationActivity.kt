@@ -14,7 +14,6 @@ import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
-import com.alfresco.auth.IdentityProvider
 import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
@@ -57,15 +56,14 @@ abstract class AuthenticationViewModel : ViewModel() {
 
         val configDetailsData = checkAppConfigOAuthType(discoveryService, endpoint)
         val msData = configDetailsData?.mobileSettings
-        val authType = msData?.authType
 
-        if (authType.isNullOrEmpty() || authType.lowercase() == IdentityProvider.KEYCLOAK.value()) {
-            discoveryService.setAuthConfig(msData)
-            val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint, msData?.host) }
-            onResult(authType, configDetailsData)
-        } else {
+        /*if (*//*authType.isNullOrEmpty() || *//*authType?.lowercase() == IdentityProvider.KEYCLOAK.value()) {*/
+        discoveryService.setAuthConfig(msData)
+        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint, msData?.host) }
+        onResult(authType, configDetailsData)
+        /*} else {
             onResult(AuthType.PKCE, configDetailsData)
-        }
+        }*/
     }
 
     suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String): AppConfigDetails? =

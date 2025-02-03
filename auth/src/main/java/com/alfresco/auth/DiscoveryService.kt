@@ -29,7 +29,7 @@ class DiscoveryService(
                 port = msData?.port?.toString() ?: "",
                 host = msData?.host?.toString() ?: "",
                 contentServicePath = msData?.contentServicePath ?: "",
-                realm = msData?.realm?:"",
+                realm = msData?.realm ?: "",
                 clientId = msData?.android?.clientId ?: "",
                 redirectUrl = msData?.android?.clientId ?: "",
                 scope = msData?.scope ?: "",
@@ -42,7 +42,7 @@ class DiscoveryService(
     suspend fun getAuthType(endpoint: String, host: String?): AuthType {
         return when {
 
-            isPkceType(endpoint, host) -> AuthType.PKCE
+            isPkceType(/*endpoint, host*/) -> AuthType.PKCE
 
             isBasicType(endpoint) -> AuthType.BASIC
 
@@ -136,8 +136,8 @@ class DiscoveryService(
 
     private suspend fun isBasicType(endpoint: String): Boolean = isContentServiceInstalled(endpoint)
 
-    private suspend fun isPkceType(endpoint: String, hostName: String?): Boolean {
-        val uri = PkceAuthService.discoveryUriWith(hostName)
+    private suspend fun isPkceType(): Boolean {
+        val uri = PkceAuthService.discoveryUriWith(authConfig.host, authConfig)
         val result = try {
             if (uri != null) {
                 val authService = PkceAuthService(context, null, authConfig)
@@ -155,14 +155,19 @@ class DiscoveryService(
     /**
      * Return content service url based on [endpoint].
      */
-    fun contentServiceUrl(endpoint: String, authType: AuthTypeProvider = AuthTypeProvider.NONE): Uri =
+    fun contentServiceUrl(endpoint: String): Uri =
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
-            .appendPath(if (authType == AuthTypeProvider.NEW_IDP) "alfresco" else authConfig.contentServicePath)
+            .apply {
+                if (authConfig.contentServicePath.isEmpty()) {
+                    appendPath(authConfig.contentServicePath)
+                }
+            }
+            .appendPath("alfresco")
             .build()
 
     private fun contentServiceDiscoveryUrl(endpoint: String): Uri =
-        contentServiceUrl(endpoint, authConfig.authType)
+        contentServiceUrl(endpoint)
             .buildUpon()
             .appendEncodedPath(ACS_SERVER_DETAILS)
             .build()

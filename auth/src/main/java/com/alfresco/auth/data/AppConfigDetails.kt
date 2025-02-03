@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 data class MobileSettings(
     val https: Boolean,
     val port: Int,
-    val realm: String,
+    val realm: String?,
     val host: String,
     val secret: String?,
     val scope: String,
@@ -18,7 +18,6 @@ data class MobileSettings(
     val audience: String?,
     val android: AndroidSettings,
     val iOS: IOSSettings,
-    val authType: String? = null,
 )
 
 @OptIn(InternalSerializationApi::class)

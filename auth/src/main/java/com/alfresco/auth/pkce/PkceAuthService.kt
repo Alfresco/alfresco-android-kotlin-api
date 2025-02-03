@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.AuthTypeProvider
 import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -86,16 +85,18 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         checkConfig(authConfig)
 
         // build discovery url using auth configuration
-        var discoveryUri: Uri = when (authConfig.authType) {
+        /*var discoveryUri: Uri = when (authConfig.authType) {
             AuthTypeProvider.NEW_IDP -> {
-                discoveryUriWith(authConfig)
+                discoveryUriWith(endpoint, authConfig)
             }
 
             else -> {
                 discoveryUriWith(authConfig.host)
 //                discoveryUriWith(endpoint, authConfig)
             }
-        }
+        }*/
+
+        val discoveryUri: Uri = discoveryUriWith(endpoint, authConfig)
 
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
@@ -157,7 +158,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
         withContext(Dispatchers.IO) {
 
-            var clientAuth = if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
+            var clientAuth = if (authConfig.secret.isNotEmpty()) {
                 ClientSecretPost(authConfig.secret)
             } else {
                 authState.get().clientAuthentication
@@ -285,16 +286,16 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-            require(authConfig.host.isNotBlank()) { "Host is blank or empty" }
-            require(authConfig.secret.isNotBlank()) { "Secret is blank or empty" }
-            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-        } else {
-            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
+        /* if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
+             require(authConfig.host.isNotBlank()) { "Host is blank or empty" }
+             require(authConfig.secret.isNotBlank()) { "Secret is blank or empty" }
+             require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+         } else {*/
+//            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
 //            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
-            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
-        }
+        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
+//            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
+        /*}*/
 
     }
 
@@ -354,30 +355,37 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         }
 
         fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
-            return endpointWith(endpoint, config)
+
+            println("host name==> ${config.host}")
+
+            return Uri.parse(config.host)
                 .buildUpon()
-                .appendPath(AUTH)
-                .appendPath(REALMS)
-                .appendPath(config.realm)
-                .appendPath(WELL_KNOWN_PATH)
-                .appendPath(OPENID_CONFIGURATION_RESOURCE)
-                .build()
-        }
-        fun discoveryUriWith(hostName : String?): Uri {
-            println("hostname : $hostName")
-            return Uri.parse(hostName)
-                .buildUpon()
+                .apply {
+                    if (config.realm.isNotEmpty()) {
+                        appendPath(AUTH)
+                        appendPath(REALMS)
+                        appendPath(config.realm)
+                    }
+                }
                 .appendPath(WELL_KNOWN_PATH)
                 .appendPath(OPENID_CONFIGURATION_RESOURCE)
                 .build()
         }
 
-        fun discoveryUriWith(config: AuthConfig): Uri {
-            return Uri.parse("https://" + config.host)
-                .buildUpon()
-                .appendPath(WELL_KNOWN_PATH)
-                .appendPath(OPENID_CONFIGURATION_RESOURCE)
-                .build()
+
+        fun endpointWithHost(endpoint: String, config: AuthConfig): Uri {
+            val src = endpoint.trim().lowercase(Locale.ROOT)
+
+            var uri = Uri.parse(src)
+            var uriBuilder = uri.buildUpon()
+
+            if (config.realm.isNotEmpty() && config.contentServicePath.isNotEmpty()) {
+                uriBuilder.appendPath(AUTH)
+                    .appendPath(REALMS)
+                    .appendPath(config.realm)
+            }
+
+            return uriBuilder.build()
         }
     }
 }
