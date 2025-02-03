@@ -51,7 +51,7 @@ jobs:
         run: ./gradlew publishLibraryPublicationToMavenRepository
 
       - name: Store Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: libs
           path: ./*/build/outputs/aar/*.aar
