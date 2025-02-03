@@ -137,7 +137,7 @@ class DiscoveryService(
     private suspend fun isBasicType(endpoint: String): Boolean = isContentServiceInstalled(endpoint)
 
     private suspend fun isPkceType(): Boolean {
-        val uri = PkceAuthService.discoveryUriWith(authConfig.host, authConfig)
+        val uri = PkceAuthService.discoveryUriWith(authConfig)
         val result = try {
             if (uri != null) {
                 val authService = PkceAuthService(context, null, authConfig)

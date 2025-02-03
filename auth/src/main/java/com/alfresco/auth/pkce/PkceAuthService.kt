@@ -84,7 +84,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
-        val discoveryUri: Uri = discoveryUriWith(endpoint, authConfig)
+        val discoveryUri: Uri = discoveryUriWith(authConfig)
 
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
@@ -235,10 +235,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     private fun generateAuthorizationRequest(serviceAuthorization: AuthorizationServiceConfiguration):
             AuthorizationRequest {
 
-        println("generateAuthorizationRequestclient ID ${authConfig.clientId}")
-        println("generateAuthorizationRequest redirectUrl ${authConfig.redirectUrl}")
-        println("generateAuthorizationRequest scope ${authConfig.scope}")
-
         val builder = AuthorizationRequest.Builder(
             serviceAuthorization,
             authConfig.clientId,
@@ -332,9 +328,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             return uriBuilder.build()
         }
 
-        fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
-
-            println("host name==> ${config.host}")
+        fun discoveryUriWith(config: AuthConfig): Uri {
 
             return Uri.parse(config.host)
                 .buildUpon()
