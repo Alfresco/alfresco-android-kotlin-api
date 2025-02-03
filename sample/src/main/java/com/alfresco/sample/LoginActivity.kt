@@ -13,7 +13,7 @@ import com.alfresco.auth.AuthConfig
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.AuthTypeProvider
 import com.alfresco.auth.Credentials
-import com.alfresco.auth.data.OAuth2Data
+import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.ui.AuthenticationActivity
 import com.alfresco.auth.ui.AuthenticationViewModel
 import com.alfresco.sample.databinding.ActivityLoginBinding
@@ -34,7 +34,7 @@ class LoginViewModel(override var context: Context) : AuthenticationViewModel() 
         }
     }
 
-    private fun onAuthType(authType: AuthType, oAuth2Data: OAuth2Data?) {
+    private fun onAuthType(authType: AuthType, appConfigDetails: AppConfigDetails?) {
         if (authType == AuthType.PKCE) {
             pkceLogin(server, AuthConfig.defaultConfig)
         } else {
