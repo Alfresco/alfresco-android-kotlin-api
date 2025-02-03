@@ -57,13 +57,9 @@ abstract class AuthenticationViewModel : ViewModel() {
         val configDetailsData = checkAppConfigOAuthType(discoveryService, endpoint)
         val msData = configDetailsData?.mobileSettings
 
-        /*if (*//*authType.isNullOrEmpty() || *//*authType?.lowercase() == IdentityProvider.KEYCLOAK.value()) {*/
         discoveryService.setAuthConfig(msData)
         val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint, msData?.host) }
         onResult(authType, configDetailsData)
-        /*} else {
-            onResult(AuthType.PKCE, configDetailsData)
-        }*/
     }
 
     suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String): AppConfigDetails? =
