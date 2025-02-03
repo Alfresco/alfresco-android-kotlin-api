@@ -42,7 +42,7 @@ class DiscoveryService(
     suspend fun getAuthType(endpoint: String, host: String?): AuthType {
         return when {
 
-            isPkceType(/*endpoint, host*/) -> AuthType.PKCE
+            isPkceType() -> AuthType.PKCE
 
             isBasicType(endpoint) -> AuthType.BASIC
 

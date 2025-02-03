@@ -84,18 +84,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
-        // build discovery url using auth configuration
-        /*var discoveryUri: Uri = when (authConfig.authType) {
-            AuthTypeProvider.NEW_IDP -> {
-                discoveryUriWith(endpoint, authConfig)
-            }
-
-            else -> {
-                discoveryUriWith(authConfig.host)
-//                discoveryUriWith(endpoint, authConfig)
-            }
-        }*/
-
         val discoveryUri: Uri = discoveryUriWith(endpoint, authConfig)
 
         withContext(Dispatchers.IO) {
@@ -286,17 +274,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        /* if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-             require(authConfig.host.isNotBlank()) { "Host is blank or empty" }
-             require(authConfig.secret.isNotBlank()) { "Secret is blank or empty" }
-             require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-         } else {*/
-//            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-//            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
         require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-//            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
-        /*}*/
-
     }
 
     companion object {
