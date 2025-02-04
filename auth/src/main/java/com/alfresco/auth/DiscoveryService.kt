@@ -5,6 +5,7 @@ import android.net.Uri
 import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.ContentServerDetails
 import com.alfresco.auth.data.ContentServerDetailsData
+import com.alfresco.auth.data.MobileSettings
 import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,16 +19,30 @@ import java.util.concurrent.TimeUnit
  */
 class DiscoveryService(
     private val context: Context,
-    private val authConfig: AuthConfig
+    private var authConfig: AuthConfig
 ) {
+
+    fun setAuthConfig(msData: MobileSettings?) {
+        authConfig =
+            AuthConfig(
+                https = msData?.https == true,
+                port = msData?.port?.toString() ?: "",
+                host = msData?.host?.toString() ?: "",
+                contentServicePath = msData?.contentServicePath ?: "",
+                realm = msData?.realm ?: "",
+                clientId = msData?.android?.clientId ?: "",
+                redirectUrl = msData?.android?.clientId ?: "",
+                scope = msData?.scope ?: "",
+            )
+    }
 
     /**
      * Determine which [AuthType] is supported by the [endpoint].
      */
-    suspend fun getAuthType(endpoint: String): AuthType {
+    suspend fun getAuthType(endpoint: String, host: String?): AuthType {
         return when {
 
-            isPkceType(endpoint) -> AuthType.PKCE
+            isPkceType() -> AuthType.PKCE
 
             isBasicType(endpoint) -> AuthType.BASIC
 
@@ -121,12 +136,17 @@ class DiscoveryService(
 
     private suspend fun isBasicType(endpoint: String): Boolean = isContentServiceInstalled(endpoint)
 
-    private suspend fun isPkceType(endpoint: String): Boolean {
-        val uri = PkceAuthService.discoveryUriWith(endpoint, authConfig)
+    private suspend fun isPkceType(): Boolean {
+        val uri = PkceAuthService.discoveryUriWith(authConfig)
         val result = try {
-            val authService = PkceAuthService(context, null, authConfig)
-            authService.fetchDiscoveryFromUrl(uri)
+            if (uri != null) {
+                val authService = PkceAuthService(context, null, authConfig)
+                authService.fetchDiscoveryFromUrl(uri)
+            } else {
+                null
+            }
         } catch (exception: Exception) {
+            exception.printStackTrace();
             null
         }
         return result != null
@@ -135,17 +155,19 @@ class DiscoveryService(
     /**
      * Return content service url based on [endpoint].
      */
-    fun contentServiceUrl(
-        endpoint: String,
-        authType: AuthTypeProvider = AuthTypeProvider.NONE,
-    ): Uri =
+    fun contentServiceUrl(endpoint: String): Uri =
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
-            .appendPath(if (authType == AuthTypeProvider.NEW_IDP) "alfresco" else authConfig.contentServicePath)
+            .apply {
+                if (authConfig.contentServicePath.isEmpty()) {
+                    appendPath(authConfig.contentServicePath)
+                }
+            }
+            .appendPath("alfresco")
             .build()
 
     private fun contentServiceDiscoveryUrl(endpoint: String): Uri =
-        contentServiceUrl(endpoint, authConfig.authType)
+        contentServiceUrl(endpoint)
             .buildUpon()
             .appendEncodedPath(ACS_SERVER_DETAILS)
             .build()

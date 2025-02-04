@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import com.alfresco.auth.AuthConfig
-import com.alfresco.auth.AuthTypeProvider
 import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -85,16 +84,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
-        // build discovery url using auth configuration
-        var discoveryUri: Uri = when (authConfig.authType) {
-            AuthTypeProvider.NEW_IDP -> {
-                discoveryUriWith(authConfig)
-            }
-
-            else -> {
-                discoveryUriWith(endpoint, authConfig)
-            }
-        }
+        val discoveryUri: Uri = discoveryUriWith(authConfig)
 
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
@@ -114,8 +104,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     fun initiateReLogin(launcher: ActivityResultLauncher<Intent>) {
         requireNotNull(authState.get())
 
-        val authRequest =
-            generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
+        val authRequest = generateAuthorizationRequest(authState.get().authorizationServiceConfiguration!!)
         val authIntent = generateAuthIntent(authRequest)
 
         launcher.launch(authIntent)
@@ -157,7 +146,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
     private suspend fun getToken(authorizationResponse: AuthorizationResponse) =
         withContext(Dispatchers.IO) {
 
-            var clientAuth = if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
+            var clientAuth = if (authConfig.secret.isNotEmpty()) {
                 ClientSecretPost(authConfig.secret)
             } else {
                 authState.get().clientAuthentication
@@ -253,11 +242,13 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             Uri.parse(authConfig.redirectUrl)
         )
 
-        authConfig.scope.takeIf { it.isNotEmpty() }?.let { builder.setScope(it) }
+        if (authConfig.scope.isNotEmpty()) {
 
-        if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-            authConfig.additionalParams.takeIf { it.isNotEmpty() }
-                ?.let { builder.setAdditionalParameters(it) }
+            builder.setScope(authConfig.scope)
+        }
+
+        if (authConfig.additionalParams.isNotEmpty()) {
+            builder.setAdditionalParameters(authConfig.additionalParams)
         }
 
         return builder.build()
@@ -279,17 +270,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
      * @throws [IllegalArgumentException]
      */
     private fun checkConfig(authConfig: AuthConfig) {
-        if (authConfig.authType == AuthTypeProvider.NEW_IDP) {
-            require(authConfig.host.isNotBlank()) { "Host is blank or empty" }
-            require(authConfig.secret.isNotBlank()) { "Secret is blank or empty" }
-            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-        } else {
-            require(authConfig.contentServicePath.isNotBlank()) { "Content service path is blank or empty" }
-            require(authConfig.realm.isNotBlank()) { "Realm is blank or empty" }
-            require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
-            require(authConfig.redirectUrl.isNotBlank()) { "Redirect url is blank or empty" }
-        }
-
+        require(authConfig.clientId.isNotBlank()) { "Client id is blank or empty" }
     }
 
     companion object {
@@ -347,23 +328,36 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             return uriBuilder.build()
         }
 
-        fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
-            return endpointWith(endpoint, config)
+        fun discoveryUriWith(config: AuthConfig): Uri {
+
+            return Uri.parse(config.host)
                 .buildUpon()
-                .appendPath(AUTH)
-                .appendPath(REALMS)
-                .appendPath(config.realm)
+                .apply {
+                    if (config.realm.isNotEmpty()) {
+                        appendPath(AUTH)
+                        appendPath(REALMS)
+                        appendPath(config.realm)
+                    }
+                }
                 .appendPath(WELL_KNOWN_PATH)
                 .appendPath(OPENID_CONFIGURATION_RESOURCE)
                 .build()
         }
 
-        fun discoveryUriWith(config: AuthConfig): Uri {
-            return Uri.parse("https://" + config.host)
-                .buildUpon()
-                .appendPath(WELL_KNOWN_PATH)
-                .appendPath(OPENID_CONFIGURATION_RESOURCE)
-                .build()
+
+        fun endpointWithHost(endpoint: String, config: AuthConfig): Uri {
+            val src = endpoint.trim().lowercase(Locale.ROOT)
+
+            var uri = Uri.parse(src)
+            var uriBuilder = uri.buildUpon()
+
+            if (config.realm.isNotEmpty() && config.contentServicePath.isNotEmpty()) {
+                uriBuilder.appendPath(AUTH)
+                    .appendPath(REALMS)
+                    .appendPath(config.realm)
+            }
+
+            return uriBuilder.build()
         }
     }
 }

@@ -45,7 +45,6 @@ data class AuthConfig(
     var secret: String = "",
     var scope: String = "",
     var host: String = "",
-    var authType: AuthTypeProvider = AuthTypeProvider.NONE,
     var additionalParams: Map<String, String> = mapOf<String, String>()
 ) {
     /**
@@ -74,11 +73,4 @@ data class AuthConfig(
 enum class AuthTypeProvider {
     NEW_IDP,
     NONE;
-}
-
-enum class IdentityProvider {
-    KEYCLOAK,
-    AUTH0;
-
-    fun value() = name.lowercase()
 }

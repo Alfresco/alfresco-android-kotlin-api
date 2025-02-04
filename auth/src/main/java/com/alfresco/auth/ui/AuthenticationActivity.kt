@@ -14,10 +14,9 @@ import com.alfresco.auth.AuthInterceptor
 import com.alfresco.auth.AuthType
 import com.alfresco.auth.Credentials
 import com.alfresco.auth.DiscoveryService
-import com.alfresco.auth.IdentityProvider
+import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.LiveEvent
 import com.alfresco.auth.data.MutableLiveEvent
-import com.alfresco.auth.data.OAuth2Data
 import com.alfresco.auth.pkce.PkceAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,24 +50,21 @@ abstract class AuthenticationViewModel : ViewModel() {
     fun checkAuthType(
         endpoint: String,
         authConfig: AuthConfig,
-        onResult: (authType: AuthType, oauth2Data: OAuth2Data?) -> Unit
+        onResult: (authType: AuthType, appConfigDetails: AppConfigDetails?) -> Unit
     ) = viewModelScope.launch {
         discoveryService = DiscoveryService(context, authConfig)
 
-        val oAuth2Data = checkAppConfigOAuthType(discoveryService, endpoint)
-        val configAuthType = oAuth2Data?.authType
+        val configDetailsData = checkAppConfigOAuthType(discoveryService, endpoint)
+        val msData = configDetailsData?.mobileSettings
 
-        if (configAuthType.isNullOrEmpty() || configAuthType.lowercase() == IdentityProvider.KEYCLOAK.value()) {
-            val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
-            onResult(authType, oAuth2Data)
-        } else {
-            onResult(AuthType.PKCE, oAuth2Data)
-        }
+        discoveryService.setAuthConfig(msData)
+        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint, msData?.host) }
+        onResult(authType, configDetailsData)
     }
 
-    suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String): OAuth2Data? =
+    suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String): AppConfigDetails? =
         withContext(Dispatchers.IO) {
-            discoveryService.getAppConfigOAuthType(endpoint)?.oauth2
+            discoveryService.getAppConfigOAuthType(endpoint)
         }
 
 

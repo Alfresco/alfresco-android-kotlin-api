@@ -7,38 +7,46 @@ import kotlinx.serialization.json.Json
 
 @OptIn(InternalSerializationApi::class)
 @Serializable
-data class OAuth2Data(
+data class MobileSettings(
+    val https: Boolean,
+    val port: Int,
+    val realm: String?,
     val host: String,
-    val clientId: String,
-    val secret: String,
+    val secret: String?,
     val scope: String,
-    val implicitFlow: Boolean,
-    val codeFlow: Boolean,
-    val silentLogin: Boolean,
-    val publicUrls: List<String>,
-    val redirectSilentIframeUri: String,
-    val redirectUri: String,
-    val logoutUrl: String,
-    val logoutParameters: List<String>,
-    val redirectUriLogout: String,
-    val audience: String,
-    val skipIssuerCheck: Boolean,
-    val strictDiscoveryDocumentValidation: Boolean,
-    val authType: String? = ""
+    val contentServicePath: String?,
+    val audience: String?,
+    val android: AndroidSettings,
+    val iOS: IOSSettings,
 )
 
 @OptIn(InternalSerializationApi::class)
 @Serializable
-internal data class AppConfigDetails(
-    val oauth2: OAuth2Data
+data class AndroidSettings(
+    val redirectUri: String,
+    val clientId: String
+)
+
+@OptIn(InternalSerializationApi::class)
+@Serializable
+data class IOSSettings(
+    val redirectUri: String,
+    val clientId: String
+)
+
+@OptIn(InternalSerializationApi::class)
+@Serializable
+data class AppConfigDetails(
+    val mobileSettings: MobileSettings
 ) {
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
 
         fun jsonDeserialize(str: String): AppConfigDetails? {
             return try {
-                json.decodeFromString(serializer(), str)
+                json.decodeFromString<AppConfigDetails>(serializer(), str)
             } catch (ex: SerializationException) {
+                ex.printStackTrace()
                 null
             }
         }
