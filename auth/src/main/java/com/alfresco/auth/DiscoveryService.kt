@@ -129,6 +129,7 @@ class DiscoveryService(
                 val data = ContentServerDetails.jsonDeserialize(body)
                 data?.data
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         }
@@ -159,11 +160,12 @@ class DiscoveryService(
         PkceAuthService.endpointWith(endpoint, authConfig)
             .buildUpon()
             .apply {
-                if (authConfig.contentServicePath.isEmpty()) {
+                if (authConfig.contentServicePath.isNotEmpty()) {
                     appendPath(authConfig.contentServicePath)
+                } else {
+                    appendPath("alfresco")
                 }
             }
-            .appendPath("alfresco")
             .build()
 
     private fun contentServiceDiscoveryUrl(endpoint: String): Uri =
