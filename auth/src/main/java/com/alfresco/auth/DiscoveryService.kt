@@ -100,7 +100,7 @@ class DiscoveryService(
                 val body = response.body?.string() ?: ""
                 var data = AppConfigDetails.jsonDeserialize(body)
 
-                if (data?.mobileSettings == null) {
+                if (data == null || data.mobileSettings == null) {
                     val jsonString = loadJSONFromAssets(context)
 
                     val appConfig = jsonString?.let { AppConfigDetails.jsonDeserialize(it) }
