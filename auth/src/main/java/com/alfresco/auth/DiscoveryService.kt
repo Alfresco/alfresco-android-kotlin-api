@@ -98,9 +98,29 @@ class DiscoveryService(
                 if (response.code != 200) return@withContext null
 
                 val body = response.body?.string() ?: ""
-                val data = AppConfigDetails.jsonDeserialize(body)
-                data
+                var data = AppConfigDetails.jsonDeserialize(body)
+
+                if (data?.mobileSettings == null) {
+                    val jsonString = loadJSONFromAssets(context)
+
+                    val appConfig = jsonString?.let { AppConfigDetails.jsonDeserialize(it) }
+
+                    if (appConfig?.mobileSettings != null) {
+                        appConfig.mobileSettings?.host = "https://$endpoint"
+
+                        if (data == null) {
+                            data = AppConfigDetails(mobileSettings = appConfig.mobileSettings)
+                        } else {
+                            data.mobileSettings = appConfig.mobileSettings
+                        }
+                    }
+                    data
+                } else {
+                    data
+                }
+
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         }
