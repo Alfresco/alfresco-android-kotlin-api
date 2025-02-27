@@ -2,9 +2,11 @@ package com.alfresco.auth
 
 import android.content.Context
 
+const val mobileConfigFileName = "mobile-config.json"
+
 fun loadJSONFromAssets(context: Context): String? {
     return try {
-        val inputStream = context.assets.open("mobile-config.json")
+        val inputStream = context.assets.open(mobileConfigFileName)
         val size = inputStream.available()
         val buffer = ByteArray(size)
         inputStream.read(buffer)
