@@ -2,6 +2,7 @@ package com.alfresco.auth
 
 import android.content.Context
 import android.net.Uri
+import com.alfresco.auth.data.AndroidSettings
 import com.alfresco.auth.data.AppConfigDetails
 import com.alfresco.auth.data.ContentServerDetails
 import com.alfresco.auth.data.ContentServerDetailsData
@@ -13,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import kotlin.String
 
 /**
  * Class that facilitates service discovery process.
@@ -81,7 +83,10 @@ class DiscoveryService(
     /**
      * Check whether the content service is running on [endpoint].
      */
-    internal suspend fun getAppConfigOAuthType(endpoint: String): AppConfigDetails? {
+    internal suspend fun getAppConfigOAuthType(
+        endpoint: String,
+        authConfig: AuthConfig
+    ): AppConfigDetails? {
         val uri = "https://$endpoint/app-config.json"
 
         return withContext(Dispatchers.IO) {
@@ -98,12 +103,42 @@ class DiscoveryService(
                 if (response.code != 200) return@withContext null
 
                 val body = response.body?.string() ?: ""
-                val data = AppConfigDetails.jsonDeserialize(body)
-                data
+                var data = AppConfigDetails.jsonDeserialize(body)
+
+                return@withContext data?.takeIf { it.mobileSettings != null }
+                    ?: createDefaultAppConfig(endpoint, authConfig, data)
+
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         }
+    }
+
+    internal fun createDefaultAppConfig(
+        endpoint: String,
+        authConfig: AuthConfig,
+        existingData: AppConfigDetails?
+    ): AppConfigDetails {
+        return AppConfigDetails(
+            mobileSettings = MobileSettings(
+                https = authConfig.https,
+                port = authConfig.port.toInt(),
+                realm = existingData?.mobileSettings?.realm ?: authConfig.realm,
+                host = existingData?.mobileSettings?.host ?: "https://$endpoint",
+                secret = existingData?.mobileSettings?.secret,
+                scope = existingData?.mobileSettings?.scope ?: authConfig.scope,
+                contentServicePath = existingData?.mobileSettings?.contentServicePath
+                    ?: authConfig.contentServicePath,
+                audience = existingData?.mobileSettings?.audience,
+                android = AndroidSettings(
+                    redirectUri = existingData?.mobileSettings?.android?.redirectUri
+                        ?: authConfig.redirectUrl,
+                    clientId = existingData?.mobileSettings?.android?.clientId
+                        ?: authConfig.clientId
+                )
+            )
+        )
     }
 
     /**

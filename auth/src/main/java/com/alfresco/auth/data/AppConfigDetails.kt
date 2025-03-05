@@ -17,19 +17,11 @@ data class MobileSettings(
     val contentServicePath: String?,
     val audience: String?,
     val android: AndroidSettings,
-    val iOS: IOSSettings,
 )
 
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class AndroidSettings(
-    val redirectUri: String,
-    val clientId: String
-)
-
-@OptIn(InternalSerializationApi::class)
-@Serializable
-data class IOSSettings(
     val redirectUri: String,
     val clientId: String
 )
