@@ -11,7 +11,7 @@ data class MobileSettings(
     val https: Boolean,
     val port: Int,
     val realm: String?,
-    val host: String,
+    var host: String,
     val secret: String?,
     val scope: String,
     val contentServicePath: String?,
@@ -29,7 +29,7 @@ data class AndroidSettings(
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class AppConfigDetails(
-    val mobileSettings: MobileSettings
+    var mobileSettings: MobileSettings?
 ) {
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
