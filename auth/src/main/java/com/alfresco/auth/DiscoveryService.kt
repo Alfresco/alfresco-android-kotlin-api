@@ -118,23 +118,23 @@ class DiscoveryService(
     internal fun createDefaultAppConfig(
         endpoint: String,
         authConfig: AuthConfig,
-        existingData: AppConfigDetails?
+        serverConfig: AppConfigDetails?
     ): AppConfigDetails {
         return AppConfigDetails(
             mobileSettings = MobileSettings(
                 https = authConfig.https,
                 port = authConfig.port.toInt(),
-                realm = existingData?.mobileSettings?.realm ?: authConfig.realm,
-                host = existingData?.mobileSettings?.host ?: "https://$endpoint",
-                secret = existingData?.mobileSettings?.secret,
-                scope = existingData?.mobileSettings?.scope ?: authConfig.scope,
-                contentServicePath = existingData?.mobileSettings?.contentServicePath
+                realm = serverConfig?.mobileSettings?.realm ?: authConfig.realm,
+                host = serverConfig?.mobileSettings?.host ?: "https://$endpoint",
+                secret = serverConfig?.mobileSettings?.secret,
+                scope = serverConfig?.mobileSettings?.scope ?: authConfig.scope,
+                contentServicePath = serverConfig?.mobileSettings?.contentServicePath
                     ?: authConfig.contentServicePath,
-                audience = existingData?.mobileSettings?.audience,
+                audience = serverConfig?.mobileSettings?.audience,
                 android = AndroidSettings(
-                    redirectUri = existingData?.mobileSettings?.android?.redirectUri
+                    redirectUri = serverConfig?.mobileSettings?.android?.redirectUri
                         ?: authConfig.redirectUrl,
-                    clientId = existingData?.mobileSettings?.android?.clientId
+                    clientId = serverConfig?.mobileSettings?.android?.clientId
                         ?: authConfig.clientId
                 )
             )
