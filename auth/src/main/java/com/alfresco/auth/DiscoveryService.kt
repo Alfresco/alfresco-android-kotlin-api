@@ -87,7 +87,7 @@ class DiscoveryService(
         endpoint: String,
         authConfig: AuthConfig
     ): AppConfigDetails? {
-        val uri = "https://$endpoint/app-config.json"
+        val uri = if (authConfig.https) "https://$endpoint/app-config.json" else "http://$endpoint/app-config.json"
 
         return withContext(Dispatchers.IO) {
             try {
@@ -115,27 +115,20 @@ class DiscoveryService(
         }
     }
 
-    internal fun createDefaultAppConfig(
-        endpoint: String,
-        authConfig: AuthConfig,
-        serverConfig: AppConfigDetails?
-    ): AppConfigDetails {
+    internal fun createDefaultAppConfig(endpoint: String, authConfig: AuthConfig, existingData: AppConfigDetails?): AppConfigDetails {
         return AppConfigDetails(
             mobileSettings = MobileSettings(
                 https = authConfig.https,
                 port = authConfig.port.toInt(),
-                realm = serverConfig?.mobileSettings?.realm ?: authConfig.realm,
-                host = serverConfig?.mobileSettings?.host ?: "https://$endpoint",
-                secret = serverConfig?.mobileSettings?.secret,
-                scope = serverConfig?.mobileSettings?.scope ?: authConfig.scope,
-                contentServicePath = serverConfig?.mobileSettings?.contentServicePath
-                    ?: authConfig.contentServicePath,
-                audience = serverConfig?.mobileSettings?.audience,
+                realm = existingData?.mobileSettings?.realm ?: authConfig.realm,
+                host = existingData?.mobileSettings?.host ?:if (authConfig.https) "https://$endpoint" else "http://$endpoint",
+                secret = existingData?.mobileSettings?.secret,
+                scope = existingData?.mobileSettings?.scope ?: authConfig.scope,
+                contentServicePath = existingData?.mobileSettings?.contentServicePath ?: authConfig.contentServicePath,
+                audience = existingData?.mobileSettings?.audience,
                 android = AndroidSettings(
-                    redirectUri = serverConfig?.mobileSettings?.android?.redirectUri
-                        ?: authConfig.redirectUrl,
-                    clientId = serverConfig?.mobileSettings?.android?.clientId
-                        ?: authConfig.clientId
+                    redirectUri = existingData?.mobileSettings?.android?.redirectUri ?: authConfig.redirectUrl,
+                    clientId = existingData?.mobileSettings?.android?.clientId ?: authConfig.clientId
                 )
             )
         )
