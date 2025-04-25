@@ -329,10 +329,6 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         }
 
         fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
-
-            println("discoveryUriWith endPoint : $endpoint")
-            println("discoveryUriWith config : $config")
-
             val uri = if (config.host.isEmpty()) {
                 endpointWith(endpoint, config)
             } else {
