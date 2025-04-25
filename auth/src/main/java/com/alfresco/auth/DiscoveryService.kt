@@ -119,10 +119,8 @@ class DiscoveryService(
                 // You can log this or trigger a retry mechanism
                 return@withContext null
             } catch (e: UnknownHostException) {
-                println("Unable to resolve host: ${e.message}")
                 return@withContext null
             } catch (e: Exception) {
-                println("General error: ${e.message}")
                 e.printStackTrace()
                 return@withContext null
             }
