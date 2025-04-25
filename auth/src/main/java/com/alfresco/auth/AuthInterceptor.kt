@@ -232,7 +232,6 @@ class AuthInterceptor(
             AuthType.UNKNOWN -> null
         }
 
-        println("Header value $headerValue")
         return proceedWithAuthorization(headerValue)
     }
 
