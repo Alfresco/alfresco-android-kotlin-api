@@ -105,7 +105,6 @@ class DiscoveryService(
                     .build()
 
                 val response = client.newCall(request).execute()
-                println("Response Code: ${response.code}")
 
                 if (response.code != 200) return@withContext null
 
