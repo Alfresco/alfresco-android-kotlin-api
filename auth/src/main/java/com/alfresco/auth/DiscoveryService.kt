@@ -115,7 +115,6 @@ class DiscoveryService(
                     ?: createDefaultAppConfig(endpoint, authConfig, data)
 
             } catch (e: SocketTimeoutException) {
-                println("Connection timed out: ${e.message}")
                 // You can log this or trigger a retry mechanism
                 return@withContext null
             } catch (e: UnknownHostException) {
