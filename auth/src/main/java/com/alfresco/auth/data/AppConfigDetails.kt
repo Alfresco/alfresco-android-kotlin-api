@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class MobileSettings(
-    var https: Boolean? = false,
+    var https: Boolean? = true,
     var port: Int? = null,
     var realm: String?,
     var host: String,

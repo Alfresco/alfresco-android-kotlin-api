@@ -84,7 +84,7 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
         require(endpoint.isNotBlank()) { "Identity url is blank or empty" }
         checkConfig(authConfig)
 
-        val discoveryUri: Uri = discoveryUriWith(authConfig)
+        val discoveryUri: Uri = discoveryUriWith(endpoint, authConfig)
 
         withContext(Dispatchers.IO) {
             val config = fetchDiscoveryFromUrl(discoveryUri)
@@ -328,9 +328,18 @@ internal class PkceAuthService(context: Context, authState: AuthState?, authConf
             return uriBuilder.build()
         }
 
-        fun discoveryUriWith(config: AuthConfig): Uri {
+        fun discoveryUriWith(endpoint: String, config: AuthConfig): Uri {
 
-            return Uri.parse(config.host)
+            println("discoveryUriWith endPoint : $endpoint")
+            println("discoveryUriWith config : $config")
+
+            val uri = if (config.host.isEmpty()) {
+                endpointWith(endpoint, config)
+            } else {
+                Uri.parse(config.host)
+            }
+
+            return uri
                 .buildUpon()
                 .apply {
                     if (config.realm.isNotEmpty()) {

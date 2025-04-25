@@ -55,12 +55,21 @@ abstract class AuthenticationViewModel : ViewModel() {
         discoveryService = DiscoveryService(context, authConfig)
 
         val configDetailsData = checkAppConfigOAuthType(discoveryService, endpoint,authConfig)
-        val msData = configDetailsData?.mobileSettings
 
-
-        discoveryService.setAuthConfig(msData)
-        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint, msData?.host) }
+        println("configDetailsData: $configDetailsData")
+        if (configDetailsData!=null){
+            println("configDetailsData: $configDetailsData")
+            val msData = configDetailsData.mobileSettings
+            discoveryService.setAuthConfig(msData)
+        }
+        val authType = withContext(Dispatchers.IO) { discoveryService.getAuthType(endpoint) }
         onResult(authType, configDetailsData)
+
+
+
+
+
+
     }
 
     suspend fun checkAppConfigOAuthType(discoveryService: DiscoveryService, endpoint: String,authConfig: AuthConfig): AppConfigDetails? =
