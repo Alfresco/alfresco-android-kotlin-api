@@ -12,7 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.net.SocketTimeoutException
 import java.net.URL
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 import kotlin.String
 
@@ -41,10 +43,10 @@ class DiscoveryService(
     /**
      * Determine which [AuthType] is supported by the [endpoint].
      */
-    suspend fun getAuthType(endpoint: String, host: String?): AuthType {
+    suspend fun getAuthType(endpoint: String): AuthType {
         return when {
 
-            isPkceType() -> AuthType.PKCE
+            isPkceType(endpoint) -> AuthType.PKCE
 
             isBasicType(endpoint) -> AuthType.BASIC
 
@@ -92,28 +94,38 @@ class DiscoveryService(
         return withContext(Dispatchers.IO) {
             try {
                 val client = OkHttpClient.Builder()
-                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .connectTimeout(10, TimeUnit.SECONDS) // You can reduce it to fail faster
+                    .readTimeout(15, TimeUnit.SECONDS)
+                    .writeTimeout(15, TimeUnit.SECONDS)
                     .build()
+
                 val request = Request.Builder()
                     .url(URL(uri))
                     .get()
                     .build()
+
                 val response = client.newCall(request).execute()
 
                 if (response.code != 200) return@withContext null
 
-                val body = response.body?.string() ?: ""
-                var data = AppConfigDetails.jsonDeserialize(body)
+                val body = response.body?.string().orEmpty()
+                val data = AppConfigDetails.jsonDeserialize(body)
 
                 return@withContext data?.takeIf { it.mobileSettings != null }
                     ?: createDefaultAppConfig(endpoint, authConfig, data)
 
+            } catch (e: SocketTimeoutException) {
+                // You can log this or trigger a retry mechanism
+                return@withContext null
+            } catch (e: UnknownHostException) {
+                return@withContext null
             } catch (e: Exception) {
                 e.printStackTrace()
-                null
+                return@withContext null
             }
         }
     }
+
 
     internal fun createDefaultAppConfig(
         endpoint: String,
@@ -172,8 +184,8 @@ class DiscoveryService(
 
     private suspend fun isBasicType(endpoint: String): Boolean = isContentServiceInstalled(endpoint)
 
-    private suspend fun isPkceType(): Boolean {
-        val uri = PkceAuthService.discoveryUriWith(authConfig)
+    private suspend fun isPkceType(endpoint: String): Boolean {
+        val uri = PkceAuthService.discoveryUriWith(endpoint,authConfig)
         val result = try {
             if (uri != null) {
                 val authService = PkceAuthService(context, null, authConfig)

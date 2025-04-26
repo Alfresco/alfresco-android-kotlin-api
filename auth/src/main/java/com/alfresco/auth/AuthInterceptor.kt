@@ -231,6 +231,7 @@ class AuthInterceptor(
             AuthType.PKCE -> "Bearer $token"
             AuthType.UNKNOWN -> null
         }
+
         return proceedWithAuthorization(headerValue)
     }
 
